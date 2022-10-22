@@ -15,7 +15,8 @@ jobs:
     - uses: jrouly/scalafmt-native-action@v2
       with:
         version: '3.6.0'
-    - name: Commit changes
+        arguments: ''
+  - name: Commit changes
       uses: stefanzweifel/git-auto-commit-action@v4
   test:
     needs: reformat-code
