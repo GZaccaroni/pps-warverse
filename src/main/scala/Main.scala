@@ -4,8 +4,9 @@
   
   println("Hello world!")
 
-  
-  println(msg)
+
+  println(msg);
+  println("Test p4 4");
 
 
 
