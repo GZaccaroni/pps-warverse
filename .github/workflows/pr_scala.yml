@@ -2,7 +2,7 @@ name: Scala CI
 
 on:
   pull_request:
-    branches: [ "feature/*", "bugfix/*" ]
+    branches: [ "feature/**", "bugfix/**" ]
 
 permissions:
   contents: read
