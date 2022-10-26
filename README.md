@@ -12,7 +12,7 @@ Warverse è un simulatore di guerra tra più stati scritto in Scala.
 Una volta avviata la simulazione viene aggiornata con frequenza giornaliera finché non rimane solo uno stato.
 
 ## Utilizzo
-Una volta scaricata l'ultima versione di Warverse [qui](https://github.com/VirusSpreadSimulator/PPS-22-virsim/releases/latest) è possibile avviarlo con il comando (da eseguire via terminale):
+Una volta scaricata l'ultima versione di Warverse [qui](https://github.com/GZaccaroni/pps-warverse/releases/latest) è possibile avviarlo con il comando (da eseguire via terminale):
 ```
 java -jar warverse.jar
 ```
