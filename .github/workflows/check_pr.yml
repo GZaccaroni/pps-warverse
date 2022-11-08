@@ -19,4 +19,5 @@ jobs:
         distribution: 'temurin'
         cache: 'sbt'
     - name: Run tests
+      working-directory: ./app
       run: sbt test

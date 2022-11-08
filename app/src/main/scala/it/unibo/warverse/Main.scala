@@ -1,3 +1,5 @@
+package it.unibo.warverse
+
 @main def hello(): Unit = {
   println("Hello world!")
   println(msg)
