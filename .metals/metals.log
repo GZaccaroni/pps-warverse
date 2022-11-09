@@ -1,0 +1,26 @@
+2022.11.09 14:30:38 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at /Users/dallas/Desktop/Uni/PPS/pps-warverse/.metals/lsp.trace.json or /Users/dallas/Library/Caches/org.scalameta.metals/lsp.trace.json
+2022.11.09 14:30:39 INFO  logging to file /Users/dallas/Desktop/Uni/PPS/pps-warverse/.metals/metals.log
+2022.11.09 14:30:39 INFO  Started: Metals version 0.11.9 in workspace '/Users/dallas/Desktop/Uni/PPS/pps-warverse' for client Visual Studio Code 1.73.0.
+2022.11.09 14:30:40 INFO  time: initialize in 1.52s
+2022.11.09 14:30:45 WARN  Build server is not auto-connectable.
+2022.11.09 14:30:45 WARN  no build tool detected in workspace '/Users/dallas/Desktop/Uni/PPS/pps-warverse'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+2022.11.09 14:30:45 WARN  no build target for: /Users/dallas/Desktop/Uni/PPS/pps-warverse/app/src/main/scala/it/unibo/warverse/Main.scala
+2022.11.09 14:30:52 INFO  no build target found for /Users/dallas/Desktop/Uni/PPS/pps-warverse/app/src/main/scala/it/unibo/warverse/Main.scala. Using presentation compiler with project's scala-library version: 3.2.0
+2022.11.09 14:30:54 INFO  time: code lens generation in 8.23s
+nov 09, 2022 2:31:27 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFORMAZIONI: Unsupported notification method: $/setTrace
+2022.11.09 14:32:37 WARN  no build target for: /Users/dallas/Desktop/Uni/PPS/pps-warverse/app/src/test/scala/it/unibo/warverse/MySuite.scala
+2022.11.09 14:32:40 WARN  no build target for: /Users/dallas/Desktop/Uni/PPS/pps-warverse/app/build.sbt
+2022.11.09 14:34:21 WARN  no build target for: /Users/dallas/Desktop/Uni/PPS/pps-warverse/app/src/main/scala/it/unibo/warverse/view/MainFrame.scala
+2022.11.09 14:34:48 INFO  shutting down Metals
+2022.11.09 14:37:00 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at /Users/dallas/Desktop/Uni/PPS/pps-warverse/.metals/lsp.trace.json or /Users/dallas/Library/Caches/org.scalameta.metals/lsp.trace.json
+2022.11.09 14:37:00 INFO  logging to file /Users/dallas/Desktop/Uni/PPS/pps-warverse/.metals/metals.log
+2022.11.09 14:37:00 INFO  Started: Metals version 0.11.9 in workspace '/Users/dallas/Desktop/Uni/PPS/pps-warverse' for client Visual Studio Code 1.73.0.
+2022.11.09 14:37:02 INFO  time: initialize in 1.4s
+2022.11.09 14:37:07 WARN  Build server is not auto-connectable.
+2022.11.09 14:37:07 WARN  no build tool detected in workspace '/Users/dallas/Desktop/Uni/PPS/pps-warverse'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+2022.11.09 14:37:07 WARN  no build target for: /Users/dallas/Desktop/Uni/PPS/pps-warverse/app/src/main/scala/it/unibo/warverse/view/MainFrame.scala
+2022.11.09 14:37:14 INFO  no build target found for /Users/dallas/Desktop/Uni/PPS/pps-warverse/app/src/main/scala/it/unibo/warverse/view/MainFrame.scala. Using presentation compiler with project's scala-library version: 3.2.0
+2022.11.09 14:37:16 INFO  time: code lens generation in 8.61s
+2022.11.09 14:38:22 WARN  no build target for: /Users/dallas/Desktop/Uni/PPS/pps-warverse/app/build.sbt
+2022.11.09 14:38:34 INFO  shutting down Metals
