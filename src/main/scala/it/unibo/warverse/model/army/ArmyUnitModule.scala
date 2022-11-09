@@ -16,3 +16,24 @@ object ArmyUnitModule:
   trait ArmyUnit extends Attacker, Movable, ResourcesConsumer:
     override type Position = Point2D
     def name: String
+
+  case class PrecisionArmyUnit(
+      override val name: String,
+      override val chanceOfHit: Percentage,
+      override val rangeOfHit: Double,
+      override val availableHits: Int,
+      override val dailyConsume: Double,
+      override val speed: Double,
+      override val position: Point2D
+  ) extends ArmyUnit
+
+  case class AreaArmyUnit(
+      override val name: String,
+      override val chanceOfHit: Percentage,
+      override val rangeOfHit: Double,
+      override val availableHits: Int,
+      override val dailyConsume: Double,
+      override val speed: Double,
+      override val position: Point2D,
+      areaOfHit: Double
+  ) extends ArmyUnit
