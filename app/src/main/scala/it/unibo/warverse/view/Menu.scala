@@ -47,7 +47,16 @@ class Menu extends JPanel:
 
   this.setPreferredSize(getPreferredSize())
 
-  var mouseAdapter: MouseAdapter = new MouseAdapter():
+  var inputMap: InputMap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  var actionMap: ActionMap = getActionMap();
+  inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "arrowDown");
+  inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "arrowUp");
+  inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
+  actionMap.put("arrowDown", new MenuAction(1));
+  actionMap.put("arrowUp", new MenuAction(-1));
+  actionMap.put("enter", new MenuAction(0));
+
+  def mouseAdapter: MouseAdapter = new MouseAdapter():
     override def mouseClicked(e: MouseEvent): Unit =
       var newItem: String = null;
       menuItems.foreach(text =>
@@ -75,18 +84,6 @@ class Menu extends JPanel:
           focusedItem = text;
           repaint();
       )
-
-    val im: InputMap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-    val am: ActionMap = getActionMap();
-
-    im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "arrowDown");
-    im.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "arrowUp");
-    im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
-
-    am.put("arrowDown", new MenuAction(1));
-    am.put("arrowUp", new MenuAction(-1));
-    am.put("enter", new MenuAction(0).enterPress());
-
   this.addMouseListener(mouseAdapter)
   this.addMouseMotionListener(mouseAdapter);
 
@@ -132,22 +129,15 @@ class Menu extends JPanel:
     g2d.dispose();
 
   class MenuAction(delta: Integer) extends AbstractAction:
-    var pressEnter: Boolean = false
-
-    def enterPress(): MenuAction =
-      this.pressEnter = true
-      return this
 
     override def actionPerformed(e: ActionEvent): Unit =
       var index = menuItems.indexOf(selectMenuItem);
-      if pressEnter then
+      if delta == 0 then
         index match
           case 0 => println("START")
           case 1 => println("OPTION")
           case 2 => println("HELP")
-          case 3 =>
-            System.exit(0)
-      pressEnter = false
+          case 3 => System.exit(0)
       if index < 0 then selectMenuItem = menuItems(0);
       index += delta;
       if index < 0 then selectMenuItem = menuItems(menuItems.size - 1);
