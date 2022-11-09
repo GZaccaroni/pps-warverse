@@ -10,5 +10,9 @@ lazy val root = project
     // Linter settings,
     wartremoverErrors ++= Warts.unsafe,
     assembly / assemblyOutputPath := file("target/warverse.jar"),
-    Compile / doc / target := file("target/docs")
+    Compile / doc / target := file("target/docs"),
+    // Coverage settings
+    jacocoReportSettings := JacocoReportSettings()
+      .withFormats(JacocoReportFormats.ScalaHTML, JacocoReportFormats.XML),
+    jacocoReportDirectory := file("target/coverage_report"),
   )
