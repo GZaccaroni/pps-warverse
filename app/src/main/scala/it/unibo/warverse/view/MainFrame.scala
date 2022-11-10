@@ -8,12 +8,10 @@ import java.awt.BorderLayout
 import javax.swing.ImageIcon
 import java.awt.Image
 
-
 class MainFrame extends JFrame:
   this.setName("Warverse Simulator")
   this.setDefaultCloseOperation(EXIT_ON_CLOSE);
   this.pack();
-  this.setLocationRelativeTo(null);
 
   def setPanel(panel: JPanel): Unit =
     this.getContentPane().removeAll()
