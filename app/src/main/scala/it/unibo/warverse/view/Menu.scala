@@ -29,9 +29,10 @@ import javax.swing.JFrame
 import java.awt.BorderLayout
 import java.awt.geom.RoundRectangle2D
 import java.awt.Toolkit
+import java.awt.Image;
 import scala.collection.mutable
 
-class Menu extends JPanel:
+class Menu(mainFrame : JFrame) extends JPanel:
 
   var menuItems: Array[String] =
     Array("Start Game", "Options", "Help", "Exit")
@@ -47,16 +48,7 @@ class Menu extends JPanel:
 
   this.setPreferredSize(getPreferredSize())
 
-  var inputMap: InputMap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-  var actionMap: ActionMap = getActionMap();
-  inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "arrowDown");
-  inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "arrowUp");
-  inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
-  actionMap.put("arrowDown", new MenuAction(1));
-  actionMap.put("arrowUp", new MenuAction(-1));
-  actionMap.put("enter", new MenuAction(0));
-
-  def mouseAdapter: MouseAdapter = new MouseAdapter():
+  var mouseAdapter: MouseAdapter = new MouseAdapter():
     override def mouseClicked(e: MouseEvent): Unit =
       var newItem: String = null;
       menuItems.foreach(text =>
@@ -84,6 +76,18 @@ class Menu extends JPanel:
           focusedItem = text;
           repaint();
       )
+
+    val im: InputMap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+    val am: ActionMap = getActionMap();
+
+    im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "arrowDown");
+    im.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "arrowUp");
+    im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
+
+    am.put("arrowDown", new MenuAction(1));
+    am.put("arrowUp", new MenuAction(-1));
+    am.put("enter", new MenuAction(0));
+
   this.addMouseListener(mouseAdapter)
   this.addMouseMotionListener(mouseAdapter);
 
@@ -96,6 +100,7 @@ class Menu extends JPanel:
 
   override def paintComponent(g: Graphics): Unit =
     super.paintComponent(g);
+    var img: Image = Toolkit.getDefaultToolkit().getImage("src/main/scala/it/unibo/warverse/assets/menuBackground.png")
     var g2d: Graphics2D = g.create().asInstanceOf[Graphics2D]
     if menuBounds == null then
       menuBounds = mutable.HashMap[String, RoundRectangle2D]();
@@ -111,7 +116,6 @@ class Menu extends JPanel:
       totalHeight += 5 * (menuItems.size - 1);
 
       var y = (getHeight() - totalHeight) / 2;
-
       menuItems.foreach(text =>
         menuBounds.put(
           text,
@@ -119,7 +123,7 @@ class Menu extends JPanel:
         );
         y += height + 35;
       )
-
+    g.drawImage(img, 0, 0, this.getSize().width, this.getSize().height, this)
     menuItems.foreach(text =>
       val bounds: RoundRectangle2D = menuBounds(text);
       val isSelected: Boolean = text.equals(selectMenuItem);
@@ -136,8 +140,10 @@ class Menu extends JPanel:
         index match
           case 0 => println("START")
           case 1 => println("OPTION")
-          case 2 => println("HELP")
-          case 3 => System.exit(0)
+          case 2 => mainFrame.setContentPane(new Menu(mainFrame))
+                    mainFrame.validate()
+          case 3 =>
+            System.exit(0)
       if index < 0 then selectMenuItem = menuItems(0);
       index += delta;
       if index < 0 then selectMenuItem = menuItems(menuItems.size - 1);
