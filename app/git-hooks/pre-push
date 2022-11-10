@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+echo "pulling latest changes"
+git pull
+
+exit $?
