@@ -7,11 +7,11 @@ import javax.swing.JPanel
 
 class MenuMouseAdapter(
   menuItems: Array[String],
-  selectMenuItem: String,
   panel: JPanel,
   var menuBounds: scala.collection.mutable.Map[String, RoundRectangle2D],
   setMenuValue: String => Unit,
-  setFocusValue: String => Unit
+  setFocusValue: String => Unit,
+  setNewPanel: JPanel => Unit
 ) extends MouseAdapter:
 
   def setBounds(
@@ -26,15 +26,20 @@ class MenuMouseAdapter(
         val bounds: RoundRectangle2D = menuBounds(text)
         if bounds.contains(e.getPoint()) then newItem = text
     )
-    if newItem != null && !newItem.equals(selectMenuItem) then
+    if newItem != null then
       setMenuValue(newItem)
       panel.repaint()
-      if newItem != null && newItem.equals("Exit") then System.exit(0)
+      if newItem != null then
+        newItem match
+          case "Start Game" => setNewPanel(new Map())
+          case "Options"    => setNewPanel(new MenuOptions())
+          case "Help"       => setNewPanel(new MenuHelp())
+          case "Exit"       => System.exit(0)
+          case _            =>
 
   override def mouseMoved(e: MouseEvent): Unit =
     setFocusValue("")
     menuItems.foreach(text =>
-      println(menuBounds)
       if !menuBounds.isEmpty
       then
         val bounds: RoundRectangle2D = menuBounds(text)

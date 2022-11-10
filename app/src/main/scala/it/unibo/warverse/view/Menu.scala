@@ -46,6 +46,7 @@ class Menu(mainFrame: JFrame) extends JPanel:
 
   val setMenuValue = (value: String) => selectMenuItem = value
   val setFocusValue = (value: String) => focusedItem = value
+  val setNewPanel = (value: JPanel) => {mainFrame.setContentPane(value); mainFrame.validate()}
 
   this.setBackground(Color.BLACK);
 
@@ -55,15 +56,16 @@ class Menu(mainFrame: JFrame) extends JPanel:
     menuItems,
     selectMenuItem,
     this,
-    setMenuValue(_)
+    setMenuValue(_),
+    setNewPanel(_)
   )
   var mouseAdapter: MenuMouseAdapter = new MenuMouseAdapter(
     menuItems,
-    selectMenuItem,
     this,
     menuBounds,
     setMenuValue(_),
-    setFocusValue(_)
+    setFocusValue(_),
+    setNewPanel(_)
   )
 
   this.addMouseListener(mouseAdapter)

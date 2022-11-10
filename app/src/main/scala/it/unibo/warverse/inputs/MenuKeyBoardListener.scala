@@ -3,12 +3,14 @@ package it.unibo.warverse
 import java.awt.event.KeyListener
 import java.awt.event.KeyEvent
 import javax.swing.JPanel
+import javax.swing.JFrame
 
 class MenuKeyBoardListener(
   menuItems: Array[String],
   selectMenuItemProp: String,
   panel: JPanel,
-  setMenuValue: String => Unit
+  setMenuValue: String => Unit,
+  setNewPanel: JPanel => Unit,
 ) extends KeyListener:
 
   var index = 0
@@ -30,11 +32,10 @@ class MenuKeyBoardListener(
   override def keyPressed(e: KeyEvent): Unit =
     e.getKeyCode() match
       case KeyEvent.VK_ENTER =>
-        println(index)
         index match
-          case 0 => println("START")
-          case 1 => println("OPTION")
-          case 2 => println("HELP")
+          case 0 => setNewPanel(new Map())
+          case 1 => setNewPanel(new MenuOptions())
+          case 2 => setNewPanel(new MenuHelp())
           case 3 => System.exit(0)
           case _ =>
       case KeyEvent.VK_W | KeyEvent.VK_UP   => setIndex(-1)
