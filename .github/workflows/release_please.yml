@@ -1,0 +1,58 @@
+name: Release Please
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: google-github-actions/release-please-action@v3
+        id: release
+        with:
+          release-type: simple
+          package-name: warverse
+      ### Do on release created
+      - uses: actions/checkout@v3
+        if: ${{ steps.release.outputs.release_created }}
+      # Publish docs
+      - name: Build documentation
+        working-directory: ./app
+        run: sbt doc
+        if: ${{ steps.release.outputs.release_created }}
+      - name: Build documentation
+        working-directory: ./app
+        run: mv target/docs 
+        if: ${{ steps.release.outputs.release_created }}
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+        if: ${{ steps.release.outputs.release_created }}
+      - name: Upload docs
+        uses: actions/upload-pages-artifact@v1
+        with:
+            path: './app/target/docs'
+        if: ${{ steps.release.outputs.release_created }}
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
+        if: ${{ steps.release.outputs.release_created }}
+      # Generate and upload jar
+      - name: Build app
+        working-directory: ./app
+        run: sbt assembly
+        if: ${{ steps.release.outputs.release_created }}
+      - uses: shogo82148/actions-upload-release-asset@v1
+        if: ${{ steps.release.outputs.release_created }}
+        with:
+          upload_url: ${{ steps.release.outputs.upload_url }}
+          asset_path: ./app/target/warverse.jar
