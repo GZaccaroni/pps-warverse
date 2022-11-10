@@ -16,6 +16,9 @@ object ArmyUnitModule:
   trait ResourcesConsumer:
     def dailyConsume: Double
 
+  trait AttackerWithAreaImpact extends Attacker:
+    def areaOfImpact: Double
+
   trait ArmyUnit extends Attacker, Movable, ResourcesConsumer:
     override type Position = Point2D
     def name: String
@@ -28,7 +31,8 @@ object ArmyUnitModule:
       override val dailyConsume: Double,
       override val speed: Double,
       override val position: Point2D
-  ) extends ArmyUnit
+  ) extends ArmyUnit:
+    override def attack(input: AttackInput): AttackResult = ???
 
   case class AreaArmyUnit(
       override val name: String,
@@ -38,5 +42,7 @@ object ArmyUnitModule:
       override val dailyConsume: Double,
       override val speed: Double,
       override val position: Point2D,
-      areaOfHit: Double
+      override val areaOfImpact: Double
   ) extends ArmyUnit
+      with AttackerWithAreaImpact:
+    override def attack(input: AttackInput): AttackResult = ???
