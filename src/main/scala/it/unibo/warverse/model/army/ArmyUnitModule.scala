@@ -6,9 +6,12 @@ import it.unibo.warverse.model.common.Movement.Movable
 
 object ArmyUnitModule:
   trait Attacker:
+    type AttackInput
+    type AttackResult
     def chanceOfHit: Percentage
     def rangeOfHit: Double
     def availableHits: Int
+    def attack(input: AttackInput): AttackResult
 
   trait ResourcesConsumer:
     def dailyConsume: Double
