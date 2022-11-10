@@ -1,9 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base", ":disableDependencyDashboard"
+    "config:base", ":disableDependencyDashboard", ":semanticCommits"
   ],
-  "baseBranches": ["develop"],
+  "baseBranches": ["main"],
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
