@@ -32,7 +32,7 @@ import java.awt.Toolkit
 import java.awt.Image;
 import scala.collection.mutable
 
-class Menu(mainFrame : JFrame) extends JPanel:
+class Menu(mainFrame: JFrame) extends JPanel:
 
   var menuItems: Array[String] =
     Array("Start Game", "Options", "Help", "Exit")
@@ -42,66 +42,48 @@ class Menu(mainFrame : JFrame) extends JPanel:
 
   var painter: SimpleMenuItemPainter = new SimpleMenuItemPainter();
 
-  var menuBounds = scala.collection.mutable.Map[String, RoundRectangle2D]()
+  var menuBounds = mutable.HashMap[String, RoundRectangle2D]();
+
+  val setMenuValue = (value: String) => selectMenuItem = value
+  val setFocusValue = (value: String) => focusedItem = value
 
   this.setBackground(Color.BLACK);
 
   this.setPreferredSize(getPreferredSize())
 
-  var mouseAdapter: MouseAdapter = new MouseAdapter():
-    override def mouseClicked(e: MouseEvent): Unit =
-      var newItem: String = null;
-      menuItems.foreach(text =>
-        val bounds: RoundRectangle2D = menuBounds(text);
-        if bounds.contains(e.getPoint()) then newItem = text;
-      )
-      if newItem != null && !newItem.equals(selectMenuItem) then
-        selectMenuItem = newItem;
-        repaint();
-      if newItem != null && newItem.equals("Exit") then System.exit(0)
-
-    override def mouseMoved(e: MouseEvent): Unit =
-      focusedItem = null;
-      menuItems.foreach(text =>
-        val bounds: RoundRectangle2D = menuBounds(text);
-        if bounds.contains(e.getPoint()) then
-          focusedItem = text;
-          repaint();
-      )
-    override def mouseEntered(e: MouseEvent): Unit =
-      focusedItem = null;
-      menuItems.foreach(text =>
-        val bounds: RoundRectangle2D = menuBounds(text);
-        if bounds.contains(e.getPoint()) then
-          focusedItem = text;
-          repaint();
-      )
-
-    val im: InputMap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-    val am: ActionMap = getActionMap();
-
-    im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "arrowDown");
-    im.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "arrowUp");
-    im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
-
-    am.put("arrowDown", new MenuAction(1));
-    am.put("arrowUp", new MenuAction(-1));
-    am.put("enter", new MenuAction(0));
+  val keyboard = new MenuKeyBoardListener(
+    menuItems,
+    selectMenuItem,
+    this,
+    setMenuValue(_)
+  )
+  var mouseAdapter: MenuMouseAdapter = new MenuMouseAdapter(
+    menuItems,
+    selectMenuItem,
+    this,
+    menuBounds,
+    setMenuValue(_),
+    setFocusValue(_)
+  )
 
   this.addMouseListener(mouseAdapter)
-  this.addMouseMotionListener(mouseAdapter);
-
-  override def invalidate(): Unit =
-    menuBounds = null;
-    super.invalidate();
+  this.addMouseMotionListener(mouseAdapter)
+  this.addKeyListener(keyboard)
 
   override def getPreferredSize(): Dimension =
     return Toolkit.getDefaultToolkit().getScreenSize()
 
+  override def invalidate(): Unit =
+    menuBounds = null
+    super.invalidate();
+
   override def paintComponent(g: Graphics): Unit =
     super.paintComponent(g);
-    var img: Image = Toolkit.getDefaultToolkit().getImage("src/main/scala/it/unibo/warverse/assets/menuBackground.png")
+    var img: Image = Toolkit
+      .getDefaultToolkit()
+      .getImage("src/main/scala/it/unibo/warverse/assets/menuBackground.png")
     var g2d: Graphics2D = g.create().asInstanceOf[Graphics2D]
+    
     if menuBounds == null then
       menuBounds = mutable.HashMap[String, RoundRectangle2D]();
       var width = 0;
@@ -123,6 +105,7 @@ class Menu(mainFrame : JFrame) extends JPanel:
         );
         y += height + 35;
       )
+      mouseAdapter.setBounds(menuBounds)
     g.drawImage(img, 0, 0, this.getSize().width, this.getSize().height, this)
     menuItems.foreach(text =>
       val bounds: RoundRectangle2D = menuBounds(text);
@@ -131,22 +114,3 @@ class Menu(mainFrame : JFrame) extends JPanel:
       painter.paint(g2d, text, bounds, isSelected, isFocused);
     )
     g2d.dispose();
-
-  class MenuAction(delta: Integer) extends AbstractAction:
-
-    override def actionPerformed(e: ActionEvent): Unit =
-      var index = menuItems.indexOf(selectMenuItem);
-      if delta == 0 then
-        index match
-          case 0 => println("START")
-          case 1 => println("OPTION")
-          case 2 => mainFrame.setContentPane(new Menu(mainFrame))
-                    mainFrame.validate()
-          case 3 =>
-            System.exit(0)
-      if index < 0 then selectMenuItem = menuItems(0);
-      index += delta;
-      if index < 0 then selectMenuItem = menuItems(menuItems.size - 1);
-      else if index >= menuItems.size then selectMenuItem = menuItems(0);
-      else selectMenuItem = menuItems(index);
-      repaint();

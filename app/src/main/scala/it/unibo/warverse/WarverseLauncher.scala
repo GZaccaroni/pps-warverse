@@ -10,5 +10,5 @@ import java.awt.BorderLayout
   val menu = new Menu(mainFrame)
   mainFrame.setPanel(menu)
   mainFrame.pack()
+  menu.requestFocus()
   mainFrame.setVisible(true)
-
