@@ -9,7 +9,7 @@ permissions:
 
 jobs:
  check-formatting:
-  runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 19
@@ -34,3 +34,14 @@ jobs:
     - name: Run tests
       working-directory: ./app
       run: sbt test
+ sonarcloud:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build coverage
+        run: sbt jacoco
+        working-directory: ./app
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONARCLOUD_TOKEN: ${{ secrets.SONAR_TOKEN }}
