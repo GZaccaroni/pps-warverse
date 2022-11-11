@@ -40,9 +40,6 @@ class MenuHelp() extends JPanel:
 
   this.setPreferredSize(getPreferredSize())
 
-  val im: InputMap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-  val am: ActionMap = getActionMap();
-
   override def invalidate(): Unit =
     menuBounds = null;
     super.invalidate();
@@ -54,7 +51,7 @@ class MenuHelp() extends JPanel:
     super.paintComponent(g);
     var img: Image = Toolkit
       .getDefaultToolkit()
-      .getImage("src/main/scala/it/unibo/warverse/assets/menuBackground.png")
+      .getImage("src/main/scala/it/unibo/warverse/assets/menuHelp.png")
     var g2d: Graphics2D = g.create().asInstanceOf[Graphics2D]
     if menuBounds == null then
       menuBounds = mutable.HashMap[String, RoundRectangle2D]();
