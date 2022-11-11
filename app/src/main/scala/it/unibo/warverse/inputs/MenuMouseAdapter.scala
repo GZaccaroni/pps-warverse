@@ -11,7 +11,8 @@ class MenuMouseAdapter(
   var menuBounds: scala.collection.mutable.Map[String, RoundRectangle2D],
   setMenuValue: String => Unit,
   setFocusValue: String => Unit,
-  setNewPanel: JPanel => Unit
+  setNewPanel: JPanel => Unit,
+  mainFrame: MainFrame
 ) extends MouseAdapter:
 
   def setBounds(
@@ -32,7 +33,7 @@ class MenuMouseAdapter(
       if newItem != null then
         newItem match
           case "Options" => setNewPanel(new MenuOptions())
-          case "Help"    => setNewPanel(new MenuHelp())
+          case "Help"    => setNewPanel(new MenuHelp(mainFrame))
           case "Exit"    => System.exit(0)
           case _         =>
 
