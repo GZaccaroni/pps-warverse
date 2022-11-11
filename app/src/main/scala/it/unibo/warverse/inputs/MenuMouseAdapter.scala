@@ -31,7 +31,6 @@ class MenuMouseAdapter(
       panel.repaint()
       if newItem != null then
         newItem match
-          // case "Start Game" => setNewPanel(new Map())
           case "Options" => setNewPanel(new MenuOptions())
           case "Help"    => setNewPanel(new MenuHelp())
           case "Exit"    => System.exit(0)
