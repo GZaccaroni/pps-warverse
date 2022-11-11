@@ -14,7 +14,7 @@ import java.awt.Image
 import java.awt.Graphics2D
 
 class MenuActions(mainFrame: MainFrame) extends JPanel:
-  
+
   var path = ""
   def setBackGroundImage(path: String): Unit =
     this.path = path
@@ -38,7 +38,8 @@ class MenuActions(mainFrame: MainFrame) extends JPanel:
     new MenuKeyAction(menuItems, selectMenuItem, this, setMenuValue(_), -1);
   var downAction: MenuKeyAction =
     new MenuKeyAction(menuItems, selectMenuItem, this, setMenuValue(_), 1);
-  var enterAction: EnterAction = new EnterAction(this, setNewPanel(_), mainFrame)
+  var enterAction: EnterAction =
+    new EnterAction(this, setNewPanel(_), mainFrame)
 
   this.setBackground(Color.BLACK);
 

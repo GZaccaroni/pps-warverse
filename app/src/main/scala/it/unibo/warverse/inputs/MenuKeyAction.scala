@@ -10,7 +10,7 @@ class MenuKeyAction(
   var selectMenuItem: String,
   panel: MenuActions,
   setMenuValue: String => Unit,
-  moveValue: Integer,
+  moveValue: Integer
 ) extends AbstractAction:
 
   var index: Integer = 0

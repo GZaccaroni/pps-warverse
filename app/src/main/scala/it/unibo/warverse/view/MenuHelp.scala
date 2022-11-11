@@ -34,4 +34,3 @@ import scala.collection.mutable
 
 class MenuHelp(mainFrame: MainFrame) extends MenuActions(mainFrame):
   setBackGroundImage("src/main/scala/it/unibo/warverse/assets/menuHelp.png")
-
