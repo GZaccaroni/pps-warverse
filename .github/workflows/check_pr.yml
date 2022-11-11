@@ -37,6 +37,7 @@ jobs:
  sonarcloud:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - name: Build coverage
         run: sbt jacoco
         working-directory: ./app
