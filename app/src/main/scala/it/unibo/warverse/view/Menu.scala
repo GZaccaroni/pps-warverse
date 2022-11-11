@@ -30,12 +30,15 @@ import java.awt.BorderLayout
 import java.awt.geom.RoundRectangle2D
 import java.awt.Toolkit
 import java.awt.Image;
+import it.unibo.warverse.inputs.*
 import scala.collection.mutable
+import javax.swing.Action
 
-class Menu(mainFrame: JFrame) extends JPanel:
+class Menu(mainFrame: MainFrame) extends MenuActions:
 
   var menuItems: Array[String] =
     Array("Start Game", "Options", "Help", "Exit")
+
   var selectMenuItem: String = menuItems(0)
 
   var focusedItem: String = ""
@@ -46,19 +49,18 @@ class Menu(mainFrame: JFrame) extends JPanel:
 
   val setMenuValue = (value: String) => selectMenuItem = value
   val setFocusValue = (value: String) => focusedItem = value
-  val setNewPanel = (value: JPanel) => {mainFrame.setContentPane(value); mainFrame.validate()}
+  val setNewPanel = (value: JPanel) => mainFrame.setPanel(value)
+
+  var upAction: UpAction =
+    new UpAction(menuItems, selectMenuItem, this, setMenuValue(_));
+  var downAction: DownAction =
+    new DownAction(menuItems, selectMenuItem, this, setMenuValue(_));
+  var enterAction: EnterAction = new EnterAction(this, setNewPanel(_))
 
   this.setBackground(Color.BLACK);
 
   this.setPreferredSize(getPreferredSize())
 
-  val keyboard = new MenuKeyBoardListener(
-    menuItems,
-    selectMenuItem,
-    this,
-    setMenuValue(_),
-    setNewPanel(_)
-  )
   var mouseAdapter: MenuMouseAdapter = new MenuMouseAdapter(
     menuItems,
     this,
@@ -70,7 +72,18 @@ class Menu(mainFrame: JFrame) extends JPanel:
 
   this.addMouseListener(mouseAdapter)
   this.addMouseMotionListener(mouseAdapter)
-  this.addKeyListener(keyboard)
+
+  this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "downAction")
+  this.getActionMap().put("downAction", downAction)
+
+  this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "upAction")
+  this.getActionMap().put("upAction", upAction)
+
+  this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enterAction")
+  this.getActionMap().put("enterAction", enterAction)
+
+  override def getMenuItems(): String =
+    return selectMenuItem
 
   override def getPreferredSize(): Dimension =
     return Toolkit.getDefaultToolkit().getScreenSize()
@@ -85,7 +98,7 @@ class Menu(mainFrame: JFrame) extends JPanel:
       .getDefaultToolkit()
       .getImage("src/main/scala/it/unibo/warverse/assets/menuBackground.png")
     var g2d: Graphics2D = g.create().asInstanceOf[Graphics2D]
-    
+
     if menuBounds == null then
       menuBounds = mutable.HashMap[String, RoundRectangle2D]();
       var width = 0;

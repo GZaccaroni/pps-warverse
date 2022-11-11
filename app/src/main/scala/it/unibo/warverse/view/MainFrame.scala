@@ -17,3 +17,4 @@ class MainFrame extends JFrame:
   def setPanel(panel: JPanel): Unit =
     this.getContentPane().removeAll()
     this.add(panel, BorderLayout.CENTER)
+    this.validate()
