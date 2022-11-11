@@ -31,23 +31,18 @@ class MenuMouseAdapter(
       panel.repaint()
       if newItem != null then
         newItem match
-          case "Start Game" => setNewPanel(new Map())
-          case "Options"    => setNewPanel(new MenuOptions())
-          case "Help"       => setNewPanel(new MenuHelp())
-          case "Exit"       => System.exit(0)
-          case _            =>
+          // case "Start Game" => setNewPanel(new Map())
+          case "Options" => setNewPanel(new MenuOptions())
+          case "Help"    => setNewPanel(new MenuHelp())
+          case "Exit"    => System.exit(0)
+          case _         =>
 
   override def mouseMoved(e: MouseEvent): Unit =
-    setFocusValue("")
-    menuItems.foreach(text =>
-      if !menuBounds.isEmpty
-      then
-        val bounds: RoundRectangle2D = menuBounds(text)
-        if bounds.contains(e.getPoint()) then
-          setFocusValue(text)
-          panel.repaint()
-    )
+    mouseTrigger(e)
   override def mouseEntered(e: MouseEvent): Unit =
+    mouseTrigger(e)
+
+  def mouseTrigger(e: MouseEvent): Unit =
     setFocusValue("")
     menuItems.foreach(text =>
       if !menuBounds.isEmpty

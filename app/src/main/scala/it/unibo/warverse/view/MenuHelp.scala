@@ -33,7 +33,8 @@ import java.awt.Image;
 import scala.collection.mutable
 
 class MenuHelp() extends MenuActions:
-  var mainFrame: MainFrame = SwingUtilities.getWindowAncestor(this).asInstanceOf[MainFrame]
+  var mainFrame: MainFrame =
+    SwingUtilities.getWindowAncestor(this).asInstanceOf[MainFrame]
 
   var menuItems: Array[String] =
     Array("Start Game", "Options", "Help", "Exit")
@@ -50,10 +51,10 @@ class MenuHelp() extends MenuActions:
   val setFocusValue = (value: String) => focusedItem = value
   val setNewPanel = (value: JPanel) => mainFrame.setPanel(value)
 
-  var upAction: UpAction =
-    new UpAction(menuItems, selectMenuItem, this, setMenuValue(_));
-  var downAction: DownAction =
-    new DownAction(menuItems, selectMenuItem, this, setMenuValue(_));
+  var upAction: MenuKeyAction =
+    new MenuKeyAction(menuItems, selectMenuItem, this, setMenuValue(_), -1);
+  var downAction: MenuKeyAction =
+    new MenuKeyAction(menuItems, selectMenuItem, this, setMenuValue(_), 1);
   var enterAction: EnterAction = new EnterAction(this, setNewPanel(_))
 
   this.setBackground(Color.BLACK);
@@ -72,13 +73,17 @@ class MenuHelp() extends MenuActions:
   this.addMouseListener(mouseAdapter)
   this.addMouseMotionListener(mouseAdapter)
 
-  this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "downAction")
+  this
+    .getInputMap()
+    .put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "downAction")
   this.getActionMap().put("downAction", downAction)
 
   this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "upAction")
   this.getActionMap().put("upAction", upAction)
 
-  this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enterAction")
+  this
+    .getInputMap()
+    .put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enterAction")
   this.getActionMap().put("enterAction", enterAction)
 
   override def getMenuItems(): String =

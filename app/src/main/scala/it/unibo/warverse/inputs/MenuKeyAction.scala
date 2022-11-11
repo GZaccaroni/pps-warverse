@@ -5,11 +5,12 @@ import java.awt.event.ActionEvent
 import javax.swing.JPanel
 import it.unibo.warverse.Menu
 
-class UpAction(
+class MenuKeyAction(
   menuItems: Array[String],
   var selectMenuItem: String,
   panel: MenuActions,
   setMenuValue: String => Unit,
+  moveValue: Integer
 ) extends AbstractAction:
 
   var index: Integer = 0
@@ -27,6 +28,6 @@ class UpAction(
 
   override def actionPerformed(e: ActionEvent): Unit =
     selectMenuItem = panel.getMenuItems()
-    setIndex(-1)
+    setIndex(moveValue)
     panel.repaint()
     panel.invalidate()

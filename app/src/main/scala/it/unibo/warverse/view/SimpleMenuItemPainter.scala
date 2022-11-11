@@ -1,6 +1,5 @@
 package it.unibo.warverse
 
-
 import java.awt.Graphics2D
 import java.awt.geom.RoundRectangle2D
 import java.awt.Dimension
@@ -8,7 +7,7 @@ import java.awt.Color
 import java.awt.FontMetrics
 
 class SimpleMenuItemPainter extends MenuItemPainter:
-    
+
   def getPreferredSize(g2d: Graphics2D, text: String): Dimension =
     return g2d
       .getFontMetrics()
@@ -17,11 +16,11 @@ class SimpleMenuItemPainter extends MenuItemPainter:
       .getSize();
 
   override def paint(
-      g2d: Graphics2D,
-      text: String,
-      bounds: RoundRectangle2D,
-      isSelected: Boolean,
-      isFocused: Boolean
+    g2d: Graphics2D,
+    text: String,
+    bounds: RoundRectangle2D,
+    isSelected: Boolean,
+    isFocused: Boolean
   ): Unit =
     var fm: FontMetrics = g2d.getFontMetrics();
     if isSelected then paintBackground(g2d, bounds, Color.BLUE, Color.WHITE);
@@ -33,14 +32,14 @@ class SimpleMenuItemPainter extends MenuItemPainter:
     val y =
       bounds.getBounds().y + ((bounds.getBounds().height - fm
         .getHeight()) / 2) + fm.getAscent();
-    g2d.setColor(if isSelected then Color.WHITE else Color.WHITE);
+    g2d.setColor(Color.WHITE);
     g2d.drawString(text, x, y);
 
   def paintBackground(
-      g2d: Graphics2D,
-      bounds: RoundRectangle2D,
-      background: Color,
-      foreground: Color
+    g2d: Graphics2D,
+    bounds: RoundRectangle2D,
+    background: Color,
+    foreground: Color
   ): Unit =
     g2d.setColor(background);
     g2d.fill(bounds);

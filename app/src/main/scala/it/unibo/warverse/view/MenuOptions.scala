@@ -60,10 +60,8 @@ class MenuOptions() extends JPanel:
       menuBounds = mutable.HashMap[String, RoundRectangle2D]();
       var width = 0;
       var height = 0;
-      var x = (getWidth() - (width + 100)) / 2;
       var totalHeight = (height + 10) * 4;
       totalHeight += 5 * (4 - 1);
 
-      var y = (getHeight() - totalHeight) / 2;
     g.drawImage(img, 0, 0, this.getSize().width, this.getSize().height, this)
     g2d.dispose();
