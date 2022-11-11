@@ -7,8 +7,6 @@ lazy val root = project
     version := IO.read(file("../version.txt")),
     scalaVersion := scala3Version,
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.14" % Test,
-    // Linter settings,
-    wartremoverErrors ++= Warts.unsafe,
     // Output paths
     assembly / assemblyOutputPath := file("target/warverse.jar"),
     Compile / doc / target := file("target/docs"),
