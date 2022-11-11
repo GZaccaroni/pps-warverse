@@ -10,13 +10,14 @@ import it.unibo.warverse.MenuHelp
 class EnterAction(
   panel: MenuActions,
   setNewPanel: JPanel => Unit,
+  mainFrame: MainFrame
 ) extends AbstractAction:
 
   override def actionPerformed(e: ActionEvent): Unit =
     panel.getMenuItems() match
-          case "Options" => setNewPanel(new MenuOptions())
-          case "Help" => setNewPanel(new MenuHelp())
-          case "Exit" => System.exit(0)
-          case _ =>
+      case "Options" => setNewPanel(new MenuOptions())
+      case "Help"    => setNewPanel(new MenuHelp(mainFrame))
+      case "Exit"    => System.exit(0)
+      case _         =>
     panel.repaint()
     panel.invalidate()
