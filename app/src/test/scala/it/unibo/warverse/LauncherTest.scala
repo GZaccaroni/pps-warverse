@@ -1,5 +1,6 @@
 package it.unibo.warverse
 
+import it.unibo.warverse.view.MainFrame
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.must.Matchers

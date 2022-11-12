@@ -1,4 +1,6 @@
 package it.unibo.warverse
+import it.unibo.warverse.view.MainFrame
+import it.unibo.warverse.view.Menu
 import javax.swing.SwingUtilities
 import javax.swing.JFrame
 import javax.swing.JPanel

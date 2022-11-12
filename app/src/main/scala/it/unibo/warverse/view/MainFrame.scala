@@ -1,4 +1,4 @@
-package it.unibo.warverse
+package it.unibo.warverse.view
 
 import javax.swing.JFrame
 import javax.swing.WindowConstants.EXIT_ON_CLOSE
@@ -10,11 +10,11 @@ import java.awt.Image
 
 class MainFrame extends JFrame:
   this.setName("Warverse Simulator")
-  this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+  this.setDefaultCloseOperation(EXIT_ON_CLOSE)
   this.setLocationRelativeTo(null)
-  this.pack();
+  this.pack()
 
   def setPanel(panel: JPanel): Unit =
-    this.getContentPane().removeAll()
+    this.getContentPane.removeAll()
     this.add(panel, BorderLayout.CENTER)
     this.validate()

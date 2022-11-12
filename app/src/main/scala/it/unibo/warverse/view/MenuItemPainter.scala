@@ -1,4 +1,4 @@
-package it.unibo.warverse
+package it.unibo.warverse.view
 
 import java.awt.Graphics2D
 import java.awt.geom.RoundRectangle2D
@@ -11,6 +11,6 @@ trait MenuItemPainter:
     bounds: RoundRectangle2D,
     isSelected: Boolean,
     isFocused: Boolean
-  ): Unit;
+  ): Unit
 
-  def getPreferredSize(g2d: Graphics2D, text: String): Dimension;
+  def getPreferredSize(g2d: Graphics2D, text: String): Dimension
