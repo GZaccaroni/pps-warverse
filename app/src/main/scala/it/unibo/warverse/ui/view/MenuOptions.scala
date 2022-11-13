@@ -1,4 +1,6 @@
-package it.unibo.warverse.view
+package it.unibo.warverse.ui.view
+
+import it.unibo.warverse.ui.common.UIConstants
 
 import java.awt.Color
 import java.awt.Dimension
@@ -34,18 +36,10 @@ import scala.collection.mutable
 
 class MenuOptions() extends JPanel:
 
-  private var menuBounds =
-    scala.collection.mutable.Map[String, RoundRectangle2D]()
-
   this.setBackground(Color.BLACK)
-
   this.setPreferredSize(getPreferredSize())
 
-  val im: InputMap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-  val am: ActionMap = getActionMap
-
   override def invalidate(): Unit =
-    menuBounds = null
     super.invalidate()
 
   override def getPreferredSize: Dimension =
@@ -54,13 +48,8 @@ class MenuOptions() extends JPanel:
   override def paintComponent(g: Graphics): Unit =
     super.paintComponent(g)
     val img: Image = Toolkit.getDefaultToolkit
-      .getImage("src/main/scala/it/unibo/warverse/assets/menuBackground.png")
+      .getImage(UIConstants.Resources.MainMenuBackground.url)
     val g2d: Graphics2D = g.create().asInstanceOf[Graphics2D]
-    if menuBounds == null then
-      menuBounds = mutable.HashMap[String, RoundRectangle2D]()
-      var width = 0
-      var totalHeight = 10 * 4
-      totalHeight += 5 * (4 - 1)
 
     g.drawImage(img, 0, 0, this.getSize().width, this.getSize().height, this)
     g2d.dispose()

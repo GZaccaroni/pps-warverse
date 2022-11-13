@@ -1,4 +1,6 @@
-package it.unibo.warverse.view
+package it.unibo.warverse.ui.view
+
+import it.unibo.warverse.ui.common.UIConstants
 
 import java.awt.Color
 import java.awt.Dimension
@@ -31,6 +33,9 @@ import java.awt.geom.RoundRectangle2D
 import java.awt.Toolkit
 import java.awt.Image
 import scala.collection.mutable
+import javax.swing.Action
 
-class MenuHelp(mainFrame: MainFrame) extends MenuActions(mainFrame):
-  setBackGroundImage("src/main/scala/it/unibo/warverse/assets/menuHelp.png")
+class Menu(mainFrame: MainFrame) extends MenuActions(mainFrame):
+  backgroundImageUrl = Option(
+    UIConstants.Resources.MainMenuBackground.url
+  )
