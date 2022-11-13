@@ -1,10 +1,9 @@
-package it.unibo.warverse.inputs
+package it.unibo.warverse.ui.inputs
 
+import it.unibo.warverse.ui.view.{Menu, MenuActions}
 import javax.swing.AbstractAction
 import java.awt.event.ActionEvent
 import javax.swing.JPanel
-import it.unibo.warverse.view.Menu
-import it.unibo.warverse.view.MenuActions
 
 class MenuKeyAction(
   menuItems: Array[String],

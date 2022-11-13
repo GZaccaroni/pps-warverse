@@ -1,27 +1,20 @@
-package it.unibo.warverse.inputs
+package it.unibo.warverse.ui.inputs
 
+import it.unibo.warverse.ui.view.{MainFrame, MenuHelp, MenuOptions}
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.geom.RoundRectangle2D
 import javax.swing.JPanel
-import it.unibo.warverse.view.MainFrame
-import it.unibo.warverse.view.MenuOptions
-import it.unibo.warverse.view.MenuHelp
 
 class MenuMouseAdapter(
   menuItems: Array[String],
   panel: JPanel,
-  var menuBounds: scala.collection.mutable.Map[String, RoundRectangle2D],
+  var menuBounds: Map[String, RoundRectangle2D],
   setMenuValue: String => Unit,
   setFocusValue: String => Unit,
   setNewPanel: JPanel => Unit,
   mainFrame: MainFrame
 ) extends MouseAdapter:
-
-  def setBounds(
-    value: scala.collection.mutable.Map[String, RoundRectangle2D]
-  ): Unit =
-    menuBounds = value
   override def mouseClicked(e: MouseEvent): Unit =
     var newItem: String = ""
     menuItems.foreach(text =>
