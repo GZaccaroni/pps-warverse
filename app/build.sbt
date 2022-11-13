@@ -4,10 +4,11 @@ lazy val root = project
   .in(file("."))
   .settings(
     name := "warverse",
-    version := IO.read(file("../version.txt")),
+    version := IO.read(file("../version.txt")).trim,
     scalaVersion := scala3Version,
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.14" % Test,
     // Output paths
+    assembly / mainClass := Some("it.unibo.warverse.Launcher"),
     assembly / assemblyOutputPath := file("target/warverse.jar"),
     Compile / doc / target := file("target/docs"),
     // Coverage settings
