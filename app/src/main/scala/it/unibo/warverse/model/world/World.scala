@@ -5,6 +5,14 @@ import it.unibo.warverse.model.fight.Army.ArmyUnit
 import it.unibo.warverse.model.fight.Fight
 
 object World:
+  case class Country(
+    name: String,
+    citizens: List[Citizen],
+    armyUnits: List[ArmyUnit],
+    resources: Life.Resources,
+    boundaries: Geometry.Polygon2D
+  )
+
   case class Citizen(
     position: Geometry.Point2D
   ) extends Movement.Locatable,
