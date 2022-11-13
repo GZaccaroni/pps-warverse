@@ -1,5 +1,6 @@
 package it.unibo.warverse.model.fight
 
+import it.unibo.warverse.model.common.Life
 import it.unibo.warverse.model.common.Geometry.Point2D
 import it.unibo.warverse.model.common.Math.Percentage
 import it.unibo.warverse.model.common.Movement.Movable
@@ -7,7 +8,7 @@ import it.unibo.warverse.model.fight.Fight
 
 object Army:
   trait ResourcesConsumer:
-    def dailyConsume: Double
+    def dailyConsume: Life.Resources
 
   trait ArmyUnit extends Fight.Attacker, Movable, ResourcesConsumer:
     override type Position = Point2D
