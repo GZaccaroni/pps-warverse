@@ -7,7 +7,7 @@ import javax.swing.JPanel
 import java.awt.Dimension
 import java.awt.BorderLayout
 
-@main def launch(): Unit =
+object Launcher extends App:
   val mainFrame = new MainFrame()
   val menu = new Menu(mainFrame)
   mainFrame.setPanel(menu)
