@@ -1,4 +1,4 @@
-package it.unibo.warverse.view
+package it.unibo.warverse.ui.view
 
 import java.awt.Graphics2D
 import java.awt.geom.RoundRectangle2D

@@ -1,4 +1,4 @@
-package it.unibo.warverse.view
+package it.unibo.warverse.ui.view
 
 import javax.swing.JFrame
 import javax.swing.WindowConstants.EXIT_ON_CLOSE
