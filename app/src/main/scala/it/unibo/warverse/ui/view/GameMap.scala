@@ -16,7 +16,7 @@ import javax.swing.JTextField
 import java.awt.Toolkit
 import java.awt.geom.Point2D
 
-class Map extends JPanel with MouseMotionListener:
+class GameMap extends JPanel with MouseMotionListener:
   // 1400 762
   val stateMap: Array[Array[Point2D.Double]] = Array(
     // STATE 1
@@ -60,7 +60,6 @@ class Map extends JPanel with MouseMotionListener:
     super.paintComponent(g)
     this.addMouseMotionListener(this)
     g.clearRect(0, 0, getWidth(), getHeight())
-    println(getHeight())
     val rectWidth: Int = 5
     val rectHeight: Int = 5
 

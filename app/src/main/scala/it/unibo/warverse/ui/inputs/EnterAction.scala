@@ -1,6 +1,6 @@
 package it.unibo.warverse.ui.inputs
 
-import it.unibo.warverse.ui.view.{MainFrame, MenuActions, MenuHelp, MenuOptions}
+import it.unibo.warverse.ui.view.{MainFrame, MenuActions, MenuHelp, MenuOptions, GameMap}
 
 import javax.swing.AbstractAction
 import java.awt.event.ActionEvent
@@ -14,6 +14,7 @@ class EnterAction(
 
   override def actionPerformed(e: ActionEvent): Unit =
     panel.getMenuItems match
+      case "Start Game" => setNewPanel(new GameMap())
       case "Options" => setNewPanel(new MenuOptions())
       case "Help"    => setNewPanel(new MenuHelp(mainFrame))
       case "Exit"    => System.exit(0)
