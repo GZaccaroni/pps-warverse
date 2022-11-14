@@ -16,40 +16,7 @@ import java.awt.BasicStroke
 import it.unibo.warverse.ui.common.UIConstants
 
 class GameMap extends GameMouseMotion:
-  super.setCountries(
-    Array(
-      Country(
-        "War",
-        List(Citizen(Geometry.Point2D(150, 150))),
-        List(),
-        0.0,
-        Polygon2D(
-          List(
-            Point2D(150, 150),
-            Point2D(250, 100),
-            Point2D(325, 125),
-            Point2D(375, 225),
-            Point2D(450, 250),
-            Point2D(275, 375),
-            Point2D(100, 300)
-          )
-        )
-      ),
-      Country(
-        "Warverse",
-        List(Citizen(Geometry.Point2D(550, 550))),
-        List(),
-        0.0,
-        Polygon2D(
-          List(
-            Point2D(550, 550),
-            Point2D(650, 500),
-            Point2D(925, 600)
-          )
-        )
-      )
-    )
-  )
+  super.setCountries(UIConstants.testCountries)
 
   this.requestFocus()
 
@@ -66,10 +33,7 @@ class GameMap extends GameMouseMotion:
         val area = new Polygon
         val pointList: List[Point2D] = country.boundaries.vertexes
         pointList
-          .foreach(point =>
-            polygon.addPoint(point.x.toInt, point.y.toInt)
-            area.addPoint(point.x.toInt + 1, point.y.toInt + 1)
-          )
+          .foreach(point => polygon.addPoint(point.x.toInt, point.y.toInt))
         val g2d: Graphics2D = g.asInstanceOf[Graphics2D]
         g2d.setColor(Color.decode(getCountryColor(country.name)))
         g2d.fillPolygon(polygon)
