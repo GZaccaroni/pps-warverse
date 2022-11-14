@@ -19,9 +19,9 @@ import it.unibo.warverse.model.common.Geometry.Polygon2D
 import it.unibo.warverse.model.world.World.Country
 import it.unibo.warverse.model.world.World.Citizen
 import it.unibo.warverse.model.common.Geometry
-
 import java.awt.Polygon
 import scala.language.postfixOps
+import javax.swing.JLabel
 
 class GameMap extends JPanel with MouseMotionListener:
   // 1400 762
@@ -69,12 +69,33 @@ class GameMap extends JPanel with MouseMotionListener:
   private val terrainGrid: Array[Array[Color]] =
     Array.ofDim[Color](NUM_ROWS + 1, NUM_COLS + 1)
 
+  private var previousHoverCountry: String = ""
+
   override def getPreferredSize: Dimension =
     Toolkit.getDefaultToolkit.getScreenSize
-  override def mouseDragged(e: MouseEvent): Unit = mouseMoved(e)
+  override def mouseDragged(e: MouseEvent): Unit = mouseMotion(e)
 
-  override def mouseMoved(e: MouseEvent): Unit =
-    val mx = e.getX
+  override def mouseMoved(e: MouseEvent): Unit = mouseMotion(e)
+
+  def mouseMotion(e: MouseEvent): Unit =
+    val mouseX = e.getX
+    val mouseY = e.getY
+    countries.foreach(country =>
+      val polygon = new Polygon
+      val pointList: List[Point2D] = country.boundaries.vertexes
+
+      pointList.foreach(point => polygon.addPoint(point.x.toInt, point.y.toInt))
+      if polygon.contains(mouseX, mouseY)
+      then
+        if country.name != previousHoverCountry
+        then
+          popUp.setVisible(false)
+          popUp.removeAll()
+          popUp.add(new JLabel("Country: " + country.name))
+          popUp.show(this, mouseX, mouseY)
+          popUp.setVisible(true)
+          this.previousHoverCountry = country.name
+    )
 
   override def paintComponent(g: Graphics): Unit =
     super.paintComponent(g)
