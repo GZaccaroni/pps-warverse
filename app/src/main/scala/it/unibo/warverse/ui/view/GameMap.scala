@@ -12,6 +12,8 @@ import it.unibo.warverse.model.common.Geometry
 import java.awt.Polygon
 import scala.language.postfixOps
 import it.unibo.warverse.model.fight.Army
+import java.awt.BasicStroke
+import it.unibo.warverse.ui.common.UIConstants
 
 class GameMap extends GameMouseMotion:
   super.setCountries(
@@ -57,14 +59,21 @@ class GameMap extends GameMouseMotion:
   override def paintComponent(g: Graphics): Unit =
     super.paintComponent(g)
     this.addMouseMotionListener(this)
-    var g2d: Graphics2D = g.asInstanceOf[Graphics2D]
     super
       .getCountries()
       .foreach(country =>
         val polygon = new Polygon
+        val area = new Polygon
         val pointList: List[Point2D] = country.boundaries.vertexes
         pointList
-          .foreach(point => polygon.addPoint(point.x.toInt, point.y.toInt))
+          .foreach(point =>
+            polygon.addPoint(point.x.toInt, point.y.toInt)
+            area.addPoint(point.x.toInt + 1, point.y.toInt + 1)
+          )
+        val g2d: Graphics2D = g.asInstanceOf[Graphics2D]
         g2d.setColor(Color.decode(getCountryColor(country.name)))
         g2d.fillPolygon(polygon)
+        g2d.setColor(Color.RED)
+        g2d.setStroke(UIConstants.borderRegion)
+        g2d.drawPolygon(polygon)
       )
