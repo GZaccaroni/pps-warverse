@@ -1,20 +1,9 @@
 package it.unibo.warverse.ui.view
 
 import it.unibo.warverse.ui.inputs.{GameMouseMotion}
-import javax.swing.JPanel
 import java.awt.Color
-import java.util.Random
-import java.awt.Dimension
 import java.awt.Graphics2D
 import java.awt.Graphics
-import java.awt.event.MouseMotionListener
-import java.awt.event.MouseEvent
-import java.awt.Rectangle
-import java.awt.Point
-import java.awt.geom.Ellipse2D
-import javax.swing.JPopupMenu
-import javax.swing.JTextField
-import java.awt.Toolkit
 import it.unibo.warverse.model.common.Geometry.Point2D
 import it.unibo.warverse.model.common.Geometry.Polygon2D
 import it.unibo.warverse.model.world.World.Country
@@ -22,16 +11,15 @@ import it.unibo.warverse.model.world.World.Citizen
 import it.unibo.warverse.model.common.Geometry
 import java.awt.Polygon
 import scala.language.postfixOps
-import javax.swing.JLabel
+import it.unibo.warverse.model.fight.Army
 
 class GameMap extends GameMouseMotion:
   super.setCountries(
     Array(
-      // STATE 1
       Country(
         "War",
-        List(Citizen(Geometry.Point2D(0, 0))),
-        null,
+        List(Citizen(Geometry.Point2D(150, 150))),
+        List(),
         0.0,
         Polygon2D(
           List(
@@ -47,8 +35,8 @@ class GameMap extends GameMouseMotion:
       ),
       Country(
         "Warverse",
-        List(Citizen(Geometry.Point2D(0, 0))),
-        null,
+        List(Citizen(Geometry.Point2D(550, 550))),
+        List(),
         0.0,
         Polygon2D(
           List(

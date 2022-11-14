@@ -11,6 +11,7 @@ import java.awt.Image
 class MainFrame extends JFrame:
   this.setName("Warverse Simulator")
   this.setDefaultCloseOperation(EXIT_ON_CLOSE)
+  this.setResizable(false)
   this.setLocationRelativeTo(null)
   this.pack()
 

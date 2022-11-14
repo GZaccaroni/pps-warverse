@@ -8,11 +8,12 @@ import java.awt.Polygon
 import it.unibo.warverse.model.common.Geometry.Point2D
 import javax.swing.JPopupMenu
 import javax.swing.JLabel
+import javax.swing.JMenuItem
 
 abstract class GameMouseMotion extends JPanel with MouseMotionListener:
   private var countries: Array[Country] = _
 
-  var popUp: JPopupMenu = new JPopupMenu("")
+  var popUp: JPopupMenu = new JPopupMenu
 
   protected var previousHoverCountry: String = ""
 
@@ -39,7 +40,10 @@ abstract class GameMouseMotion extends JPanel with MouseMotionListener:
         then
           popUp.setVisible(false)
           popUp.removeAll()
-          popUp.add(new JLabel("Country: " + country.name))
+          popUp.add(new JMenuItem("Country: " + country.name))
+          popUp.add(new JMenuItem("Army Units: " + country.armyUnits.size))
+          popUp.add(new JMenuItem("Citizens: " + country.citizens.size))
+          popUp.add(new JMenuItem("Resources: " + country.resources))
           popUp.show(this, mouseX, mouseY)
           popUp.setVisible(true)
           this.previousHoverCountry = country.name
