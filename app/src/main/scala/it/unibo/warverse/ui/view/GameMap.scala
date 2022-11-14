@@ -41,6 +41,7 @@ class GameMap extends GameMouseMotion with Runnable:
         lastFrame = now
         frames = frames + 1
       if System.currentTimeMillis() - lastCheck >= 1000 then
+        lastCheck = System.currentTimeMillis()
         println("FPS " + frames)
         frames = 0
 
