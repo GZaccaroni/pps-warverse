@@ -15,13 +15,39 @@ import it.unibo.warverse.model.fight.Army
 import java.awt.BasicStroke
 import it.unibo.warverse.ui.common.UIConstants
 
-class GameMap extends GameMouseMotion:
+class GameMap extends GameMouseMotion with Runnable:
   super.setCountries(UIConstants.testCountries)
 
-  this.requestFocus()
+  this.requestFocus
 
+  var gameThread: Thread = _
+
+  this.startGameLoop()
+
+  def startGameLoop(): Unit =
+    gameThread = new Thread(this)
+    gameThread.start()
+
+  override def run(): Unit =
+    var timeFrame = 1000000000.0 / 120
+    var lastFrame = System.nanoTime
+    var now = System.nanoTime
+    var frames = 0
+    var lastCheck = System.currentTimeMillis
+    while true do
+      if now - lastFrame >= timeFrame then
+        // TODO call Update position method
+        this.repaint()
+        lastFrame = now
+        frames = frames + 1
+      if System.currentTimeMillis() - lastCheck >= 1000 then
+        println("FPS " + frames)
+        frames = 0
+
+  // TODO Update Body position
+  def updatePosition(countries: Array[Country]): Unit = ???
   def getCountryColor(name: String): String =
-    String.format("#%X", name.hashCode());
+    String.format("#%X", name.hashCode())
 
   override def paintComponent(g: Graphics): Unit =
     super.paintComponent(g)
