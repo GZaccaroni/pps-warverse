@@ -1,6 +1,6 @@
 package it.unibo.warverse.ui.inputs
 
-import it.unibo.warverse.ui.view.{MainFrame, MenuHelp, MenuOptions}
+import it.unibo.warverse.ui.view.{MainFrame, MenuHelp, MenuOptions, GameMap}
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.geom.RoundRectangle2D
@@ -28,6 +28,7 @@ class MenuMouseAdapter(
       panel.repaint()
       if newItem != null then
         newItem match
+          case "Start Game" => setNewPanel(new GameMap())
           case "Options" => setNewPanel(new MenuOptions())
           case "Help"    => setNewPanel(new MenuHelp(mainFrame))
           case "Exit"    => System.exit(0)
