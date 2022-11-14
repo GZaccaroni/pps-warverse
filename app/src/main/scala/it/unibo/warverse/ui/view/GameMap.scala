@@ -19,15 +19,17 @@ import it.unibo.warverse.model.common.Geometry.Polygon2D
 import it.unibo.warverse.model.world.World.Country
 import it.unibo.warverse.model.world.World.Citizen
 import it.unibo.warverse.model.common.Geometry
+
 import java.awt.Polygon
+import scala.language.postfixOps
 
 class GameMap extends JPanel with MouseMotionListener:
   // 1400 762
   val countries: Array[Country] = Array(
     // STATE 1
-    new Country(
+    Country(
       "Test1",
-      List(new Citizen(new Geometry.Point2D(0, 0))),
+      List(Citizen(Geometry.Point2D(0, 0))),
       null,
       0.0,
       Polygon2D(
@@ -42,9 +44,9 @@ class GameMap extends JPanel with MouseMotionListener:
         )
       )
     ),
-    new Country(
+    Country(
       "Test2",
-      List(new Citizen(new Geometry.Point2D(0, 0))),
+      List(Citizen(Geometry.Point2D(0, 0))),
       null,
       0.0,
       Polygon2D(
@@ -56,28 +58,28 @@ class GameMap extends JPanel with MouseMotionListener:
       )
     )
   )
-  val start = new Rectangle(0, 0, 200, 200)
+  private val start = new Rectangle(0, 0, 200, 200)
   var startHover: Boolean = false
   var popUp: JPopupMenu = new JPopupMenu("TEST")
-  val NUM_COLS = 120
-  val NUM_ROWS = 240
-  var TERRAIN = Array(
+  private val NUM_COLS = 120
+  private val NUM_ROWS = 240
+  private var TERRAIN = Array(
     new Color(255, 255, 0)
   )
-  val terrainGrid: Array[Array[Color]] =
+  private val terrainGrid: Array[Array[Color]] =
     Array.ofDim[Color](NUM_ROWS + 1, NUM_COLS + 1)
 
-  override def getPreferredSize(): Dimension =
-    return Toolkit.getDefaultToolkit().getScreenSize()
+  override def getPreferredSize: Dimension =
+    Toolkit.getDefaultToolkit.getScreenSize
   override def mouseDragged(e: MouseEvent): Unit = mouseMoved(e)
 
   override def mouseMoved(e: MouseEvent): Unit =
-    val mx = e.getX()
+    val mx = e.getX
 
-  override def paintComponent(g: Graphics) =
+  override def paintComponent(g: Graphics): Unit =
     super.paintComponent(g)
     this.addMouseMotionListener(this)
-    g.clearRect(0, 0, getWidth(), getHeight())
+    g.clearRect(0, 0, getWidth, getHeight)
     val rectWidth: Int = 5
     val rectHeight: Int = 5
     var g2d: Graphics2D = g.asInstanceOf[Graphics2D]
@@ -85,7 +87,7 @@ class GameMap extends JPanel with MouseMotionListener:
     var yPoly: Array[Int] = Array()
     countries.foreach(country =>
       val polygon = new Polygon
-      val pointList = country.boundaries.vertexes
+      val pointList: List[Point2D] = country.boundaries.vertexes
       pointList.foreach(point => polygon.addPoint(point.x.toInt, point.y.toInt))
       g2d.fillPolygon(polygon)
     )
