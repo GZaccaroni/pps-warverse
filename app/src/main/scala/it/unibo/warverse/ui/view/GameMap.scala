@@ -1,5 +1,6 @@
 package it.unibo.warverse.ui.view
 
+import it.unibo.warverse.ui.inputs.{GameMouseMotion}
 import javax.swing.JPanel
 import java.awt.Color
 import java.util.Random
@@ -23,95 +24,59 @@ import java.awt.Polygon
 import scala.language.postfixOps
 import javax.swing.JLabel
 
-class GameMap extends JPanel with MouseMotionListener:
-  // 1400 762
-  val countries: Array[Country] = Array(
-    // STATE 1
-    Country(
-      "Test1",
-      List(Citizen(Geometry.Point2D(0, 0))),
-      null,
-      0.0,
-      Polygon2D(
-        List(
-          Point2D(150, 150),
-          Point2D(250, 100),
-          Point2D(325, 125),
-          Point2D(375, 225),
-          Point2D(450, 250),
-          Point2D(275, 375),
-          Point2D(100, 300)
+class GameMap extends GameMouseMotion:
+  super.setCountries(
+    Array(
+      // STATE 1
+      Country(
+        "War",
+        List(Citizen(Geometry.Point2D(0, 0))),
+        null,
+        0.0,
+        Polygon2D(
+          List(
+            Point2D(150, 150),
+            Point2D(250, 100),
+            Point2D(325, 125),
+            Point2D(375, 225),
+            Point2D(450, 250),
+            Point2D(275, 375),
+            Point2D(100, 300)
+          )
         )
-      )
-    ),
-    Country(
-      "Test2",
-      List(Citizen(Geometry.Point2D(0, 0))),
-      null,
-      0.0,
-      Polygon2D(
-        List(
-          Point2D(550, 550),
-          Point2D(650, 500),
-          Point2D(925, 600)
+      ),
+      Country(
+        "Warverse",
+        List(Citizen(Geometry.Point2D(0, 0))),
+        null,
+        0.0,
+        Polygon2D(
+          List(
+            Point2D(550, 550),
+            Point2D(650, 500),
+            Point2D(925, 600)
+          )
         )
       )
     )
   )
-  private val start = new Rectangle(0, 0, 200, 200)
-  var startHover: Boolean = false
-  var popUp: JPopupMenu = new JPopupMenu("TEST")
-  private val NUM_COLS = 120
-  private val NUM_ROWS = 240
-  private var TERRAIN = Array(
-    new Color(255, 255, 0)
-  )
-  private val terrainGrid: Array[Array[Color]] =
-    Array.ofDim[Color](NUM_ROWS + 1, NUM_COLS + 1)
 
-  private var previousHoverCountry: String = ""
+  this.requestFocus()
 
-  override def getPreferredSize: Dimension =
-    Toolkit.getDefaultToolkit.getScreenSize
-  override def mouseDragged(e: MouseEvent): Unit = mouseMotion(e)
-
-  override def mouseMoved(e: MouseEvent): Unit = mouseMotion(e)
-
-  def mouseMotion(e: MouseEvent): Unit =
-    val mouseX = e.getX
-    val mouseY = e.getY
-    countries.foreach(country =>
-      val polygon = new Polygon
-      val pointList: List[Point2D] = country.boundaries.vertexes
-
-      pointList.foreach(point => polygon.addPoint(point.x.toInt, point.y.toInt))
-      if polygon.contains(mouseX, mouseY)
-      then
-        if country.name != previousHoverCountry
-        then
-          popUp.setVisible(false)
-          popUp.removeAll()
-          popUp.add(new JLabel("Country: " + country.name))
-          popUp.show(this, mouseX, mouseY)
-          popUp.setVisible(true)
-          this.previousHoverCountry = country.name
-    )
+  def getCountryColor(name: String): String =
+    String.format("#%X", name.hashCode());
 
   override def paintComponent(g: Graphics): Unit =
     super.paintComponent(g)
     this.addMouseMotionListener(this)
-    g.clearRect(0, 0, getWidth, getHeight)
-    val rectWidth: Int = 5
-    val rectHeight: Int = 5
     var g2d: Graphics2D = g.asInstanceOf[Graphics2D]
-    var xPoly: Array[Int] = Array()
-    var yPoly: Array[Int] = Array()
-    countries.foreach(country =>
-      val polygon = new Polygon
-      val pointList: List[Point2D] = country.boundaries.vertexes
-      pointList.foreach(point => polygon.addPoint(point.x.toInt, point.y.toInt))
-      g2d.fillPolygon(polygon)
-    )
-
-  this.setPreferredSize(getPreferredSize())
-  this.requestFocus()
+    super
+      .getCountries()
+      .foreach(country =>
+        val polygon = new Polygon
+        val pointList: List[Point2D] = country.boundaries.vertexes
+        pointList
+          .foreach(point => polygon.addPoint(point.x.toInt, point.y.toInt))
+        g2d.setColor(Color.decode(getCountryColor(country.name)))
+        g2d.fillPolygon(polygon)
+      )
