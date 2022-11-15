@@ -16,6 +16,8 @@ import java.awt.BasicStroke
 import it.unibo.warverse.ui.common.UIConstants
 import java.awt.BorderLayout
 import java.awt.Dimension
+import java.awt.Toolkit
+import it.unibo.warverse.model.fight.Army.*
 
 class GameMap extends GameMouseMotion with Runnable:
   super.setCountries(UIConstants.testCountries)
@@ -65,6 +67,33 @@ class GameMap extends GameMouseMotion with Runnable:
         val g2d: Graphics2D = g.asInstanceOf[Graphics2D]
         g2d.setColor(Color.decode(getCountryColor(country.name)))
         g2d.fillPolygon(polygon)
+        // Drawing Soldiers
+        g2d.setColor(Color.WHITE)
+        country.armyUnits.foreach(soldier =>
+          if soldier.isInstanceOf[PrecisionArmyUnit] then
+            g2d.fillRect(
+              soldier.position.x.asInstanceOf[Int],
+              soldier.position.y.asInstanceOf[Int],
+              5,
+              5
+            )
+          else
+            g2d.fillPolygon(
+              new Polygon(
+                Array(
+                  soldier.position.x.asInstanceOf[Int] - 5,
+                  soldier.position.x.asInstanceOf[Int] + 5,
+                  soldier.position.x.asInstanceOf[Int]
+                ),
+                Array(
+                  soldier.position.y.asInstanceOf[Int] + 5,
+                  soldier.position.y.asInstanceOf[Int] + 5,
+                  soldier.position.y.asInstanceOf[Int]
+                ),
+                3
+              )
+            )
+        )
         g2d.setColor(Color.RED)
         g2d.setStroke(UIConstants.borderRegion)
         g2d.drawPolygon(polygon)

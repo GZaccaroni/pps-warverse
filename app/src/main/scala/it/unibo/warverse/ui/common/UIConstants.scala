@@ -8,11 +8,13 @@ import it.unibo.warverse.model.world.World.Country
 import it.unibo.warverse.model.world.World.Citizen
 import it.unibo.warverse.model.common.Geometry
 import java.awt.Dimension
+import it.unibo.warverse.model.fight.Army.*
 
 object UIConstants:
   enum Resources(val name: String):
     case MainMenuBackground extends Resources("menuBackground.png")
     case HelpMenuBackground extends Resources("menuHelp.png")
+    case Test extends Resources("test.png")
 
     def url: URL = ClassLoader.getSystemResource(name)
 
@@ -27,11 +29,50 @@ object UIConstants:
     0.1f
   )
 
-  val testCountries = Array(
+  val testCountries: Array[Country] = Array(
     Country(
       "War",
       List(Citizen(Geometry.Point2D(150, 150))),
-      List(),
+      List(
+        PrecisionArmyUnit(
+          "Soldier",
+          0.5,
+          200,
+          5,
+          200,
+          15,
+          Point2D(250, 150)
+        ),
+        PrecisionArmyUnit(
+          "Soldier",
+          0.5,
+          200,
+          5,
+          200,
+          15,
+          Point2D(250, 250)
+        ),
+        AreaArmyUnit(
+          "Mortar",
+          0.5,
+          30,
+          500,
+          10,
+          20,
+          Point2D(250, 200),
+          30
+        ),
+        AreaArmyUnit(
+          "Mortar",
+          0.5,
+          30,
+          500,
+          10,
+          20,
+          Point2D(250, 300),
+          30
+        )
+      ),
       0.0,
       Polygon2D(
         List(
