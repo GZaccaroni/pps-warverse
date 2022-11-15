@@ -17,9 +17,7 @@ import it.unibo.warverse.ui.common.UIConstants
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.Toolkit
-import javax.imageio.ImageIO
-import java.io.File
-import java.awt.image.BufferedImage
+import it.unibo.warverse.model.fight.Army.*
 
 class GameMap extends GameMouseMotion with Runnable:
   super.setCountries(UIConstants.testCountries)
@@ -72,7 +70,7 @@ class GameMap extends GameMouseMotion with Runnable:
         //Drawing Soldiers
         g2d.setColor(Color.WHITE)
         country.armyUnits.foreach(soldier =>
-          if(soldier.name == "Soldato") then
+          if(soldier.isInstanceOf[PrecisionArmyUnit]) then
             g2d.fillRect(soldier.position.x.asInstanceOf[Int], soldier.position.y.asInstanceOf[Int], 5, 5)
           else
             g2d.fillPolygon(new Polygon(

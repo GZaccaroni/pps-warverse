@@ -8,7 +8,7 @@ import it.unibo.warverse.model.world.World.Country
 import it.unibo.warverse.model.world.World.Citizen
 import it.unibo.warverse.model.common.Geometry
 import java.awt.Dimension
-import it.unibo.warverse.model.fight.Army
+import it.unibo.warverse.model.fight.Army.*
 
 object UIConstants:
   enum Resources(val name: String):
@@ -34,25 +34,25 @@ object UIConstants:
       "War",
       List(Citizen(Geometry.Point2D(150, 150))),
       List(
-        Army.PrecisionArmyUnit(
+        PrecisionArmyUnit(
           "Soldato",
           0.5,
           200,
           5,
           200,
           15,
-          Point2D(250, 150)
+          Point2D(250, 150),
         ),
-        Army.PrecisionArmyUnit(
+        PrecisionArmyUnit(
           "Soldato",
           0.5,
           200,
           5,
           200,
           15,
-          Point2D(250, 250)
+          Point2D(250, 250),
         ),
-        Army.AreaArmyUnit(
+        AreaArmyUnit(
           "Mortaio",
           0.5,
           30,
@@ -62,7 +62,7 @@ object UIConstants:
           Point2D(250, 200),
           30
         ),
-        Army.AreaArmyUnit(
+        AreaArmyUnit(
           "Mortaio",
           0.5,
           30,
