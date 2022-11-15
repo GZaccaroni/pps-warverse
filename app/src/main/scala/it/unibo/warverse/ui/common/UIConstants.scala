@@ -7,6 +7,7 @@ import it.unibo.warverse.model.common.Geometry.Polygon2D
 import it.unibo.warverse.model.world.World.Country
 import it.unibo.warverse.model.world.World.Citizen
 import it.unibo.warverse.model.common.Geometry
+import java.awt.Dimension
 
 object UIConstants:
   enum Resources(val name: String):
@@ -14,6 +15,8 @@ object UIConstants:
     case HelpMenuBackground extends Resources("menuHelp.png")
 
     def url: URL = ClassLoader.getSystemResource(name)
+
+  val borderMap = new Dimension(1400, 700)
 
   val borderRegion = new BasicStroke(
     4.0f,
@@ -62,10 +65,10 @@ object UIConstants:
       0.0,
       Polygon2D(
         List(
-          Point2D(1200, 150),
+          Point2D(1050, 150),
           Point2D(1000, 50),
           Point2D(1000, 150),
-          Point2D(1200, 250),
+          Point2D(1050, 250)
         )
       )
     )
