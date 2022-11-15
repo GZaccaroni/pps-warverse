@@ -19,6 +19,7 @@ import java.awt.Graphics
 import java.awt.Image
 import java.awt.Graphics2D
 import java.net.URL
+import it.unibo.warverse.ui.common.UIConstants
 
 class MenuActions(mainFrame: MainFrame) extends JPanel:
 
@@ -77,9 +78,7 @@ class MenuActions(mainFrame: MainFrame) extends JPanel:
 
   def getMenuItems: String = selectedMenuItem
 
-  override def getPreferredSize: Dimension =
-    Toolkit.getDefaultToolkit.getScreenSize
-
+  override def getPreferredSize: Dimension = UIConstants.borderMap
   override def invalidate(): Unit =
     menuBounds = None
     super.invalidate()
