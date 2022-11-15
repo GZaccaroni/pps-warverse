@@ -29,31 +29,31 @@ object UIConstants:
     0.1f
   )
 
-  val testCountries = Array(
+  val testCountries: Array[Country] = Array(
     Country(
       "War",
       List(Citizen(Geometry.Point2D(150, 150))),
       List(
         PrecisionArmyUnit(
-          "Soldato",
+          "Soldier",
           0.5,
           200,
           5,
           200,
           15,
-          Point2D(250, 150),
+          Point2D(250, 150)
         ),
         PrecisionArmyUnit(
-          "Soldato",
+          "Soldier",
           0.5,
           200,
           5,
           200,
           15,
-          Point2D(250, 250),
+          Point2D(250, 250)
         ),
         AreaArmyUnit(
-          "Mortaio",
+          "Mortar",
           0.5,
           30,
           500,
@@ -63,7 +63,7 @@ object UIConstants:
           30
         ),
         AreaArmyUnit(
-          "Mortaio",
+          "Mortar",
           0.5,
           30,
           500,
