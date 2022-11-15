@@ -14,14 +14,16 @@ import scala.language.postfixOps
 import it.unibo.warverse.model.fight.Army
 import java.awt.BasicStroke
 import it.unibo.warverse.ui.common.UIConstants
+import java.awt.BorderLayout
+import java.awt.Dimension
 
 class GameMap extends GameMouseMotion with Runnable:
   super.setCountries(UIConstants.testCountries)
-
   this.requestFocus
+  this.setBackground(Color.BLACK)
+  this.setPreferredSize(new Dimension(1050, 20))
 
   var gameThread: Thread = _
-
   this.startGameLoop()
 
   def startGameLoop(): Unit =
