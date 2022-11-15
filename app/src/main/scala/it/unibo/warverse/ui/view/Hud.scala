@@ -10,6 +10,9 @@ import java.awt.Insets
 import java.awt.event.ActionListener
 import javax.swing.Box
 import javax.swing.JComponent
+import javax.swing.JScrollPane
+import javax.swing.JTextArea
+import javax.swing.BorderFactory
 
 class Hud extends GameMouseMotion:
   this.setPreferredSize(new Dimension(350, 20))
@@ -23,11 +26,19 @@ class Hud extends GameMouseMotion:
   private val verticalContainer = Box.createVerticalBox()
   private val firstButtonsRow = Box.createHorizontalBox()
   private val secondButtonsRow = Box.createHorizontalBox()
-  speed1Button.addActionListener(e => println("Speed1"))
-  speed2Button.addActionListener(e => println("Speed2"))
-  speed3Button.addActionListener(e => println("Speed3"))
-  startButton.addActionListener(e => println("CLickStart"))
-  stopButton.addActionListener(e => println("ClickStop"))
+  private val console: JTextArea = new JTextArea(25, 25)
+  this.console.setMargin(new Insets(10, 10, 10, 10))
+  this.console.setEditable(false)
+  private val gameStatus: JScrollPane = new JScrollPane(console)
+  gameStatus.setVerticalScrollBarPolicy(22)
+
+  this.add(gameStatus)
+
+  speed1Button.addActionListener(e => console.append("Speed X1\n"))
+  speed2Button.addActionListener(e => console.append("Speed X2\n"))
+  speed3Button.addActionListener(e => console.append("Speed X3\n"))
+  startButton.addActionListener(e => console.append("CLickStart\n"))
+  stopButton.addActionListener(e => console.append("ClickStop\n"))
 
   addJComponents(firstButtonsRow, List(startButton, stopButton))
   addJComponents(
