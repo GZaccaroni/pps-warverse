@@ -19,7 +19,7 @@ import java.awt.Dimension
 
 class GameMap extends GameMouseMotion with Runnable:
   super.setCountries(UIConstants.testCountries)
-  this.requestFocus
+  this.requestFocus()
   this.setBackground(Color.BLACK)
   this.setPreferredSize(new Dimension(1050, 20))
 
@@ -31,9 +31,9 @@ class GameMap extends GameMouseMotion with Runnable:
     gameThread.start()
 
   override def run(): Unit =
-    var timeFrame = 1000000000.0 / 120
+    val timeFrame = 1000000000.0 / 120
     var lastFrame = System.nanoTime
-    var now = System.nanoTime
+    val now = System.nanoTime
     var frames = 0
     var lastCheck = System.currentTimeMillis
     while true do

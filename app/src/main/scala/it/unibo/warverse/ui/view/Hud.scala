@@ -1,5 +1,5 @@
 package it.unibo.warverse.ui.view
-import it.unibo.warverse.ui.inputs.{GameMouseMotion}
+import it.unibo.warverse.ui.inputs.GameMouseMotion
 import java.awt.Graphics
 import java.awt.Color
 import java.awt.Dimension
@@ -8,22 +8,21 @@ import javax.swing.border.Border
 import java.awt.Component
 import java.awt.Insets
 import java.awt.event.ActionListener
-import java.awt.Event
 import javax.swing.Box
 import javax.swing.JComponent
 
 class Hud extends GameMouseMotion:
   this.setPreferredSize(new Dimension(350, 20))
-  val startButton = new JButton("Start");
-  startButton.setForeground(Color.BLUE);
-  val stopButton = new JButton("Stop");
-  stopButton.setForeground(Color.RED);
-  val speed1Button = new JButton("X1");
-  val speed2Button = new JButton("X2");
-  val speed3Button = new JButton("X3");
-  val verticalContainer = Box.createVerticalBox()
-  val firstButtonsRow = Box.createHorizontalBox()
-  val secondButtonsRow = Box.createHorizontalBox()
+  val startButton = new JButton("Start")
+  startButton.setForeground(Color.BLUE)
+  val stopButton = new JButton("Stop")
+  stopButton.setForeground(Color.RED)
+  val speed1Button = new JButton("X1")
+  val speed2Button = new JButton("X2")
+  val speed3Button = new JButton("X3")
+  private val verticalContainer = Box.createVerticalBox()
+  private val firstButtonsRow = Box.createHorizontalBox()
+  private val secondButtonsRow = Box.createHorizontalBox()
   speed1Button.addActionListener(e => println("Speed1"))
   speed2Button.addActionListener(e => println("Speed2"))
   speed3Button.addActionListener(e => println("Speed3"))
