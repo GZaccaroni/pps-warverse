@@ -59,7 +59,6 @@ class GameMap extends GameMouseMotion with Runnable:
       .getCountries()
       .foreach(country =>
         val polygon = new Polygon
-        val area = new Polygon
         val pointList: List[Point2D] = country.boundaries.vertexes
         pointList
           .foreach(point => polygon.addPoint(point.x.toInt, point.y.toInt))
