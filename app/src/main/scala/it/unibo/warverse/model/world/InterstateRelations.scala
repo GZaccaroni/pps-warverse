@@ -9,8 +9,9 @@ object InterstateRelations:
   enum RelationStatus:
     case ALLIANCE, NEUTRAL, WAR
 
+  type Relation = (Country, Country, RelationStatus)
+
   trait InterstateRelations:
-    type Relation
 
     def relations: List[Relation]
 
@@ -21,3 +22,19 @@ object InterstateRelations:
     def getAllies(country: Country): Iterable[Country]
 
     def getWars(country: Country): Iterable[Country]
+
+  case class InterstateRelationsImpl(
+    override val relations: List[Relation]
+  ) extends InterstateRelations:
+
+    override def addRelation(
+      relation: Relation
+    ): InterstateRelations = ???
+
+    override def removeRelation(
+      relation: Relation
+    ): InterstateRelations = ???
+
+    override def getAllies(country: Country): Iterable[Country] = ???
+
+    override def getWars(country: Country): Iterable[Country] = ???
