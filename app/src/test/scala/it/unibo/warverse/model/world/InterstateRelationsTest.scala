@@ -33,3 +33,22 @@ class InterstateRelationsTest extends AnyFunSuite with Matchers:
       .addRelation(BAlliedC)
       .relations mustBe List(AWarB, BAlliedC)
   }
+
+  test("When a relation is removed it must not compare in the new object") {
+    val AWarB = (countryA, countryB, RelationStatus.WAR)
+    val BAlliedC = (countryB, countryC, RelationStatus.ALLIANCE)
+    val ANeutralC = (countryA, countryC, RelationStatus.NEUTRAL)
+    val interstateRelations: InterstateRelations =
+      InterstateRelationsImpl(List(AWarB, BAlliedC, ANeutralC))
+
+    interstateRelations.relations mustBe List(AWarB, BAlliedC, ANeutralC)
+    interstateRelations.removeRelation(AWarB).relations mustBe List(
+      BAlliedC,
+      ANeutralC
+    )
+    interstateRelations
+      .removeRelation(AWarB)
+      .removeRelation(BAlliedC)
+      .removeRelation(ANeutralC)
+      .relations mustBe List.empty
+  }
