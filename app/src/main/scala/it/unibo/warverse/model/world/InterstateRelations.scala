@@ -34,7 +34,9 @@ object InterstateRelations:
 
     override def removeRelation(
       relation: Relation
-    ): InterstateRelations = ???
+    ): InterstateRelations = InterstateRelationsImpl(
+      relations.filterNot(_ == relation)
+    )
 
     override def getAllies(country: Country): Iterable[Country] = ???
 
