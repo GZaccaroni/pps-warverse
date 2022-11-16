@@ -2,7 +2,7 @@ package it.unibo.warverse.model.world
 
 import it.unibo.warverse.model.world.World.Country
 
-import java.util
+import scala.::
 
 object InterstateRelations:
 
@@ -29,7 +29,8 @@ object InterstateRelations:
 
     override def addRelation(
       relation: Relation
-    ): InterstateRelations = ???
+    ): InterstateRelations =
+      InterstateRelationsImpl(relations :+ relation)
 
     override def removeRelation(
       relation: Relation
