@@ -62,4 +62,17 @@ class InterstateRelationsTest extends AnyFunSuite with Matchers:
 
     interstateRelations getAllies countryC must contain only (countryA, countryB)
     interstateRelations getAllies countryB must contain only countryC
+    interstateRelations.removeRelation(BAlliedC) getAllies countryB mustBe empty
+  }
+
+  test("Function getWars must get WAR related country") {
+    val AWarB = (countryA, countryB, RelationStatus.WAR)
+    val BAlliedC = (countryB, countryC, RelationStatus.ALLIANCE)
+    val ANeutralC = (countryC, countryA, RelationStatus.ALLIANCE)
+    val interstateRelations: InterstateRelations =
+      InterstateRelationsImpl(List(AWarB, BAlliedC, ANeutralC))
+
+    interstateRelations getWars countryC mustBe empty
+    interstateRelations getWars countryA must contain only countryB
+    interstateRelations getWars countryB must contain only countryA
   }
