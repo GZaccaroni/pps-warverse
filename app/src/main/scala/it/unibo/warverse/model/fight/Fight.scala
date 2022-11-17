@@ -2,21 +2,23 @@ package it.unibo.warverse.model.fight
 
 import it.unibo.warverse.model.common.Life
 import it.unibo.warverse.model.common.Math.Percentage
+import it.unibo.warverse.model.common.Movement.Movable
 
 object Fight:
 
-  trait Attackable extends Life.LivingEntity:
-    def kill(): Void
+  trait Attackable[Entity <: Attackable[Entity]]:
+    def attacked(): Entity
 
-  trait Attacker:
+  trait Attacker[Entity <: Attacker[Entity]]:
 
     def chanceOfHit: Percentage
     def rangeOfHit: Double
     def availableHits: Int
 
     def attack(
-      availableTargets: List[Attackable]
-    ): List[Attackable]
+      availableTargets: List[Attackable[?]]
+    ): List[Attackable[?]]
 
-  trait AttackerWithAreaImpact extends Attacker:
+  trait AttackerWithAreaImpact[Entity <: Attacker[Entity]]
+      extends Attacker[Entity]:
     def areaOfImpact: Double
