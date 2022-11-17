@@ -13,8 +13,16 @@ import javax.swing.JComponent
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
 import javax.swing.BorderFactory
+import it.unibo.warverse.ui.common.UIConstants
+import javax.swing.JTextPane
+import javax.swing.border.EmptyBorder
+import javax.swing.text.StyleContext
+import javax.swing.text.AttributeSet
+import javax.swing.text.SimpleAttributeSet
+import javax.swing.text.StyleConstants
 
 class Hud extends GameMouseMotion:
+  super.setCountries(UIConstants.testCountries)
   this.setPreferredSize(new Dimension(350, 20))
   val startButton = new JButton("Start")
   startButton.setForeground(Color.BLUE)
@@ -29,10 +37,22 @@ class Hud extends GameMouseMotion:
   private val console: JTextArea = new JTextArea(25, 25)
   this.console.setMargin(new Insets(10, 10, 10, 10))
   this.console.setEditable(false)
+  this.console.setLineWrap(true)
+  this.console.setWrapStyleWord(true)
+  var text = new JTextPane();
+  text.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)))
   private val gameStatus: JScrollPane = new JScrollPane(console)
   gameStatus.setVerticalScrollBarPolicy(22)
 
   this.add(gameStatus)
+  
+  super
+    .getCountries()
+    .foreach(country =>
+      console.append(
+        country.name + " start with " + country.citizens.length + " Citizen, " + country.armyUnits.length + " Army units and " + country.resources + " Resources\n\n"
+      )
+    )
 
   speed1Button.addActionListener(e => console.append("Speed X1\n"))
   speed2Button.addActionListener(e => console.append("Speed X2\n"))
