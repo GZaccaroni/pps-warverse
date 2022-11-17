@@ -38,6 +38,12 @@ object InterstateRelations:
       relations.filterNot(_ == relation)
     )
 
-    override def getAllies(country: Country): Iterable[Country] = ???
+    override def getAllies(country: Country): Iterable[Country] =
+      relations.collect({
+        case (`country`, allied, RelationStatus.ALLIANCE) =>
+          allied
+        case (allied, `country`, RelationStatus.ALLIANCE) =>
+          allied
+      })
 
     override def getWars(country: Country): Iterable[Country] = ???
