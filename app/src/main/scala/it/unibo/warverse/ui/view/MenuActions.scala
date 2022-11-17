@@ -20,6 +20,7 @@ import java.awt.Image
 import java.awt.Graphics2D
 import java.net.URL
 import it.unibo.warverse.ui.common.UIConstants
+import javax.swing.JComponent
 
 class MenuActions(mainFrame: MainFrame) extends JPanel:
 
@@ -65,15 +66,13 @@ class MenuActions(mainFrame: MainFrame) extends JPanel:
   this.addMouseListener(mouseAdapter)
   this.addMouseMotionListener(mouseAdapter)
 
-  this.getInputMap
-    .put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "downAction")
+  this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "downAction")
   this.getActionMap.put("downAction", downAction)
 
-  this.getInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "upAction")
+  this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "upAction")
   this.getActionMap.put("upAction", upAction)
 
-  this.getInputMap
-    .put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enterAction")
+  this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enterAction")
   this.getActionMap.put("enterAction", enterAction)
 
   def getMenuItems: String = selectedMenuItem
