@@ -41,7 +41,8 @@ object InterstateRelations:
     override def getAllies(country: Country): Iterable[Country] =
       getRelatedCountry(country, RelationStatus.ALLIANCE)
 
-    override def getWars(country: Country): Iterable[Country] = ???
+    override def getWars(country: Country): Iterable[Country] =
+      getRelatedCountry(country, RelationStatus.WAR)
 
     private def getRelatedCountry(country: Country, status: RelationStatus) =
       relations.collect({
