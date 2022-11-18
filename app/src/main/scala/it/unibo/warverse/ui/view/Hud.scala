@@ -1,5 +1,7 @@
 package it.unibo.warverse.ui.view
+import it.unibo.warverse.model.world.World
 import it.unibo.warverse.ui.inputs.GameMouseMotion
+
 import java.awt.Graphics
 import java.awt.Color
 import java.awt.Dimension
@@ -14,6 +16,7 @@ import javax.swing.JScrollPane
 import javax.swing.JTextArea
 import javax.swing.BorderFactory
 import it.unibo.warverse.ui.common.UIConstants
+
 import javax.swing.JTextPane
 import javax.swing.border.EmptyBorder
 import javax.swing.text.StyleContext
@@ -42,8 +45,8 @@ class Hud extends GameMouseMotion:
   this.console.setEditable(false)
   this.console.setLineWrap(true)
   this.console.setWrapStyleWord(true)
-  val highlighter: Highlighter = console.getHighlighter()
-  val countries = super.getCountries()
+  val highlighter: Highlighter = console.getHighlighter
+  val countries: Array[World.Country] = super.getCountries()
   var text = ""
   private val gameStatus: JScrollPane = new JScrollPane(console)
   gameStatus.setVerticalScrollBarPolicy(22)
@@ -53,7 +56,7 @@ class Hud extends GameMouseMotion:
 
   countries.foreach(country =>
     console.append(
-      country.name + " start with " + country.citizens.length + " Citizen, " + country.armyUnits.length + " Army units and " + country.resources + " Resources\n\n"
+      country.name + " start with " + country.citizens.size + " Citizen, " + country.armyUnits.length + " Army units and " + country.resources + " Resources\n\n"
     )
   )
 
@@ -71,11 +74,11 @@ class Hud extends GameMouseMotion:
   highlightText(text, "war", Color.RED)
   highlightText(text, "allied", new Color(0, 153, 0))
 
-  speed1Button.addActionListener(e => console.append("Speed X1\n"))
-  speed2Button.addActionListener(e => console.append("Speed X2\n"))
-  speed3Button.addActionListener(e => console.append("Speed X3\n"))
-  startButton.addActionListener(e => console.append("CLickStart\n"))
-  stopButton.addActionListener(e => console.append("ClickStop\n"))
+  speed1Button.addActionListener(_ => console.append("Speed X1\n"))
+  speed2Button.addActionListener(_ => console.append("Speed X2\n"))
+  speed3Button.addActionListener(_ => console.append("Speed X3\n"))
+  startButton.addActionListener(_ => console.append("CLickStart\n"))
+  stopButton.addActionListener(_ => console.append("ClickStop\n"))
 
   addJComponents(firstButtonsRow, List(startButton, stopButton))
   addJComponents(
@@ -89,9 +92,9 @@ class Hud extends GameMouseMotion:
   this.add(verticalContainer)
 
   def highlightText(text: String, name: String, color: Color): Unit =
-    var p0: Integer = text.indexOf(name)
-    var p1: Integer = p0 + name.length()
-    var painter: HighlightPainter =
+    val p0: Integer = text.indexOf(name)
+    val p1: Integer = p0 + name.length()
+    val painter: HighlightPainter =
       new DefaultHighlighter.DefaultHighlightPainter(color)
     highlighter.addHighlight(p0, p1, painter)
 
