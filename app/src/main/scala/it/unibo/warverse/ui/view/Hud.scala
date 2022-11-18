@@ -20,6 +20,9 @@ import javax.swing.text.StyleContext
 import javax.swing.text.AttributeSet
 import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
+import javax.swing.text.Highlighter
+import javax.swing.text.Highlighter.HighlightPainter
+import javax.swing.text.DefaultHighlighter
 
 class Hud extends GameMouseMotion:
   super.setCountries(UIConstants.testCountries)
@@ -39,20 +42,34 @@ class Hud extends GameMouseMotion:
   this.console.setEditable(false)
   this.console.setLineWrap(true)
   this.console.setWrapStyleWord(true)
-  var text = new JTextPane();
-  text.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)))
+  val highlighter: Highlighter = console.getHighlighter()
+  val countries = super.getCountries()
+  var text = ""
   private val gameStatus: JScrollPane = new JScrollPane(console)
   gameStatus.setVerticalScrollBarPolicy(22)
-
+  console.setBackground(Color.BLACK)
+  console.setForeground(Color.WHITE)
   this.add(gameStatus)
-  
-  super
-    .getCountries()
-    .foreach(country =>
-      console.append(
-        country.name + " start with " + country.citizens.length + " Citizen, " + country.armyUnits.length + " Army units and " + country.resources + " Resources\n\n"
-      )
+
+  countries.foreach(country =>
+    console.append(
+      country.name + " start with " + country.citizens.length + " Citizen, " + country.armyUnits.length + " Army units and " + country.resources + " Resources\n\n"
     )
+  )
+
+  console.append("Country1 is in war with Country2\n\n")
+  console.append("Country2 is allied with Country3\n\n")
+
+  text = console.getText()
+  countries.foreach(country =>
+    highlightText(
+      text,
+      country.name,
+      Color.decode(getCountryColor(country.name))
+    )
+  )
+  highlightText(text, "war", Color.RED)
+  highlightText(text, "allied", new Color(0, 153, 0))
 
   speed1Button.addActionListener(e => console.append("Speed X1\n"))
   speed2Button.addActionListener(e => console.append("Speed X2\n"))
@@ -70,6 +87,16 @@ class Hud extends GameMouseMotion:
     List(firstButtonsRow, secondButtonsRow)
   )
   this.add(verticalContainer)
+
+  def highlightText(text: String, name: String, color: Color): Unit =
+    var p0: Integer = text.indexOf(name)
+    var p1: Integer = p0 + name.length()
+    var painter: HighlightPainter =
+      new DefaultHighlighter.DefaultHighlightPainter(color)
+    highlighter.addHighlight(p0, p1, painter)
+
+  def getCountryColor(name: String): String =
+    String.format("#%X", name.hashCode())
 
   def addJComponents(box: Box, list: List[JComponent]): Unit =
     list.foreach(component => box.add(component))
