@@ -1,5 +1,6 @@
 package it.unibo.warverse.ui.view
 import it.unibo.warverse.ui.inputs.GameMouseMotion
+
 import java.awt.Graphics
 import java.awt.Color
 import java.awt.Dimension
@@ -13,9 +14,32 @@ import javax.swing.JComponent
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
 import javax.swing.BorderFactory
+import java.io.FileInputStream
+import scala.io.Source
+import javax.swing.JFileChooser
+import java.io.File
+import it.unibo.warverse.model.world.World.Country
+import org.json4s.*
+import org.json4s.jackson.JsonMethods.*
+import it.unibo.warverse.model.world.World.*
+import it.unibo.warverse.model.fight.Army.*
+import it.unibo.warverse.model.common.Geometry
+import java.awt.geom.Point2D
+import it.unibo.warverse.model.fight.Army
+import it.unibo.warverse.ui.common.JsonConfigParser
 
 class Hud extends GameMouseMotion:
   this.setPreferredSize(new Dimension(350, 20))
+  val uploadConfig = new JButton("Upload Configuration")
+  val fileChooser = new JFileChooser()
+  fileChooser.setCurrentDirectory(
+    new File(
+      System.getProperty("user.home") + System.getProperty(
+        "file.separator"
+      ) + "Desktop"
+    )
+  )
+  uploadConfig.addActionListener(e => uploadJson())
   val startButton = new JButton("Start")
   startButton.setForeground(Color.BLUE)
   val stopButton = new JButton("Stop")
@@ -32,6 +56,7 @@ class Hud extends GameMouseMotion:
   private val gameStatus: JScrollPane = new JScrollPane(console)
   gameStatus.setVerticalScrollBarPolicy(22)
 
+  this.add(uploadConfig)
   this.add(gameStatus)
 
   speed1Button.addActionListener(e => console.append("Speed X1\n"))
@@ -53,5 +78,17 @@ class Hud extends GameMouseMotion:
 
   def addJComponents(box: Box, list: List[JComponent]): Unit =
     list.foreach(component => box.add(component))
+
+  def uploadJson(): Unit =
+    fileChooser.showOpenDialog(this)
+    val file = fileChooser.getSelectedFile()
+    val jsonFile = scala.io.Source
+      .fromFile(file)
+      .mkString
+    val jsonConfigParser: JsonConfigParser = JsonConfigParser(jsonFile)
+    val resJson = jsonConfigParser.getConfig()
+    println(super.getCountries())
+    super.setCountries(resJson)
+
   override def paintComponent(g: Graphics): Unit =
     super.paintComponent(g)
