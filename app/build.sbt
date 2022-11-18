@@ -6,7 +6,10 @@ lazy val root = project
     name := "warverse",
     version := IO.read(file("../version.txt")).trim,
     scalaVersion := scala3Version,
-    libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.14" % Test,
+    libraryDependencies ++= Seq(
+      "org.scalatest" %% "scalatest" % "3.2.14" % Test,
+      "org.json4s" %% "json4s-jackson" % "4.0.6"
+    ),
     // Output paths
     assembly / mainClass := Some("it.unibo.warverse.Launcher"),
     assembly / assemblyOutputPath := file("target/warverse.jar"),
