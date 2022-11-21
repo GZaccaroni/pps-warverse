@@ -1,19 +1,18 @@
 package it.unibo.warverse.ui.view
 import it.unibo.warverse.model.world.World
 import it.unibo.warverse.ui.inputs.GameMouseMotion
-
-import java.awt.Graphics
-import java.awt.Color
 import java.awt.Dimension
 import javax.swing.JButton
-import javax.swing.border.Border
-import java.awt.Component
-import java.awt.Insets
-import java.awt.event.ActionListener
+import javax.swing.JFileChooser
+import java.io.File
+import java.awt.Color
 import javax.swing.Box
-import javax.swing.JComponent
-import javax.swing.JScrollPane
 import javax.swing.JTextArea
+import javax.swing.JScrollPane
+import java.awt.Insets
+import javax.swing.JComponent
+import it.unibo.warverse.ui.common.JsonConfigParser
+import java.awt.Graphics
 import javax.swing.BorderFactory
 import it.unibo.warverse.ui.common.UIConstants
 
@@ -30,6 +29,16 @@ import javax.swing.text.DefaultHighlighter
 class Hud extends GameMouseMotion:
   super.setCountries(UIConstants.testCountries)
   this.setPreferredSize(new Dimension(350, 20))
+  val uploadConfig = new JButton("Upload Configuration")
+  val fileChooser = new JFileChooser()
+  fileChooser.setCurrentDirectory(
+    new File(
+      System.getProperty("user.home") + System.getProperty(
+        "file.separator"
+      ) + "Desktop"
+    )
+  )
+  uploadConfig.addActionListener(e => uploadJson())
   val startButton = new JButton("Start")
   startButton.setForeground(Color.BLUE)
   val stopButton = new JButton("Stop")
@@ -50,6 +59,7 @@ class Hud extends GameMouseMotion:
   var text = ""
   private val gameStatus: JScrollPane = new JScrollPane(console)
   gameStatus.setVerticalScrollBarPolicy(22)
+  this.add(uploadConfig)
   console.setBackground(Color.BLACK)
   console.setForeground(Color.WHITE)
   this.add(gameStatus)
@@ -103,5 +113,25 @@ class Hud extends GameMouseMotion:
 
   def addJComponents(box: Box, list: List[JComponent]): Unit =
     list.foreach(component => box.add(component))
+
+  def getExtensionByStringHandling(filename: String): Boolean =
+    filename.split("\\.").last == "json"
+
+  def uploadJson(): Unit =
+    fileChooser.showOpenDialog(this)
+    val file = fileChooser.getSelectedFile
+    if getExtensionByStringHandling(file.getName) then
+      val jsonFile = scala.io.Source
+        .fromFile(file)
+        .mkString
+
+      val jsonConfigParser: JsonConfigParser = JsonConfigParser(jsonFile)
+      try
+        val resJson = jsonConfigParser.getConfig
+        super.setCountries(resJson)
+      catch
+        case ex: NullPointerException =>
+          println("Configuration File have some errors.")
+
   override def paintComponent(g: Graphics): Unit =
     super.paintComponent(g)

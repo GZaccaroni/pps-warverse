@@ -1,0 +1,166 @@
+{
+    "Countries": [
+        {
+            "name": "War",
+            "citizen": [
+                {
+                    "x": 150,
+                    "y": 150
+                },
+                {
+                    "x": 250,
+                    "y": 100
+                },
+                {
+                    "x": 150,
+                    "y": 150
+                },
+                {
+                    "x": 150,
+                    "y": 150
+                }
+            ],
+            "armyUnits": {
+                "precisionUnit": [
+                    {
+                        "name": "Soldier",
+                        "chanceOfHit": 0.5,
+                        "rangeOfHit": 200,
+                        "availableHits": 5,
+                        "dailyConsume": 200,
+                        "speed": 15,
+                        "position": {
+                            "x": 250,
+                            "y": 150
+                        }
+                    },
+                    {
+                        "name": "Soldier",
+                        "chanceOfHit": 0.5,
+                        "rangeOfHit": 200,
+                        "availableHits": 5,
+                        "dailyConsume": 200,
+                        "speed": 15,
+                        "position": {
+                            "x": 250,
+                            "y": 150
+                        }
+                    },
+                    {
+                        "name": "Soldier",
+                        "chanceOfHit": 0.5,
+                        "rangeOfHit": 200,
+                        "availableHits": 5,
+                        "dailyConsume": 200,
+                        "speed": 15,
+                        "position": {
+                            "x": 250,
+                            "y": 150
+                        }
+                    },
+                    {
+                        "name": "Soldier",
+                        "chanceOfHit": 0.5,
+                        "rangeOfHit": 200,
+                        "availableHits": 5,
+                        "dailyConsume": 200,
+                        "speed": 15,
+                        "position": {
+                            "x": 250,
+                            "y": 150
+                        }
+                    }
+                ],
+                "areaUnit": [
+                    {
+                        "name": "Mortar",
+                        "chanceOfHit": 0.5,
+                        "rangeOfHit": 200,
+                        "availableHits": 5,
+                        "dailyConsume": 200,
+                        "speed": 15,
+                        "areaOfImpact": 200,
+                        "position": {
+                            "x": 250,
+                            "y": 150
+                        }
+                    },
+                    {
+                        "name": "Mortar",
+                        "chanceOfHit": 0.5,
+                        "rangeOfHit": 200,
+                        "availableHits": 5,
+                        "dailyConsume": 200,
+                        "speed": 15,
+                        "areaOfImpact": 200,
+                        "position": {
+                            "x": 250,
+                            "y": 150
+                        }
+                    },
+                    {
+                        "name": "Mortar",
+                        "chanceOfHit": 0.5,
+                        "rangeOfHit": 200,
+                        "availableHits": 5,
+                        "dailyConsume": 200,
+                        "speed": 15,
+                        "areaOfImpact": 200,
+                        "position": {
+                            "x": 250,
+                            "y": 150
+                        }
+                    },
+                    {
+                        "name": "Mortar",
+                        "chanceOfHit": 0.5,
+                        "rangeOfHit": 200,
+                        "availableHits": 5,
+                        "dailyConsume": 200,
+                        "speed": 15,
+                        "areaOfImpact": 200,
+                        "position": {
+                            "x": 250,
+                            "y": 150
+                        }
+                    }
+                ]
+            },
+            "resources": 20007000.20,
+            "boundaries": [
+                {
+                    "x": 100,
+                    "y": 200
+                },
+                {
+                    "x": 150,
+                    "y": 150
+                },
+                {
+                    "x": 250,
+                    "y": 100
+                },
+                {
+                    "x": 325,
+                    "y": 125
+                },
+                {
+                    "x": 375,
+                    "y": 225
+                },
+                {
+                    "x": 450,
+                    "y": 250
+                },
+                {
+                    "x": 275,
+                    "y": 375
+                },
+                {
+                    "x": 100,
+                    "y": 300
+                }
+            ]
+        }
+    ]
+}
