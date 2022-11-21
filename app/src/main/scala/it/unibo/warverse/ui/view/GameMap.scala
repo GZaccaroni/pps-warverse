@@ -1,6 +1,6 @@
 package it.unibo.warverse.ui.view
 
-import it.unibo.warverse.ui.inputs.{GameMouseMotion}
+import it.unibo.warverse.ui.inputs.GameMouseMotion
 import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.Graphics
