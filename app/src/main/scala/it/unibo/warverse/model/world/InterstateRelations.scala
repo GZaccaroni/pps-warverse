@@ -27,6 +27,8 @@ object InterstateRelations:
     override val relations: List[Relation]
   ) extends InterstateRelations:
 
+    checkDuplicatedRelations()
+
     override def addRelation(
       relation: Relation
     ): InterstateRelations =
@@ -51,3 +53,14 @@ object InterstateRelations:
         case (otherCountry, `country`, `status`) =>
           otherCountry
       })
+
+    private def checkDuplicatedRelations(): Unit =
+      val couples =
+        for couple <- relations.map({ case (c1, c2, _) => (c1, c2) })
+        yield couple
+
+      if couples
+          .flatMap(c => List(c, c.swap))
+          .distinct
+          .length != couples.length * 2
+      then throw new IllegalStateException("Invalid Relation")
