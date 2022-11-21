@@ -25,12 +25,17 @@ class GameMap extends GameMouseMotion with Runnable:
   this.setBackground(Color.BLACK)
   this.setPreferredSize(new Dimension(1050, 20))
 
+  var exit = true
   var gameThread: Thread = _
-  this.startGameLoop()
 
   def startGameLoop(): Unit =
     gameThread = new Thread(this)
     gameThread.start()
+
+  def stopGameLoop(): Unit=
+    exit = false
+    gameThread.interrupt()
+    println(gameThread.isInterrupted())
 
   override def run(): Unit =
     val timeFrame = 1000000000.0 / 120
@@ -38,7 +43,7 @@ class GameMap extends GameMouseMotion with Runnable:
     val now = System.nanoTime
     var frames = 0
     var lastCheck = System.currentTimeMillis
-    while true do
+    while exit do
       if now - lastFrame >= timeFrame then
         // TODO call Update position method
         this.repaint()
