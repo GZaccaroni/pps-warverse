@@ -66,19 +66,13 @@ class MenuActions(mainFrame: MainFrame) extends JPanel:
   this.addMouseListener(mouseAdapter)
   this.addMouseMotionListener(mouseAdapter)
 
-  this
-    .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-    .put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "downAction")
+  this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "downAction")
   this.getActionMap.put("downAction", downAction)
 
-  this
-    .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-    .put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "upAction")
+  this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "upAction")
   this.getActionMap.put("upAction", upAction)
 
-  this
-    .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-    .put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enterAction")
+  this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enterAction")
   this.getActionMap.put("enterAction", enterAction)
 
   def getMenuItems: String = selectedMenuItem
