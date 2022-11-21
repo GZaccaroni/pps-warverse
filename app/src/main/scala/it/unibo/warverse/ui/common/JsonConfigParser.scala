@@ -27,11 +27,8 @@ class JsonConfigParser(jsonFile: String):
 
       val citizen =
         (country \ "citizen").values.asInstanceOf[List[Map[String, BigInt]]]
-      val citizenToPush: List[Citizen] = citizen.map(el =>
-        val x: Double = extractData(el.get("x")).asInstanceOf[Double]
-        val y: Double = extractData(el.get("y")).asInstanceOf[Double]
-        Citizen(Geometry.Point2D(x, y))
-      )
+      val citizenToPush: List[Citizen] =
+        citizen.map(el => Citizen(extractPosition(el)))
 
       val precisionUnit =
         (country \ "armyUnits" \ "precisionUnit").asInstanceOf[JArray]
@@ -57,7 +54,7 @@ class JsonConfigParser(jsonFile: String):
             availableHits,
             dailyConsume,
             speed,
-            Geometry.Point2D(x, y)
+            extractPosition(position)
           )
         )
 
@@ -70,8 +67,6 @@ class JsonConfigParser(jsonFile: String):
         val speed = (el \ "speed").values.toString.toDouble
         val position =
           (el \ "position").values.asInstanceOf[Map[String, BigInt]]
-        val x: Double = extractData(position.get("x")).asInstanceOf[Double]
-        val y: Double = extractData(position.get("y")).asInstanceOf[Double]
         val areaOfImpact = (el \ "areaOfImpact").values.toString.toDouble
         AreaArmyUnit(
           name,
@@ -80,7 +75,7 @@ class JsonConfigParser(jsonFile: String):
           availableHits,
           dailyConsume,
           speed,
-          Geometry.Point2D(x, y),
+          extractPosition(position),
           areaOfImpact
         )
       )
@@ -91,11 +86,8 @@ class JsonConfigParser(jsonFile: String):
       val boundariesTmp =
         (country \ "boundaries").values.asInstanceOf[List[Map[String, BigInt]]]
 
-      val pointList: List[Point2D] = boundariesTmp.map(el =>
-        val x: Double = extractData(el.get("x")).asInstanceOf[Double]
-        val y: Double = extractData(el.get("y")).asInstanceOf[Double]
-        Geometry.Point2D(x, y)
-      )
+      val pointList: List[Point2D] =
+        boundariesTmp.map(position => extractPosition(position))
       val boundaries: Polygon2D = Polygon2D(pointList)
 
       JOptionPane.showMessageDialog(
@@ -115,6 +107,11 @@ class JsonConfigParser(jsonFile: String):
       null,
       "Found problems in configuration file."
     )
+
+  def extractPosition(el: Map[String, BigInt]): Geometry.Point2D =
+    val x: Double = extractData(el.get("x")).asInstanceOf[Double]
+    val y: Double = extractData(el.get("y")).asInstanceOf[Double]
+    Geometry.Point2D(x, y)
 
   def verifyJson(jObject: JObject): Boolean =
     if !checkHeader(jObject, "Countries") then return false
