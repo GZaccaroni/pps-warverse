@@ -24,9 +24,9 @@ class EnterAction(
   override def actionPerformed(e: ActionEvent): Unit =
     panel.getMenuItems match
       case "Start Game" => new GameStateController().setMain(mainFrame)
-      case "Options" => setNewPanel(new MenuOptions())
-      case "Help"    => setNewPanel(new MenuHelp(mainFrame))
-      case "Exit"    => System.exit(0)
-      case _         =>
+      case "Options"    => setNewPanel(new MenuOptions())
+      case "Help"       => setNewPanel(new MenuHelp(mainFrame))
+      case "Exit"       => System.exit(0)
+      case _            =>
     panel.repaint()
     panel.invalidate()

@@ -7,7 +7,7 @@ import java.awt.BorderLayout
 import it.unibo.warverse.ui.view.MainFrame
 
 class GameStateController:
-  var mainFrame: MainFrame = null
+  var mainFrame: MainFrame = _
 
   val gameMap = new GameMap()
 

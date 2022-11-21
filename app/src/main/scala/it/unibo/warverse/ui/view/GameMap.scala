@@ -32,10 +32,9 @@ class GameMap extends GameMouseMotion with Runnable:
     gameThread = new Thread(this)
     gameThread.start()
 
-  def stopGameLoop(): Unit=
+  def stopGameLoop(): Unit =
     exit = false
     gameThread.interrupt()
-    println(gameThread.isInterrupted())
 
   override def run(): Unit =
     val timeFrame = 1000000000.0 / 120
