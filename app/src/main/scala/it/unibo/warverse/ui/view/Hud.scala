@@ -1,32 +1,17 @@
 package it.unibo.warverse.ui.view
 import it.unibo.warverse.ui.inputs.GameMouseMotion
-
-import java.awt.Graphics
-import java.awt.Color
 import java.awt.Dimension
 import javax.swing.JButton
-import javax.swing.border.Border
-import java.awt.Component
-import java.awt.Insets
-import java.awt.event.ActionListener
-import javax.swing.Box
-import javax.swing.JComponent
-import javax.swing.JScrollPane
-import javax.swing.JTextArea
-import javax.swing.BorderFactory
-import java.io.FileInputStream
-import scala.io.Source
 import javax.swing.JFileChooser
 import java.io.File
-import it.unibo.warverse.model.world.World.Country
-import org.json4s.*
-import org.json4s.jackson.JsonMethods.*
-import it.unibo.warverse.model.world.World.*
-import it.unibo.warverse.model.fight.Army.*
-import it.unibo.warverse.model.common.Geometry
-import java.awt.geom.Point2D
-import it.unibo.warverse.model.fight.Army
+import java.awt.Color
+import javax.swing.Box
+import javax.swing.JTextArea
+import javax.swing.JScrollPane
+import java.awt.Insets
+import javax.swing.JComponent
 import it.unibo.warverse.ui.common.JsonConfigParser
+import java.awt.Graphics
 
 class Hud extends GameMouseMotion:
   this.setPreferredSize(new Dimension(350, 20))
@@ -79,16 +64,24 @@ class Hud extends GameMouseMotion:
   def addJComponents(box: Box, list: List[JComponent]): Unit =
     list.foreach(component => box.add(component))
 
+  def getExtensionByStringHandling(filename: String): Boolean =
+    filename.split("\\.").last == "json"
+
   def uploadJson(): Unit =
     fileChooser.showOpenDialog(this)
-    val file = fileChooser.getSelectedFile()
-    val jsonFile = scala.io.Source
-      .fromFile(file)
-      .mkString
-    val jsonConfigParser: JsonConfigParser = JsonConfigParser(jsonFile)
-    val resJson = jsonConfigParser.getConfig()
-    println(super.getCountries())
-    super.setCountries(resJson)
+    val file = fileChooser.getSelectedFile
+    if getExtensionByStringHandling(file.getName) then
+      val jsonFile = scala.io.Source
+        .fromFile(file)
+        .mkString
+
+      val jsonConfigParser: JsonConfigParser = JsonConfigParser(jsonFile)
+      try
+        val resJson = jsonConfigParser.getConfig
+        super.setCountries(resJson)
+      catch
+        case ex: NullPointerException =>
+          println("Configuration File have some errors.")
 
   override def paintComponent(g: Graphics): Unit =
     super.paintComponent(g)
