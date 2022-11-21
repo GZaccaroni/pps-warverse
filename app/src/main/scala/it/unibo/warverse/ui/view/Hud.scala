@@ -25,6 +25,8 @@ import javax.swing.text.StyleConstants
 import javax.swing.text.Highlighter
 import javax.swing.text.Highlighter.HighlightPainter
 import javax.swing.text.DefaultHighlighter
+import it.unibo.warverse.controller.GameStateController
+import scala.io.Source
 
 class Hud extends GameMouseMotion:
   super.setCountries(UIConstants.testCountries)
@@ -38,7 +40,7 @@ class Hud extends GameMouseMotion:
       ) + "Desktop"
     )
   )
-  uploadConfig.addActionListener(e => uploadJson())
+  uploadConfig.addActionListener(_ => uploadJson())
   val startButton = new JButton("Start")
   startButton.setForeground(Color.BLUE)
   val stopButton = new JButton("Stop")
@@ -57,6 +59,7 @@ class Hud extends GameMouseMotion:
   val highlighter: Highlighter = console.getHighlighter
   val countries: Array[World.Country] = super.getCountries()
   var text = ""
+  var controller: GameStateController = _
   private val gameStatus: JScrollPane = new JScrollPane(console)
   gameStatus.setVerticalScrollBarPolicy(22)
   this.add(uploadConfig)
@@ -87,8 +90,8 @@ class Hud extends GameMouseMotion:
   speed1Button.addActionListener(_ => console.append("Speed X1\n"))
   speed2Button.addActionListener(_ => console.append("Speed X2\n"))
   speed3Button.addActionListener(_ => console.append("Speed X3\n"))
-  startButton.addActionListener(_ => console.append("CLickStart\n"))
-  stopButton.addActionListener(_ => console.append("ClickStop\n"))
+  startButton.addActionListener(_ => controller.startClicked())
+  stopButton.addActionListener(_ => controller.stopClicked())
 
   addJComponents(firstButtonsRow, List(startButton, stopButton))
   addJComponents(
@@ -100,6 +103,9 @@ class Hud extends GameMouseMotion:
     List(firstButtonsRow, secondButtonsRow)
   )
   this.add(verticalContainer)
+
+  def setController(controller: GameStateController): Unit =
+    this.controller = controller
 
   def highlightText(text: String, name: String, color: Color): Unit =
     val p0: Integer = text.indexOf(name)
@@ -121,7 +127,7 @@ class Hud extends GameMouseMotion:
     fileChooser.showOpenDialog(this)
     val file = fileChooser.getSelectedFile
     if getExtensionByStringHandling(file.getName) then
-      val jsonFile = scala.io.Source
+      val jsonFile = Source
         .fromFile(file)
         .mkString
 
@@ -130,7 +136,7 @@ class Hud extends GameMouseMotion:
         val resJson = jsonConfigParser.getConfig
         super.setCountries(resJson)
       catch
-        case ex: NullPointerException =>
+        case _: NullPointerException =>
           println("Configuration File have some errors.")
 
   override def paintComponent(g: Graphics): Unit =
