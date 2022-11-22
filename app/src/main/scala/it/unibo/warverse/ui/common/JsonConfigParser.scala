@@ -13,10 +13,13 @@ import it.unibo.warverse.model.common.Geometry.Point2D
 import javax.swing.JOptionPane
 import scala.language.postfixOps
 import util.control.Breaks.*
+import it.unibo.warverse.model.world.InterstateRelations
 
 class JsonConfigParser(jsonFile: String):
 
   var countriesToReturn: List[Country] = _
+  var allianceList: Map[String, List[String]] = Map()
+  var enemiesList: Map[String, List[String]] = Map()
   val jsonObj: JObject = parse(jsonFile).asInstanceOf[JObject]
 
   if verifyJson(jsonObj) then
@@ -90,10 +93,12 @@ class JsonConfigParser(jsonFile: String):
         boundariesTmp.map(position => extractPosition(position))
       val boundaries: Polygon2D = Polygon2D(pointList)
 
-      JOptionPane.showMessageDialog(
-        null,
-        "Configuration uploaded successfully."
-      )
+      val allianceListJson: List[String] =
+        (country \ "alliance").values.asInstanceOf[List[String]]
+      val enemiesListJson: List[String] =
+        (country \ "enemies").values.asInstanceOf[List[String]]
+      allianceList = allianceList + (name.toString -> allianceListJson)
+      enemiesList = enemiesList + (name.toString -> enemiesListJson)
       Country(
         name.toString,
         citizenToPush,
@@ -123,16 +128,18 @@ class JsonConfigParser(jsonFile: String):
         .foreach(country =>
           verify = checkHeader(country, "name") &&
             checkHeader(country, "citizen") &&
-            checkPointsPosition(country, "citizen")
-          checkHeader(country, "armyUnits") &&
-          checkHeader(country, "resources") &&
-          checkHeader(country, "boundaries") &&
-          checkPointsPosition(country, "boundaries") &&
-          checkHeader(country, "name") &&
-          checkHeader(country, "armyUnits", "precisionUnit") &&
-          checkHeader(country, "armyUnits", "areaUnit") &&
-          checkArmy(country \ "armyUnits" \ "precisionUnit", false) &&
-          checkArmy(country \ "armyUnits" \ "areaUnit", true)
+            checkPointsPosition(country, "citizen") &&
+            checkHeader(country, "armyUnits") &&
+            checkHeader(country, "resources") &&
+            checkHeader(country, "boundaries") &&
+            checkHeader(country, "enemies") &&
+            checkHeader(country, "alliance") &&
+            checkPointsPosition(country, "boundaries") &&
+            checkHeader(country, "name") &&
+            checkHeader(country, "armyUnits", "precisionUnit") &&
+            checkHeader(country, "armyUnits", "areaUnit") &&
+            checkArmy(country \ "armyUnits" \ "precisionUnit", false) &&
+            checkArmy(country \ "armyUnits" \ "areaUnit", true)
           if !verify then
             println("----ISSUE WITH JSON CONFIGURATION----")
             break
@@ -193,6 +200,12 @@ class JsonConfigParser(jsonFile: String):
     verify
 
   def getConfig: Array[Country] = this.countriesToReturn.toArray
+
+  def getConfigList: List[Country] = this.countriesToReturn
+
+  def getStringAlliance: Map[String, List[String]] = this.allianceList
+
+  def getStringEnemies: Map[String, List[String]] = this.enemiesList
 
   def extractData(x: Option[BigInt]): Any = x match
     case Some(s) => s.toDouble

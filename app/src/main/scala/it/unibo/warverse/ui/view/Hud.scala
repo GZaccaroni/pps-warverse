@@ -27,6 +27,7 @@ import javax.swing.text.Highlighter.HighlightPainter
 import javax.swing.text.DefaultHighlighter
 import it.unibo.warverse.controller.GameStateController
 import scala.io.Source
+import javax.swing.JOptionPane
 
 class Hud extends GameMouseMotion:
   super.setCountries(UIConstants.testCountries)
@@ -134,7 +135,15 @@ class Hud extends GameMouseMotion:
       val jsonConfigParser: JsonConfigParser = JsonConfigParser(jsonFile)
       try
         val resJson = jsonConfigParser.getConfig
+        val allAlliance = jsonConfigParser.getStringAlliance
+        val allEnemies = jsonConfigParser.getStringEnemies
+        this.controller.setAllCountries(jsonConfigParser.getConfigList)
+        this.controller.setRelationship(allAlliance, allEnemies)
         super.setCountries(resJson)
+        JOptionPane.showMessageDialog(
+          null,
+          "Configuration uploaded successfully."
+        )
       catch
         case _: NullPointerException =>
           println("Configuration File have some errors.")
