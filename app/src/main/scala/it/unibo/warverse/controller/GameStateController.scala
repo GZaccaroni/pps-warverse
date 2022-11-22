@@ -9,7 +9,6 @@ import it.unibo.warverse.model.world.InterstateRelations.InterstateRelationsImpl
 import it.unibo.warverse.model.world.World.Country
 import it.unibo.warverse.model.world.InterstateRelations
 import it.unibo.warverse.model.world.InterstateRelations.Relation
-import com.sourcegraph.semanticdb_javac.Semanticdb.IntersectionType
 
 class GameStateController:
   var mainFrame: MainFrame = _
