@@ -45,10 +45,6 @@ class GameStateController:
     allianceList: Map[String, List[String]],
     enemyList: Map[String, List[String]]
   ): Unit =
-    println( cycleMapRelations(allianceList, false) ++ cycleMapRelations(
-        enemyList,
-        true
-      ))
     interstateRelation = InterstateRelationsImpl(
       cycleMapRelations(allianceList, false) ++ cycleMapRelations(
         enemyList,
