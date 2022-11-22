@@ -3,6 +3,7 @@ package it.unibo.warverse.model.world
 import it.unibo.warverse.model.world.World.Country
 
 import scala.::
+import javax.swing.JOptionPane
 
 object InterstateRelations:
 
@@ -26,8 +27,6 @@ object InterstateRelations:
   case class InterstateRelationsImpl(
     override val relations: List[Relation]
   ) extends InterstateRelations:
-
-    checkDuplicatedRelations()
 
     override def addRelation(
       relation: Relation
@@ -63,4 +62,9 @@ object InterstateRelations:
           .flatMap(c => List(c, c.swap))
           .distinct
           .length != couples.length * 2
-      then throw new IllegalStateException("Invalid Relation")
+      then
+        JOptionPane.showMessageDialog(
+          null,
+          "Invalid State Relation in json file."
+        )
+        throw new IllegalStateException("Invalid Relation")
