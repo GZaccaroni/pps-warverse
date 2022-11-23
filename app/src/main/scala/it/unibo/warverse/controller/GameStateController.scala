@@ -43,7 +43,7 @@ class GameStateController:
   def setAllCountries(countries: List[Country]): Unit =
     this.countries = countries
 
-  def getRelationship(): InterstateRelationsImpl = 
+  def getRelationship(): InterstateRelationsImpl =
     this.interstateRelation
 
   def setRelationship(
