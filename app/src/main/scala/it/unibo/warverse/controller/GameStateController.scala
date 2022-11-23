@@ -1,6 +1,6 @@
 package it.unibo.warverse.controller
 
-import it.unibo.warverse.ui.view.GameMap
+import it.unibo.warverse.ui.view.*
 import it.unibo.warverse.ui.view.Hud
 import it.unibo.warverse.ui.view.GamePanel
 import java.awt.BorderLayout
@@ -13,11 +13,13 @@ import it.unibo.warverse.model.world.InterstateRelations.Relation
 class GameStateController:
   var mainFrame: MainFrame = _
 
-  val gameMap = new GameMap()
+  val gameLoop = GameLoop()
 
-  val hud = new Hud()
+  val gameMap = GameMap()
 
-  val gamePanel = new GamePanel()
+  val hud = Hud()
+
+  val gamePanel = GamePanel()
 
   var interstateRelation: InterstateRelationsImpl = _
   var countries: List[Country] = List()
@@ -33,13 +35,16 @@ class GameStateController:
     mainFrame.setPanel(gamePanel)
 
   def startClicked(): Unit =
-    gameMap.startGameLoop()
+    gameLoop.startGameLoop()
 
   def stopClicked(): Unit =
-    gameMap.stopGameLoop()
+    gameLoop.stopGameLoop()
 
   def setAllCountries(countries: List[Country]): Unit =
     this.countries = countries
+
+  def getRelationship(): InterstateRelationsImpl = 
+    this.interstateRelation
 
   def setRelationship(
     allianceList: Map[String, List[String]],
