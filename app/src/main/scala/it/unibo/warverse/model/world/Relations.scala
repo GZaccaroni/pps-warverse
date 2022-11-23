@@ -26,11 +26,14 @@ object Relations:
 
   object InterstateRelations:
     def apply(relations: List[Relation]): InterstateRelations =
-      InterstateRelationsImpl(relations)
+      InterstateRelationsImpl(relations).dropDuplicates
 
     private case class InterstateRelationsImpl(
       override val relations: List[Relation]
     ) extends InterstateRelations:
+
+      checkIllegalRelation()
+
       override def addRelation(
         relation: Relation
       ): InterstateRelations =
@@ -56,23 +59,7 @@ object Relations:
             otherCountry
         })
 
-      private def checkDuplicatedRelations(): Unit =
-        val couples =
-          for couple <- relations.map(_._1)
-          yield couple
-
-        if couples
-            .flatMap(c => List(c, c.swap))
-            .distinct
-            .length != couples.length * 2
-        then
-          JOptionPane.showMessageDialog(
-            null,
-            "Invalid State Relation in json file."
-          )
-          throw new IllegalStateException("Invalid Relation")
-
-      private def dropDuplicates: InterstateRelations =
+      def dropDuplicates: InterstateRelations =
         val duplicates =
           for
             (c, r) <- relations
