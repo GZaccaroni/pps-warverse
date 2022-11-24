@@ -1,6 +1,6 @@
 package it.unibo.warverse.controller
 
-import it.unibo.warverse.model.world.InterstateRelations.*
+import it.unibo.warverse.model.world.Relations.*
 
 class RelationsController:
 

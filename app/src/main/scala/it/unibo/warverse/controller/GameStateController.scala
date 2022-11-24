@@ -4,9 +4,8 @@ import it.unibo.warverse.ui.view.*
 import it.unibo.warverse.model.world.Relations
 
 import java.awt.BorderLayout
-import it.unibo.warverse.model.world.Relations.InterstateRelations
+import it.unibo.warverse.model.world.Relations.*
 import it.unibo.warverse.model.world.World.Country
-import it.unibo.warverse.model.world.Relations.Relation
 
 import scala.language.postfixOps
 
@@ -43,7 +42,7 @@ class GameStateController:
   def setAllCountries(countries: List[Country]): Unit =
     this.countries = countries
 
-  def getRelationship(): InterstateRelationsImpl =
+  def getRelationship(): InterstateRelations =
     this.interstateRelation
 
   def setRelationship(
