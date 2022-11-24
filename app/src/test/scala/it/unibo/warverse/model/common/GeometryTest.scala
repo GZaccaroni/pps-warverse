@@ -65,8 +65,7 @@ object GeometryTest:
         destinationOnXYAxis
     }
   class Polygon2DTest() extends AnyFunSuite with Matchers:
-    private val emptyPolygon = Geometry.Polygon2D(vertexes = List.empty)
-    private val square = Geometry.Polygon2D(vertexes =
+    private val polygon = Geometry.Polygon2D(vertexes =
       List(
         Geometry.Point2D(x = 0, y = 0),
         Geometry.Point2D(x = 0, y = 5),
@@ -74,21 +73,16 @@ object GeometryTest:
         Geometry.Point2D(x = 5, y = 0)
       )
     )
-    private val rectangle = Geometry.Polygon2D(vertexes =
-      List(
-        Geometry.Point2D(x = 0, y = 0),
-        Geometry.Point2D(x = 0, y = 10),
-        Geometry.Point2D(x = 5, y = 10),
-        Geometry.Point2D(x = 5, y = 0)
-      )
-    )
-    test("Square contains point") {
-      square.contains(Geometry.Point2D(0, 0)) mustBe true
-      square.contains(Geometry.Point2D(2, 2)) mustBe true
-      square.contains(Geometry.Point2D(5, 5)) mustBe true
+    test("Polygon contains point") {
+      polygon.contains(Geometry.Point2D(0, 0)) mustBe true
+      polygon.contains(Geometry.Point2D(2, 2)) mustBe true
+      polygon.contains(Geometry.Point2D(5, 5)) mustBe true
     }
-    test("Square doesn't contain point") {
-      square.contains(Geometry.Point2D(10, 10)) mustBe false
+    test("Polygon center is valid") {
+      polygon.center mustBe Geometry.Point2D(2.5, 2.5)
+    }
+    test("Polygon doesn't contain point") {
+      polygon.contains(Geometry.Point2D(10, 10)) mustBe false
     }
 
 class GeometryTest

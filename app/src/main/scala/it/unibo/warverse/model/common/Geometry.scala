@@ -35,8 +35,10 @@ object Geometry:
           val yMovement = movement * math.sin(alpha)
           val xMovement = yMovement / math.tan(alpha)
           Point2D(x + xMovement, y + yMovement)
+
   trait Polygon[Point]:
     def vertexes: List[Point]
+    def center: Point
     def contains(point: Point): Boolean
 
   type Polygon2D = Polygon[Point2D]
@@ -47,6 +49,11 @@ object Geometry:
     override def contains(point: Point2D): Boolean =
       awtPath2D.contains(point.x, point.y) || vertexes.contains(point);
 
+    override def center: Point2D =
+      Point2D(
+        vertexes.map(_.x).sum / vertexes.length,
+        vertexes.map(_.y).sum / vertexes.length
+      )
     private def awtPath2D: AwtGeom.Path2D =
       val path2D = AwtGeom.Path2D.Double()
       vertexes.headOption match
