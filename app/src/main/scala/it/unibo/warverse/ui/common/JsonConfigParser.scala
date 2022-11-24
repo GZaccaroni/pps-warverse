@@ -4,19 +4,19 @@ import org.json4s.*
 import org.json4s.jackson.JsonMethods.*
 import it.unibo.warverse.model.world.World.Citizen
 import it.unibo.warverse.model.common.Geometry
-import it.unibo.warverse.model.fight.Army.*
 import it.unibo.warverse.model.fight.Army
-import it.unibo.warverse.model.world.World.Country
+import it.unibo.warverse.model.world.World
 import it.unibo.warverse.model.common.Geometry.Polygon
 import it.unibo.warverse.model.common.Geometry.Polygon2D
 import it.unibo.warverse.model.common.Geometry.Point2D
+
 import javax.swing.JOptionPane
 import scala.language.postfixOps
 import util.control.Breaks.*
 
 class JsonConfigParser(jsonFile: String):
 
-  var countriesToReturn: List[Country] = _
+  var countriesToReturn: List[World.Country] = _
   var allianceList: Map[String, List[String]] = Map()
   var enemiesList: Map[String, List[String]] = Map()
   val jsonObj: JObject = parse(jsonFile).asInstanceOf[JObject]
@@ -25,7 +25,8 @@ class JsonConfigParser(jsonFile: String):
     val countries = (jsonObj \ "Countries").asInstanceOf[JArray]
 
     countriesToReturn = countries.arr.map(country =>
-      val name = (country \ "name").values
+      val name = (country \ "name").values.toString
+      val countryId: World.CountryId = name
 
       val citizen =
         (country \ "citizen").values.asInstanceOf[List[Map[String, BigInt]]]
@@ -37,7 +38,7 @@ class JsonConfigParser(jsonFile: String):
       val areaUnit =
         (country \ "armyUnits" \ "areaUnit").asInstanceOf[JArray]
 
-      val precisionUnitPass: List[PrecisionArmyUnit] =
+      val precisionUnitPass: List[Army.PrecisionArmyUnit] =
         precisionUnit.arr.map(el =>
           val name = (el \ "name").values.toString
           val chanceOfHit = (el \ "chanceOfHit").values.toString.toDouble
@@ -49,18 +50,19 @@ class JsonConfigParser(jsonFile: String):
             (el \ "position").values.asInstanceOf[Map[String, BigInt]]
           val x: Double = extractData(position.get("x")).asInstanceOf[Double]
           val y: Double = extractData(position.get("y")).asInstanceOf[Double]
-          PrecisionArmyUnit(
+          Army.PrecisionArmyUnit(
+            countryId,
             name,
+            extractPosition(position),
             chanceOfHit,
             rangeOfHit,
             availableHits,
             dailyConsume,
-            speed,
-            extractPosition(position)
+            speed
           )
         )
 
-      val areaUnitPass: List[AreaArmyUnit] = areaUnit.arr.map(el =>
+      val areaUnitPass: List[Army.AreaArmyUnit] = areaUnit.arr.map(el =>
         val name = (el \ "name").values.toString
         val chanceOfHit = (el \ "chanceOfHit").values.toString.toDouble
         val rangeOfHit = (el \ "rangeOfHit").values.toString.toDouble
@@ -70,14 +72,15 @@ class JsonConfigParser(jsonFile: String):
         val position =
           (el \ "position").values.asInstanceOf[Map[String, BigInt]]
         val areaOfImpact = (el \ "areaOfImpact").values.toString.toDouble
-        AreaArmyUnit(
+        Army.AreaArmyUnit(
+          countryId,
           name,
+          extractPosition(position),
           chanceOfHit,
           rangeOfHit,
           availableHits,
           dailyConsume,
           speed,
-          extractPosition(position),
           areaOfImpact
         )
       )
@@ -96,10 +99,11 @@ class JsonConfigParser(jsonFile: String):
         (country \ "alliance").values.asInstanceOf[List[String]]
       val enemiesListJson: List[String] =
         (country \ "enemies").values.asInstanceOf[List[String]]
-      allianceList = allianceList + (name.toString -> allianceListJson)
-      enemiesList = enemiesList + (name.toString -> enemiesListJson)
-      Country(
-        name.toString,
+      allianceList = allianceList + (name -> allianceListJson)
+      enemiesList = enemiesList + (name -> enemiesListJson)
+      World.Country(
+        countryId,
+        name,
         citizenToPush,
         armyList,
         resources,
@@ -198,9 +202,9 @@ class JsonConfigParser(jsonFile: String):
     }
     verify
 
-  def getConfig: Array[Country] = this.countriesToReturn.toArray
+  def getConfig: Array[World.Country] = this.countriesToReturn.toArray
 
-  def getConfigList: List[Country] = this.countriesToReturn
+  def getConfigList: List[World.Country] = this.countriesToReturn
 
   def getStringAlliance: Map[String, List[String]] = this.allianceList
 

@@ -5,6 +5,7 @@ import java.awt.BasicStroke
 import it.unibo.warverse.model.common.Geometry.Point2D
 import it.unibo.warverse.model.common.Geometry.Polygon2D
 import it.unibo.warverse.model.world.World.Country
+import it.unibo.warverse.model.world.World.CountryId
 import it.unibo.warverse.model.world.World.Citizen
 import it.unibo.warverse.model.common.Geometry
 import java.awt.Dimension
@@ -28,48 +29,55 @@ object UIConstants:
     Array(1.0f),
     0.1f
   )
-
+  private val idCountry1: CountryId = "Country_1"
+  private val idCountry2: CountryId = "Country_2"
+  private val idCountry3: CountryId = "Country_3"
   val testCountries: Array[Country] = Array(
     Country(
+      idCountry1,
       "War",
       List(Citizen(Geometry.Point2D(150, 150))),
       List(
         PrecisionArmyUnit(
+          idCountry1,
           "Soldier",
+          Point2D(250, 150),
           0.5,
           200,
           5,
           200,
-          15,
-          Point2D(250, 150)
+          15
         ),
         PrecisionArmyUnit(
+          idCountry1,
           "Soldier",
+          Point2D(250, 250),
           0.5,
           200,
           5,
           200,
-          15,
-          Point2D(250, 250)
+          15
         ),
         AreaArmyUnit(
+          idCountry1,
           "Mortar",
+          Point2D(250, 200),
           0.5,
           30,
           500,
           10,
           20,
-          Point2D(250, 200),
           30
         ),
         AreaArmyUnit(
+          idCountry1,
           "Mortar",
+          Point2D(250, 300),
           0.5,
           30,
           500,
           10,
           20,
-          Point2D(250, 300),
           30
         )
       ),
@@ -87,9 +95,10 @@ object UIConstants:
       )
     ),
     Country(
+      idCountry2,
       "Warverse",
       List(Citizen(Geometry.Point2D(550, 550))),
-      List(),
+      List.empty,
       0.0,
       Polygon2D(
         List(
@@ -100,9 +109,10 @@ object UIConstants:
       )
     ),
     Country(
+      idCountry3,
       "AnotherTest",
       List(Citizen(Geometry.Point2D(550, 550))),
-      List(),
+      List.empty,
       0.0,
       Polygon2D(
         List(

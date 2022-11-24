@@ -5,7 +5,13 @@ import it.unibo.warverse.model.fight.Army.ArmyUnit
 import it.unibo.warverse.model.fight.Fight
 
 object World:
+  type CountryId = String
+
+  case class WorldState(
+    countries: List[Country]
+  )
   case class Country(
+    id: CountryId,
     name: String,
     citizens: List[Citizen],
     armyUnits: List[ArmyUnit],
@@ -21,5 +27,3 @@ object World:
     override type Position = Geometry.Point2D
 
     def alive: Boolean = ???
-
-    override def kill(): Void = ???
