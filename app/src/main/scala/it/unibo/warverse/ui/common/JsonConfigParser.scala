@@ -13,7 +13,6 @@ import it.unibo.warverse.model.common.Geometry.Point2D
 import javax.swing.JOptionPane
 import scala.language.postfixOps
 import util.control.Breaks.*
-import it.unibo.warverse.model.world.InterstateRelations
 
 class JsonConfigParser(jsonFile: String):
 
