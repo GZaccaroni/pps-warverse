@@ -22,3 +22,6 @@ object Fight:
   trait AttackerWithAreaImpact[Entity <: Attacker[Entity]]
       extends Attacker[Entity]:
     def areaOfImpact: Double
+  enum AttackType:
+    case Area
+    case Precision
