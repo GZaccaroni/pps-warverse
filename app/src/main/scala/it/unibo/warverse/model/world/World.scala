@@ -27,5 +27,3 @@ object World:
     override type Position = Geometry.Point2D
 
     def alive: Boolean = ???
-
-    override def kill(): Void = ???
