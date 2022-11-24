@@ -11,6 +11,7 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.geom.RoundRectangle2D
 import javax.swing.JPanel
+import it.unibo.warverse.controller.GameStateController
 
 class MenuMouseAdapter(
   menuItems: Array[String],
@@ -34,7 +35,7 @@ class MenuMouseAdapter(
       panel.repaint()
       if newItem != null then
         newItem match
-          case "Start Game" => setNewPanel(new GamePanel())
+          case "Start Game" => new GameStateController().setMain(mainFrame)
           case "Options"    => setNewPanel(new MenuOptions())
           case "Help"       => setNewPanel(new MenuHelp(mainFrame))
           case "Exit"       => System.exit(0)
