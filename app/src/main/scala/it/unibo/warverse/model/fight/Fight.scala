@@ -5,10 +5,6 @@ import it.unibo.warverse.model.common.Math.Percentage
 import it.unibo.warverse.model.common.Movement.Movable
 
 object Fight:
-
-  trait Attackable[Entity <: Attackable[Entity]]:
-    def attacked(): Entity
-
   trait Attacker[Entity <: Attacker[Entity]]:
 
     def chanceOfHit: Percentage
@@ -18,6 +14,11 @@ object Fight:
     def attack(
       availableTargets: List[Attackable[?]]
     ): List[Attackable[?]]
+  trait Attackable
+  trait AttackableUnit extends Attackable, Locatable:
+    override type Position = Geometry.Point2D
+  trait AttackableArea extends Attackable, Locatable:
+    override type Position = Geometry.Polygon2D
 
   trait AttackerWithAreaImpact[Entity <: Attacker[Entity]]
       extends Attacker[Entity]:
