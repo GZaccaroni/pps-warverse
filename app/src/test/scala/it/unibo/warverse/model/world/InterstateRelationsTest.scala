@@ -13,11 +13,11 @@ import org.scalatest.matchers.must.Matchers
 
 class InterstateRelationsTest extends AnyFunSuite with Matchers:
   private val countryA: Country =
-    Country("A", List.empty, List.empty, 0.0, Polygon2D(List.empty))
+    Country("ID_1", "A", List.empty, List.empty, 0.0, Polygon2D(List.empty))
   private val countryB: Country =
-    Country("B", List.empty, List.empty, 0.0, Polygon2D(List.empty))
+    Country("ID_2", "B", List.empty, List.empty, 0.0, Polygon2D(List.empty))
   private val countryC: Country =
-    Country("C", List.empty, List.empty, 0.0, Polygon2D(List.empty))
+    Country("ID_3", "C", List.empty, List.empty, 0.0, Polygon2D(List.empty))
 
   test("When a relation is added it must compare in the new object") {
     val interstateRelations: InterstateRelations =
