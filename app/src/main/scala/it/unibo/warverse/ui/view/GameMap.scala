@@ -19,42 +19,12 @@ import java.awt.Dimension
 import java.awt.Toolkit
 import it.unibo.warverse.model.fight.Army.*
 
-class GameMap extends GameMouseMotion with Runnable:
+class GameMap extends GameMouseMotion:
   super.setCountries(UIConstants.testCountries)
   this.requestFocus()
   this.setBackground(Color.BLACK)
   this.setPreferredSize(new Dimension(1050, 20))
 
-  var exit = true
-  var gameThread: Thread = _
-
-  def startGameLoop(): Unit =
-    gameThread = new Thread(this)
-    gameThread.start()
-
-  def stopGameLoop(): Unit =
-    exit = false
-    gameThread.interrupt()
-
-  override def run(): Unit =
-    val timeFrame = 1000000000.0 / 120
-    var lastFrame = System.nanoTime
-    val now = System.nanoTime
-    var frames = 0
-    var lastCheck = System.currentTimeMillis
-    while exit do
-      if now - lastFrame >= timeFrame then
-        // TODO call Update position method
-        this.repaint()
-        lastFrame = now
-        frames = frames + 1
-      if System.currentTimeMillis() - lastCheck >= 1000 then
-        lastCheck = System.currentTimeMillis()
-        println("FPS " + frames)
-        frames = 0
-
-  // TODO Update Body position
-  def updatePosition(countries: Array[Country]): Unit = ???
   def getCountryColor(name: String): String =
     String.format("#%X", name.hashCode())
 
