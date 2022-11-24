@@ -30,10 +30,6 @@ jobs:
         working-directory: ./app
         run: sbt doc
         if: ${{ steps.release.outputs.release_created }}
-      - name: Build documentation
-        working-directory: ./app
-        run: mv target/docs 
-        if: ${{ steps.release.outputs.release_created }}
       - name: Setup Pages
         uses: actions/configure-pages@v2
         if: ${{ steps.release.outputs.release_created }}
