@@ -26,10 +26,10 @@ class InterstateRelationsTest extends AnyFunSuite with Matchers:
     val BAlliedC = ((countryB, countryC), RelationStatus.ALLIANCE)
 
     interstateRelations.relations mustBe List.empty
-    interstateRelations.addRelation(AWarB).relations mustBe List(AWarB)
+    interstateRelations.withRelation(AWarB).relations mustBe List(AWarB)
     interstateRelations
-      .addRelation(AWarB)
-      .addRelation(BAlliedC)
+      .withRelation(AWarB)
+      .withRelation(BAlliedC)
       .relations mustBe List(AWarB, BAlliedC)
   }
 
@@ -42,9 +42,9 @@ class InterstateRelationsTest extends AnyFunSuite with Matchers:
       InterstateRelations(List(AWarB))
 
     an[IllegalStateException] should be thrownBy interstateRelations
-      .addRelation(ANeutralB)
+      .withRelation(ANeutralB)
     an[IllegalStateException] should be thrownBy interstateRelations
-      .addRelation(BAlliedA)
+      .withRelation(BAlliedA)
     an[IllegalStateException] should be thrownBy InterstateRelations(
       List(AWarB, BAlliedA)
     )
@@ -59,14 +59,14 @@ class InterstateRelationsTest extends AnyFunSuite with Matchers:
       InterstateRelations(List(AWarB, BAlliedC, ANeutralC))
 
     interstateRelations.relations mustBe List(AWarB, BAlliedC, ANeutralC)
-    interstateRelations.removeRelation(AWarB).relations mustBe List(
+    interstateRelations.withoutRelation(AWarB).relations mustBe List(
       BAlliedC,
       ANeutralC
     )
     interstateRelations
-      .removeRelation(AWarB)
-      .removeRelation(BAlliedC)
-      .removeRelation(ANeutralC)
+      .withoutRelation(AWarB)
+      .withoutRelation(BAlliedC)
+      .withoutRelation(ANeutralC)
       .relations mustBe List.empty
   }
 
@@ -79,7 +79,9 @@ class InterstateRelationsTest extends AnyFunSuite with Matchers:
 
     interstateRelations getAllies countryC must contain only (countryA, countryB)
     interstateRelations getAllies countryB must contain only countryC
-    interstateRelations.removeRelation(BAlliedC) getAllies countryB mustBe empty
+    interstateRelations.withoutRelation(
+      BAlliedC
+    ) getAllies countryB mustBe empty
   }
 
   test("Function getWars must get WAR related country") {
@@ -89,7 +91,7 @@ class InterstateRelationsTest extends AnyFunSuite with Matchers:
     val interstateRelations: InterstateRelations =
       InterstateRelations(List(AWarB, BAlliedC, ANeutralC))
 
-    interstateRelations getWars countryC mustBe empty
-    interstateRelations getWars countryA must contain only countryB
-    interstateRelations getWars countryB must contain only countryA
+    interstateRelations getEnemies countryC mustBe empty
+    interstateRelations getEnemies countryA must contain only countryB
+    interstateRelations getEnemies countryB must contain only countryA
   }

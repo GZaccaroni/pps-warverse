@@ -4,4 +4,5 @@ import it.unibo.warverse.model.world.Relations.*
 
 class RelationsController:
 
-  def updateRelations(): List[Relation] = ???
+  def updateRelations(): Unit =
+    println("updateRelations")

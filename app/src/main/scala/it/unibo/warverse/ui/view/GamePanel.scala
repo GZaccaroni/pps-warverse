@@ -6,8 +6,14 @@ import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.Component
 
-class GamePanel extends JPanel:
-  this.setLayout(new BorderLayout)
+trait GamePanel extends JPanel:
+  def addToPanel(component: Component, constraints: Object): Unit
 
-  def addToPanel(component: Component, constraints: Object): Unit =
-    this.add(component, constraints)
+object GamePanel:
+  def apply(): GamePanel = GamePanelImpl()
+
+  private class GamePanelImpl extends GamePanel:
+    this.setLayout(BorderLayout())
+
+    override def addToPanel(component: Component, constraints: Object): Unit =
+      this.add(component, constraints)

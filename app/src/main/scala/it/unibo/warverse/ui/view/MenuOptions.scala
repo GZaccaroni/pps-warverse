@@ -34,7 +34,7 @@ import java.awt.Toolkit
 import java.awt.Image
 import scala.collection.mutable
 
-class MenuOptions() extends JPanel:
+class MenuOptions extends JPanel:
 
   this.setBackground(Color.BLACK)
   this.setPreferredSize(getPreferredSize())

@@ -16,13 +16,13 @@ object Relations:
 
     def relations: List[Relation]
 
-    def addRelation(relation: Relation): InterstateRelations
+    def withRelation(relation: Relation): InterstateRelations
 
-    def removeRelation(relation: Relation): InterstateRelations
+    def withoutRelation(relation: Relation): InterstateRelations
 
     def getAllies(country: Country): Iterable[Country]
 
-    def getWars(country: Country): Iterable[Country]
+    def getEnemies(country: Country): Iterable[Country]
 
   object InterstateRelations:
     def apply(relations: List[Relation]): InterstateRelations =
@@ -34,12 +34,12 @@ object Relations:
 
       checkIllegalRelation()
 
-      override def addRelation(
+      override def withRelation(
         relation: Relation
       ): InterstateRelations =
         InterstateRelationsImpl(relations :+ relation)
 
-      override def removeRelation(
+      override def withoutRelation(
         relation: Relation
       ): InterstateRelations = InterstateRelationsImpl(
         relations.filterNot(_ == relation)
@@ -48,7 +48,7 @@ object Relations:
       override def getAllies(country: Country): Iterable[Country] =
         getRelatedCountry(country, RelationStatus.ALLIANCE)
 
-      override def getWars(country: Country): Iterable[Country] =
+      override def getEnemies(country: Country): Iterable[Country] =
         getRelatedCountry(country, RelationStatus.WAR)
 
       private def getRelatedCountry(country: Country, status: RelationStatus) =
@@ -76,4 +76,4 @@ object Relations:
             if relations.exists(x => (x._1 == c || x._1 == c1) && (x._2 != r))
           yield (c, r)
         if illegalRelation.nonEmpty then
-          throw new IllegalStateException("Invalid Relations")
+          throw IllegalStateException("Invalid Relations")

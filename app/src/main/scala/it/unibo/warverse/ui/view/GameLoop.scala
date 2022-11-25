@@ -20,58 +20,49 @@ import java.awt.Toolkit
 import it.unibo.warverse.model.fight.Army.*
 import it.unibo.warverse.controller.*
 
-class GameLoop extends Runnable:
+class GameLoop:
 
-  var exit = true
-  var gameThread: Thread = _
-  val attackController = AttackController()
-  val movementController = MovementController()
-  val relationsController = RelationsController()
-  val gameMap = GameMap()
+  var exit: Boolean = true
+  private var gameThread: Thread = _
+  private val attackController = AttackController()
+  private val movementController = MovementController()
+  private val relationsController = RelationsController()
+  private val gameMap = GameMap()
+  private var nextLoop: Long = 0
+  private val timeFrame = 1000
 
   def startGameLoop(): Unit =
-    gameThread = new Thread(this)
+    gameThread = Thread(() => gameLoop())
     gameThread.start()
 
   def stopGameLoop(): Unit =
     exit = false
     gameThread.interrupt()
 
-  override def run(): Unit =
-    val timeFrame = 1000000000.0 / 120
-    var lastFrame = System.nanoTime
-    val now = System.nanoTime
-    var frames = 0
-    var lastCheck = System.currentTimeMillis
-    while exit do
-      if now - lastFrame >= timeFrame then
-        gameloop()
-        gameMap.repaint()
-        lastFrame = now
-        frames = frames + 1
-      if System.currentTimeMillis() - lastCheck >= 1000 then
-        lastCheck = System.currentTimeMillis()
-        println("FPS " + frames)
-        frames = 0
-
-  //
-  def gameloop(): Unit =
+  def gameLoop(): Unit =
     waitForNextLoop()
     relationsController
       .updateRelations() // quali stati devono intervenire in guerra (forse in prolog)
     attackController.attackAndUpdate()
     updateResources() // i civili producono e i soldati consumano
     checkAndUpdateEndedWars()
-    movementController.moveUnitArmys()
+    movementController.moveUnitArmies()
     updateVisualization()
-    if continue() then gameloop()
+    if continue() then gameLoop()
 
-  private def waitForNextLoop(): Unit = ???
+  private def waitForNextLoop(): Unit =
+    try Thread.sleep(Math.max(0, nextLoop - System.currentTimeMillis()))
+    catch case ex: InterruptedException => ()
+    nextLoop = System.currentTimeMillis() + timeFrame
 
-  private def continue(): Boolean = ???
+  private def continue(): Boolean =
+    exit
 
-  def updateResources(): Unit = ???
+  def updateResources(): Unit =
+    println("Update Res")
 
-  def checkAndUpdateEndedWars(): Unit = ???
+  def checkAndUpdateEndedWars(): Unit =
+    println("Check End War")
 
-  def updateVisualization(): Unit = ???
+  def updateVisualization(): Unit =
+    this.gameMap.repaint()

@@ -23,7 +23,7 @@ class GameMap extends GameMouseMotion:
   super.setCountries(UIConstants.testCountries)
   this.requestFocus()
   this.setBackground(Color.BLACK)
-  this.setPreferredSize(new Dimension(1050, 20))
+  this.setPreferredSize(Dimension(1050, 20))
 
   def getCountryColor(name: String): String =
     String.format("#%X", name.hashCode())
@@ -31,10 +31,9 @@ class GameMap extends GameMouseMotion:
   override def paintComponent(g: Graphics): Unit =
     super.paintComponent(g)
     this.addMouseMotionListener(this)
-    super
-      .getCountries()
+    super.getCountries
       .foreach(country =>
-        val polygon = new Polygon
+        val polygon = Polygon()
         val pointList: List[Point2D] = country.boundaries.vertexes
         pointList
           .foreach(point => polygon.addPoint(point.x.toInt, point.y.toInt))
@@ -53,7 +52,7 @@ class GameMap extends GameMouseMotion:
             )
           else
             g2d.fillPolygon(
-              new Polygon(
+              Polygon(
                 Array(
                   soldier.position.x.asInstanceOf[Int] - 5,
                   soldier.position.x.asInstanceOf[Int] + 5,
