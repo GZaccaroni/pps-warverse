@@ -19,9 +19,9 @@ object UIConstants:
 
     def url: URL = ClassLoader.getSystemResource(name)
 
-  val borderMap = new Dimension(1400, 700)
+  val borderMap = Dimension(1400, 700)
 
-  val borderRegion = new BasicStroke(
+  val borderRegion = BasicStroke(
     4.0f,
     BasicStroke.CAP_BUTT,
     BasicStroke.JOIN_MITER,

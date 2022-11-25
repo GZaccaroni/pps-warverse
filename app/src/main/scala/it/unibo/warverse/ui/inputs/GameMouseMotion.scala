@@ -10,12 +10,10 @@ import javax.swing.JPopupMenu
 import javax.swing.JLabel
 import javax.swing.JMenuItem
 
-abstract class GameMouseMotion extends JPanel with MouseMotionListener:
+trait GameMouseMotion extends JPanel with MouseMotionListener:
   private var countries: Array[Country] = _
 
-  var popUp: JPopupMenu = new JPopupMenu
-
-  protected var previousHoverCountry: String = ""
+  val popUp: JPopupMenu = JPopupMenu()
 
   def setCountries(countries: Array[Country]): Unit =
     this.countries = countries
@@ -30,22 +28,21 @@ abstract class GameMouseMotion extends JPanel with MouseMotionListener:
     val mouseX = e.getX
     val mouseY = e.getY
     countries.foreach(country =>
-      val polygon = new Polygon
+      val polygon = Polygon()
       val pointList: List[Point2D] = country.boundaries.vertexes
 
       pointList.foreach(point => polygon.addPoint(point.x.toInt, point.y.toInt))
       if polygon.contains(
           mouseX,
           mouseY
-        ) && country.name != previousHoverCountry
+        )
       then
         popUp.setVisible(false)
         popUp.removeAll()
-        popUp.add(new JMenuItem("Country: " + country.name))
-        popUp.add(new JMenuItem("Army Units: " + country.armyUnits.size))
-        popUp.add(new JMenuItem("Citizens: " + country.citizens.size))
-        popUp.add(new JMenuItem("Resources: " + country.resources))
+        popUp.add(JMenuItem("Country: " + country.name))
+        popUp.add(JMenuItem("Army Units: " + country.armyUnits.size))
+        popUp.add(JMenuItem("Citizens: " + country.citizens.size))
+        popUp.add(JMenuItem("Resources: " + country.resources))
         popUp.show(this, mouseX, mouseY)
         popUp.setVisible(true)
-        this.previousHoverCountry = country.name
     )

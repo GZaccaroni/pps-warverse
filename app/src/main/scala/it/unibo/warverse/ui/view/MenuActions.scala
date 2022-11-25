@@ -22,115 +22,136 @@ import java.net.URL
 import it.unibo.warverse.ui.common.UIConstants
 import javax.swing.JComponent
 
-class MenuActions(mainFrame: MainFrame) extends JPanel:
+trait MenuActions extends JPanel:
+  def mainFrame: MainFrame
+  def setMenuValue(value: String): Unit
+  def setFocusValue(value: String): Unit
+  def setNewPanel(value: JPanel): Unit
+  def upAction: MenuKeyAction
+  def downAction: MenuKeyAction
+  def enterAction: EnterAction
+  def getMenuItems: String
+  def updateMouseAdapter: Unit
 
-  var backgroundImageUrl: Option[URL] = None
+object MenuActions:
+  def apply(mainFrame: MainFrame): MenuActions = MenuActionsImpl(mainFrame)
 
-  val menuItems: Array[String] =
-    Array("Start Game", "Options", "Help", "Exit")
+  class MenuActionsImpl(
+    override val mainFrame: MainFrame
+  ) extends MenuActions:
 
-  private var selectedMenuItem: String = menuItems(0)
+    val backgroundImageUrl: Option[URL] = Option(
+      UIConstants.Resources.MainMenuBackground.url
+    )
 
-  private var focusedItem: Option[String] = None
+    val menuItems: Array[String] =
+      Array("Start Game", "Options", "Help", "Exit")
 
-  private val painter: SimpleMenuItemPainter = new SimpleMenuItemPainter()
+    private var selectedMenuItem: String = menuItems(0)
 
-  private var menuBounds: Option[Map[String, RoundRectangle2D]] = Some(
-    Map.empty
-  )
+    private var focusedItem: Option[String] = None
 
-  private val setMenuValue = (value: String) => selectedMenuItem = value
-  private val setFocusValue = (value: String) => focusedItem = Some(value)
-  private val setNewPanel = (value: JPanel) => mainFrame.setPanel(value)
+    private val painter: SimpleMenuItemPainter = SimpleMenuItemPainter()
 
-  private val upAction: MenuKeyAction =
-    new MenuKeyAction(menuItems, selectedMenuItem, this, setMenuValue(_), -1)
-  private val downAction: MenuKeyAction =
-    new MenuKeyAction(menuItems, selectedMenuItem, this, setMenuValue(_), 1)
-  private val enterAction: EnterAction =
-    new EnterAction(this, setNewPanel(_), mainFrame)
+    private var menuBounds: Option[Map[String, RoundRectangle2D]] = Some(
+      Map.empty
+    )
 
-  private val mouseAdapter: MenuMouseAdapter = new MenuMouseAdapter(
-    menuItems,
-    this,
-    menuBounds.get,
-    setMenuValue(_),
-    setFocusValue(_),
-    setNewPanel(_),
-    mainFrame
-  )
+    override def setMenuValue(value: String) =
+      this.selectedMenuItem = value
+    override def setFocusValue(value: String) =
+      this.focusedItem = Some(value)
+    override def setNewPanel(value: JPanel) =
+      this.mainFrame.setPanel(value)
 
-  this.setBackground(Color.BLACK)
-  this.setPreferredSize(getPreferredSize())
+    override def getMenuItems: String = selectedMenuItem
 
-  this.addMouseListener(mouseAdapter)
-  this.addMouseMotionListener(mouseAdapter)
+    override def upAction: MenuKeyAction =
+      MenuKeyAction(menuItems, selectedMenuItem, this, -1)
+    override def downAction: MenuKeyAction =
+      MenuKeyAction(menuItems, selectedMenuItem, this, 1)
+    override def enterAction: EnterAction = EnterAction(this, mainFrame)
 
-  this
-    .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-    .put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "downAction")
-  this.getActionMap.put("downAction", downAction)
-
-  this
-    .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-    .put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "upAction")
-  this.getActionMap.put("upAction", upAction)
-
-  this
-    .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-    .put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enterAction")
-  this.getActionMap.put("enterAction", enterAction)
-
-  def getMenuItems: String = selectedMenuItem
-
-  override def getPreferredSize: Dimension = UIConstants.borderMap
-  override def invalidate(): Unit =
-    menuBounds = None
-    super.invalidate()
-
-  override def paintComponent(g: Graphics): Unit =
-    super.paintComponent(g)
-    val backgroundImage =
-      backgroundImageUrl.map(Toolkit.getDefaultToolkit.getImage(_))
-    val g2d: Graphics2D = g.create().asInstanceOf[Graphics2D]
-    var boxWidth: Int = 0
-    var boxHeight: Int = 0
-    if menuBounds.isEmpty then
-      menuItems.foreach(text =>
-        val dim: Dimension = painter.getPreferredSize(g2d, text);
-        boxWidth = Math.max(boxWidth, dim.width);
-        boxHeight = Math.max(boxHeight, dim.height);
+    override def updateMouseAdapter: Unit =
+      val mouseAdapter: MenuMouseAdapter = MenuMouseAdapter(
+        menuItems,
+        this,
+        menuBounds.get,
+        setMenuValue(_),
+        setFocusValue(_),
+        setNewPanel(_),
+        mainFrame
       )
-      val x = (getWidth - (boxWidth + 100)) / 2
-      var totalHeight = (boxHeight + 10) * menuItems.length
-      totalHeight += 5 * (menuItems.length - 1)
+      this.addMouseListener(mouseAdapter)
+      this.addMouseMotionListener(mouseAdapter)
 
-      val y = (getHeight - totalHeight) / 2
-      menuBounds = Some(
-        menuItems.zipWithIndex
-          .map((text, index) =>
-            (
-              text,
-              new RoundRectangle2D.Double(
-                x,
-                y + (boxHeight + 35) * index,
-                boxWidth + 100,
-                boxHeight + 10,
-                20,
-                20
+    this.updateMouseAdapter
+    this.setBackground(Color.BLACK)
+    this.setPreferredSize(getPreferredSize())
+
+    this
+      .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+      .put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "downAction")
+    this.getActionMap.put("downAction", downAction)
+
+    this
+      .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+      .put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "upAction")
+    this.getActionMap.put("upAction", upAction)
+
+    this
+      .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+      .put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enterAction")
+    this.getActionMap.put("enterAction", enterAction)
+
+    override def getPreferredSize: Dimension = UIConstants.borderMap
+    override def invalidate(): Unit =
+      menuBounds = None
+      super.invalidate()
+
+    override def paintComponent(g: Graphics): Unit =
+      super.paintComponent(g)
+      val backgroundImage =
+        backgroundImageUrl.map(Toolkit.getDefaultToolkit.getImage(_))
+      val g2d: Graphics2D = g.create().asInstanceOf[Graphics2D]
+      var boxWidth: Int = 0
+      var boxHeight: Int = 0
+      if menuBounds.isEmpty then
+        menuItems.foreach(text =>
+          val dim: Dimension = painter.getPreferredSize(g2d, text);
+          boxWidth = Math.max(boxWidth, dim.width);
+          boxHeight = Math.max(boxHeight, dim.height);
+        )
+        val x = (getWidth - (boxWidth + 100)) / 2
+        var totalHeight = (boxHeight + 10) * menuItems.length
+        totalHeight += 5 * (menuItems.length - 1)
+
+        val y = (getHeight - totalHeight) / 2
+        menuBounds = Some(
+          menuItems.zipWithIndex
+            .map((text, index) =>
+              (
+                text,
+                RoundRectangle2D.Double(
+                  x,
+                  y + (boxHeight + 35) * index,
+                  boxWidth + 100,
+                  boxHeight + 10,
+                  20,
+                  20
+                )
               )
             )
-          )
-          .toMap
+            .toMap
+        )
+      this.updateMouseAdapter
+      backgroundImage.foreach(
+        g.drawImage(_, 0, 0, this.getSize().width, this.getSize().height, this)
       )
-      mouseAdapter.menuBounds = menuBounds.get
-    backgroundImage.foreach(
-      g.drawImage(_, 0, 0, this.getSize().width, this.getSize().height, this)
-    )
-    menuItems.foreach(text =>
-      val bounds = menuBounds.get(text)
-      val isSelected = text.equals(selectedMenuItem)
-      val isFocused = focusedItem.contains(text)
-      this.painter.paint(g2d, text, bounds, isSelected, isFocused)
-    )
-    g2d.dispose()
+      menuItems.foreach(text =>
+        val bounds = menuBounds.get(text)
+        val isSelected = text.equals(selectedMenuItem)
+        val isFocused = focusedItem.contains(text)
+        this.painter.paint(g2d, text, bounds, isSelected, isFocused)
+      )
+      g2d.dispose()

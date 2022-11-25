@@ -40,7 +40,7 @@ object Serializers:
         UnitAttackType(rawValue) match
           case Some(value) => value
           case None =>
-            throw new MappingException(
+            throw  MappingException(
               "Can't convert " + rawValue + " to UnitAttackType"
             )
     }

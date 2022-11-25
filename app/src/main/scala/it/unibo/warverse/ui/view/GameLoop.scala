@@ -46,7 +46,7 @@ class GameLoop:
     attackController.attackAndUpdate()
     updateResources() // i civili producono e i soldati consumano
     checkAndUpdateEndedWars()
-    movementController.moveUnitArmys()
+    movementController.moveUnitArmies()
     updateVisualization()
     if continue() then gameLoop()
 

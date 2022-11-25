@@ -15,18 +15,27 @@ import java.awt.event.ActionEvent
 import javax.swing.JPanel
 import it.unibo.warverse.controller.GameStateController
 
-class EnterAction(
-  panel: MenuActions,
-  setNewPanel: JPanel => Unit,
-  mainFrame: MainFrame
-) extends AbstractAction:
+trait EnterAction extends AbstractAction:
+  def panel: MenuActions
+  def mainFrame: MainFrame
 
-  override def actionPerformed(e: ActionEvent): Unit =
-    panel.getMenuItems match
-      case "Start Game" => new GameStateController().setMain(mainFrame)
-      case "Options"    => setNewPanel(new MenuOptions())
-      case "Help"       => setNewPanel(new MenuHelp(mainFrame))
-      case "Exit"       => System.exit(0)
-      case _            =>
-    panel.repaint()
-    panel.invalidate()
+object EnterAction:
+  def apply(
+    panel: MenuActions,
+    mainFrame: MainFrame
+  ): EnterAction = EnterActionImpl(panel, mainFrame)
+
+  private class EnterActionImpl(
+    override val panel: MenuActions,
+    override val mainFrame: MainFrame
+  ) extends EnterAction:
+
+    override def actionPerformed(e: ActionEvent): Unit =
+      panel.getMenuItems match
+        case "Start Game" => GameStateController().setMain(mainFrame)
+        case "Options"    => panel.setNewPanel(MenuOptions())
+        case "Help"       => panel.setNewPanel(MenuHelp(mainFrame))
+        case "Exit"       => System.exit(0)
+        case _            =>
+      panel.repaint()
+      panel.invalidate()
