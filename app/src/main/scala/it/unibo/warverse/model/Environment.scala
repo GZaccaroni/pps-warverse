@@ -5,7 +5,7 @@ import it.unibo.warverse.model.fight.Army.ArmyUnit
 
 trait Environment:
   def countries: List[Country]
-  def day_=(day:Integer): Unit
+  def day_=(day: Integer): Unit
   def day: Integer
   def setCountries(countries: List[Country]): Environment
   def nextDay(): Environment

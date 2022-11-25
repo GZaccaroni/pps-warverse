@@ -15,7 +15,7 @@ trait GameStateController:
   def startClicked(): Unit
   def stopClicked(): Unit
   def setAllCountries(countries: List[Country]): Unit
-  def getRelationship(): InterstateRelations
+  def getRelationship: InterstateRelations
   def setRelationship(
     allianceList: Map[String, List[String]],
     enemyList: Map[String, List[String]]
@@ -33,13 +33,13 @@ object GameStateController:
   class GameStateControllerImpl(override val mainFrame: MainFrame)
       extends GameStateController:
 
-    val gameLoop = GameLoop()
+    private val gameLoop = GameLoop()
 
-    val gameMap = GameMap()
+    private val gameMap = GameMap()
 
-    val hud = Hud()
+    private val hud = Hud()
 
-    val gamePanel = GamePanel()
+    private val gamePanel = GamePanel()
 
     var interstateRelation: InterstateRelations = _
     var countries: List[Country] = List()
@@ -59,7 +59,7 @@ object GameStateController:
     override def setAllCountries(countries: List[Country]): Unit =
       this.countries = countries
 
-    override def getRelationship(): InterstateRelations =
+    override def getRelationship: InterstateRelations =
       this.interstateRelation
 
     override def setRelationship(

@@ -11,7 +11,7 @@ trait GamePanel extends JPanel:
 
 object GamePanel:
   def apply(): GamePanel = GamePanelImpl()
-  
+
   private class GamePanelImpl extends GamePanel:
     this.setLayout(BorderLayout())
 

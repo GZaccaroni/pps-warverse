@@ -4,8 +4,10 @@ import javax.swing.JPanel
 import java.awt.event.MouseMotionListener
 import java.awt.event.MouseEvent
 import it.unibo.warverse.model.world.World.Country
+
 import java.awt.Polygon
 import it.unibo.warverse.model.common.Geometry.Point2D
+
 import javax.swing.JPopupMenu
 import javax.swing.JLabel
 import javax.swing.JMenuItem
@@ -18,7 +20,7 @@ trait GameMouseMotion extends JPanel with MouseMotionListener:
   def setCountries(countries: Array[Country]): Unit =
     this.countries = countries
 
-  def getCountries(): Array[Country] = this.countries
+  def getCountries: Array[Country] = this.countries
 
   override def mouseDragged(e: MouseEvent): Unit = mouseMotion(e)
 

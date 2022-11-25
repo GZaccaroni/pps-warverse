@@ -31,7 +31,7 @@ trait MenuActions extends JPanel:
   def downAction: MenuKeyAction
   def enterAction: EnterAction
   def getMenuItems: String
-  def updateMouseAdapter: Unit
+  def updateMouseAdapter(): Unit
 
 object MenuActions:
   def apply(mainFrame: MainFrame): MenuActions = MenuActionsImpl(mainFrame)
@@ -57,11 +57,11 @@ object MenuActions:
       Map.empty
     )
 
-    override def setMenuValue(value: String) =
+    override def setMenuValue(value: String): Unit =
       this.selectedMenuItem = value
-    override def setFocusValue(value: String) =
+    override def setFocusValue(value: String): Unit =
       this.focusedItem = Some(value)
-    override def setNewPanel(value: JPanel) =
+    override def setNewPanel(value: JPanel): Unit =
       this.mainFrame.setPanel(value)
 
     override def getMenuItems: String = selectedMenuItem
@@ -72,7 +72,7 @@ object MenuActions:
       MenuKeyAction(menuItems, selectedMenuItem, this, 1)
     override def enterAction: EnterAction = EnterAction(this, mainFrame)
 
-    override def updateMouseAdapter: Unit =
+    override def updateMouseAdapter(): Unit =
       val mouseAdapter: MenuMouseAdapter = MenuMouseAdapter(
         menuItems,
         this,
@@ -82,7 +82,7 @@ object MenuActions:
       this.addMouseListener(mouseAdapter)
       this.addMouseMotionListener(mouseAdapter)
 
-    this.updateMouseAdapter
+    this.updateMouseAdapter()
     this.setBackground(Color.BLACK)
     this.setPreferredSize(getPreferredSize())
 
@@ -141,7 +141,7 @@ object MenuActions:
             )
             .toMap
         )
-        this.updateMouseAdapter
+        this.updateMouseAdapter()
       backgroundImage.foreach(
         g.drawImage(_, 0, 0, this.getSize().width, this.getSize().height, this)
       )

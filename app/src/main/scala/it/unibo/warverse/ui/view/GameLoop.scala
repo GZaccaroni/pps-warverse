@@ -23,11 +23,11 @@ import it.unibo.warverse.controller.*
 class GameLoop:
 
   var exit: Boolean = true
-  var gameThread: Thread = _
-  val attackController = AttackController()
-  val movementController = MovementController()
-  val relationsController = RelationsController()
-  val gameMap = GameMap()
+  private var gameThread: Thread = _
+  private val attackController = AttackController()
+  private val movementController = MovementController()
+  private val relationsController = RelationsController()
+  private val gameMap = GameMap()
   private var nextLoop: Long = 0
   private val timeFrame = 1000
 

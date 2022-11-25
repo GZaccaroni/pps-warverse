@@ -34,8 +34,8 @@ import it.unibo.warverse.model.world.Relations.InterstateRelations
 class Hud extends GameMouseMotion:
   super.setCountries(UIConstants.testCountries)
   this.setPreferredSize(Dimension(350, 20))
-  val uploadConfig = JButton("Upload Configuration")
-  val fileChooser = JFileChooser()
+  private val uploadConfig = JButton("Upload Configuration")
+  private val fileChooser = JFileChooser()
   fileChooser.setCurrentDirectory(
     File(
       System.getProperty("user.home") + System.getProperty(
@@ -44,13 +44,13 @@ class Hud extends GameMouseMotion:
     )
   )
   uploadConfig.addActionListener(_ => uploadJson())
-  val startButton = JButton("Start")
+  private val startButton = JButton("Start")
   startButton.setForeground(Color.BLUE)
-  val stopButton = JButton("Stop")
+  private val stopButton = JButton("Stop")
   stopButton.setForeground(Color.RED)
-  val speed1Button = JButton("X1")
-  val speed2Button = JButton("X2")
-  val speed3Button = JButton("X3")
+  private val speed1Button = JButton("X1")
+  private val speed2Button = JButton("X2")
+  private val speed3Button = JButton("X3")
   private val verticalContainer = Box.createVerticalBox()
   private val firstButtonsRow = Box.createHorizontalBox()
   private val secondButtonsRow = Box.createHorizontalBox()
@@ -63,7 +63,6 @@ class Hud extends GameMouseMotion:
   var countries: Array[World.Country] = _
   var text = ""
   var controller: GameStateController = _
-  val relations = Relations
   private val gameStatus: JScrollPane = JScrollPane(console)
   gameStatus.setVerticalScrollBarPolicy(22)
   this.add(uploadConfig)
@@ -106,7 +105,9 @@ class Hud extends GameMouseMotion:
       relations
         .getEnemies(country)
         .foreach(enemy =>
-          console.append(country.name + " is in war with " + enemy.name + "\n\n")
+          console.append(
+            country.name + " is in war with " + enemy.name + "\n\n"
+          )
         )
     )
     text = console.getText()
@@ -120,7 +121,6 @@ class Hud extends GameMouseMotion:
 
     highlightText(text, "allied", Color(0, 153, 0))
     highlightText(text, "war", Color.RED)
-
 
   def setController(controller: GameStateController): Unit =
     this.controller = controller
@@ -161,7 +161,7 @@ class Hud extends GameMouseMotion:
         this.controller.setRelationship(allAlliance, allEnemies)
         super.setCountries(resJson)
         this.countries = resJson
-        updateConsole(this.controller.getRelationship())
+        updateConsole(this.controller.getRelationship)
         JOptionPane.showMessageDialog(
           null,
           "Configuration uploaded successfully."

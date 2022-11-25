@@ -79,7 +79,9 @@ class InterstateRelationsTest extends AnyFunSuite with Matchers:
 
     interstateRelations getAllies countryC must contain only (countryA, countryB)
     interstateRelations getAllies countryB must contain only countryC
-    interstateRelations.withoutRelation(BAlliedC) getAllies countryB mustBe empty
+    interstateRelations.withoutRelation(
+      BAlliedC
+    ) getAllies countryB mustBe empty
   }
 
   test("Function getWars must get WAR related country") {

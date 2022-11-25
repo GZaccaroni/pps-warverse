@@ -54,10 +54,10 @@ object MenuMouseAdapter:
         if newItem != null then
           newItem match
             case "Start Game" => GameStateController(mainFrame).setPanel()
-            case "Options" => mainFrame.setPanel(MenuOptions())
-            case "Help"    => mainFrame.setPanel(MenuHelp(mainFrame))
-            case "Exit"    => System.exit(0)
-            case _         =>
+            case "Options"    => mainFrame.setPanel(MenuOptions())
+            case "Help"       => mainFrame.setPanel(MenuHelp(mainFrame))
+            case "Exit"       => System.exit(0)
+            case _            =>
 
     override def mouseMoved(e: MouseEvent): Unit =
       mouseTrigger(e)

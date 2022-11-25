@@ -31,8 +31,7 @@ class GameMap extends GameMouseMotion:
   override def paintComponent(g: Graphics): Unit =
     super.paintComponent(g)
     this.addMouseMotionListener(this)
-    super
-      .getCountries()
+    super.getCountries
       .foreach(country =>
         val polygon = Polygon()
         val pointList: List[Point2D] = country.boundaries.vertexes
