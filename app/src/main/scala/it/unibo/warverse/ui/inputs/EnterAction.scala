@@ -32,7 +32,7 @@ object EnterAction:
 
     override def actionPerformed(e: ActionEvent): Unit =
       panel.getMenuItems match
-        case "Start Game" => GameStateController().setMain(mainFrame)
+        case "Start Game" => GameStateController(mainFrame).setPanel()
         case "Options"    => panel.setNewPanel(MenuOptions())
         case "Help"       => panel.setNewPanel(MenuHelp(mainFrame))
         case "Exit"       => System.exit(0)

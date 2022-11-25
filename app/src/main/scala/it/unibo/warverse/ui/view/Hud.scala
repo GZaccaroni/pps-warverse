@@ -28,6 +28,8 @@ import javax.swing.text.DefaultHighlighter
 import it.unibo.warverse.controller.GameStateController
 import scala.io.Source
 import javax.swing.JOptionPane
+import it.unibo.warverse.model.world.Relations
+import it.unibo.warverse.model.world.Relations.InterstateRelations
 
 class Hud extends GameMouseMotion:
   super.setCountries(UIConstants.testCountries)
@@ -58,33 +60,16 @@ class Hud extends GameMouseMotion:
   this.console.setLineWrap(true)
   this.console.setWrapStyleWord(true)
   val highlighter: Highlighter = console.getHighlighter
-  val countries: Array[World.Country] = super.getCountries()
+  var countries: Array[World.Country] = _
+  var text = ""
   var controller: GameStateController = _
+  val relations = Relations
   private val gameStatus: JScrollPane = JScrollPane(console)
   gameStatus.setVerticalScrollBarPolicy(22)
   this.add(uploadConfig)
   console.setBackground(Color.BLACK)
   console.setForeground(Color.WHITE)
   this.add(gameStatus)
-
-  countries.foreach(country =>
-    console.append(
-      country.name + " start with " + country.citizens.size + " Citizen, " + country.armyUnits.length + " Army units and " + country.resources + " Resources\n\n"
-    )
-  )
-
-  console.append("Country1 is in war with Country2\n\n")
-  console.append("Country2 is allied with Country3\n\n")
-
-  countries.foreach(country =>
-    highlightText(
-      console.getText(),
-      country.name,
-      Color.decode(getCountryColor(country.name))
-    )
-  )
-  highlightText(console.getText(), "war", Color.RED)
-  highlightText(console.getText(), "allied", Color(0, 153, 0))
 
   speed1Button.addActionListener(_ => console.append("Speed X1\n"))
   speed2Button.addActionListener(_ => console.append("Speed X2\n"))
@@ -103,15 +88,52 @@ class Hud extends GameMouseMotion:
   )
   this.add(verticalContainer)
 
+  def updateConsole(relations: InterstateRelations): Unit =
+    countries.foreach(country =>
+      console.append(
+        country.name + " start with " + country.citizens.size + " Citizen, " + country.armyUnits.length + " Army units and " + country.resources + " Resources\n\n"
+      )
+    )
+
+    countries.foreach(country =>
+      relations
+        .getAllies(country)
+        .foreach(ally =>
+          console.append(country.name + " is allied with " + ally.name + "\n\n")
+        )
+    )
+    countries.foreach(country =>
+      relations
+        .getEnemies(country)
+        .foreach(enemy =>
+          console.append(country.name + " is in war with " + enemy.name + "\n\n")
+        )
+    )
+    text = console.getText()
+    countries.foreach(country =>
+      highlightText(
+        text,
+        country.name,
+        Color.decode(getCountryColor(country.name))
+      )
+    )
+
+    highlightText(text, "allied", Color(0, 153, 0))
+    highlightText(text, "war", Color.RED)
+
+
   def setController(controller: GameStateController): Unit =
     this.controller = controller
 
   def highlightText(text: String, name: String, color: Color): Unit =
-    val p0: Integer = text.indexOf(name)
-    val p1: Integer = p0 + name.length()
-    val painter: HighlightPainter =
-      DefaultHighlighter.DefaultHighlightPainter(color)
-    highlighter.addHighlight(p0, p1, painter)
+    var c: Integer = 0
+    while text.indexOf(name, c) != -1 do
+      val p0: Integer = text.indexOf(name, c)
+      val p1: Integer = p0 + name.length()
+      val painter: HighlightPainter =
+        DefaultHighlighter.DefaultHighlightPainter(color)
+      highlighter.addHighlight(p0, p1, painter)
+      c = p1
 
   def getCountryColor(name: String): String =
     String.format("#%X", name.hashCode())
@@ -138,6 +160,8 @@ class Hud extends GameMouseMotion:
         this.controller.setAllCountries(jsonConfigParser.getConfigList)
         this.controller.setRelationship(allAlliance, allEnemies)
         super.setCountries(resJson)
+        this.countries = resJson
+        updateConsole(this.controller.getRelationship())
         JOptionPane.showMessageDialog(
           null,
           "Configuration uploaded successfully."

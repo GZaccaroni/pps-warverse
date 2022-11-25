@@ -77,9 +77,6 @@ object MenuActions:
         menuItems,
         this,
         menuBounds.get,
-        setMenuValue(_),
-        setFocusValue(_),
-        setNewPanel(_),
         mainFrame
       )
       this.addMouseListener(mouseAdapter)
@@ -144,7 +141,7 @@ object MenuActions:
             )
             .toMap
         )
-      this.updateMouseAdapter
+        this.updateMouseAdapter
       backgroundImage.foreach(
         g.drawImage(_, 0, 0, this.getSize().width, this.getSize().height, this)
       )
