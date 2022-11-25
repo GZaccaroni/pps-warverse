@@ -1,33 +1,47 @@
 package it.unibo.warverse.presentation.inputs
 
-import it.unibo.warverse.presentation.view.{Menu, MenuActions}
+import it.unibo.warverse.presentation.view.MenuActions
 import javax.swing.AbstractAction
 import java.awt.event.ActionEvent
-import javax.swing.JPanel
 
-class MenuKeyAction(
-  menuItems: Array[String],
-  var selectMenuItem: String,
-  panel: MenuActions,
-  setMenuValue: String => Unit,
-  moveValue: Integer
-) extends AbstractAction:
+trait MenuKeyAction extends AbstractAction:
+  def setIndex(delta: Integer): Unit
+  def menuItems: Array[String]
+  def selectMenuItem: String
+  def panel: MenuActions
+  def moveValue: Integer
 
-  var index: Integer = 0
+object MenuKeyAction:
+  def apply(
+    menuItems: Array[String],
+    selectMenuItem: String,
+    panel: MenuActions,
+    moveValue: Integer
+  ): MenuKeyAction =
+    MenuKeyActionImpl(menuItems, selectMenuItem, panel, moveValue)
 
-  def setIndex(delta: Integer): Unit =
-    index = menuItems.indexOf(selectMenuItem) + delta
-    if index < 0 then
-      index = menuItems.length - 1
-      selectMenuItem = menuItems(menuItems.length - 1)
-    else if index >= menuItems.length then
-      selectMenuItem = menuItems(0)
-      index = 0
-    else selectMenuItem = menuItems(index)
-    setMenuValue(selectMenuItem)
+  class MenuKeyActionImpl(
+    override val menuItems: Array[String],
+    var selectMenuItem: String,
+    override val panel: MenuActions,
+    override val moveValue: Integer
+  ) extends MenuKeyAction:
 
-  override def actionPerformed(e: ActionEvent): Unit =
-    selectMenuItem = panel.getMenuItems
-    setIndex(moveValue)
-    panel.repaint()
-    panel.invalidate()
+    var index: Integer = 0
+
+    def setIndex(delta: Integer): Unit =
+      index = menuItems.indexOf(selectMenuItem) + delta
+      if index < 0 then
+        index = menuItems.length - 1
+        selectMenuItem = menuItems(menuItems.length - 1)
+      else if index >= menuItems.length then
+        selectMenuItem = menuItems(0)
+        index = 0
+      else selectMenuItem = menuItems(index)
+      panel.setMenuValue(selectMenuItem)
+
+    override def actionPerformed(e: ActionEvent): Unit =
+      selectMenuItem = panel.getMenuItems
+      setIndex(moveValue)
+      panel.repaint()
+      panel.invalidate()

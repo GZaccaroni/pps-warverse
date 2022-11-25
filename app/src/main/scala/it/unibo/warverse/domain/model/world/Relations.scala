@@ -83,4 +83,4 @@ object Relations:
             if relations.exists(x => (x._1 == c || x._1 == c1) && (x._2 != r))
           yield (c, r)
         if illegalRelation.nonEmpty then
-          throw new IllegalStateException("Invalid Relations")
+          throw IllegalStateException("Invalid Relations")

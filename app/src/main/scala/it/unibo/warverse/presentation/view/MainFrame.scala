@@ -8,14 +8,20 @@ import java.awt.BorderLayout
 import javax.swing.ImageIcon
 import java.awt.Image
 
-class MainFrame extends JFrame:
-  this.setName("Warverse Simulator")
-  this.setDefaultCloseOperation(EXIT_ON_CLOSE)
-  this.setResizable(false)
-  this.setLocationRelativeTo(null)
-  this.pack()
+trait MainFrame extends JFrame:
+  def setPanel(panel: JPanel): Unit
 
-  def setPanel(panel: JPanel): Unit =
-    this.getContentPane.removeAll()
-    this.add(panel, BorderLayout.CENTER)
-    this.validate()
+object MainFrame:
+  def apply(): MainFrame = MainFrameImpl()
+
+  private class MainFrameImpl extends MainFrame:
+    this.setName("Warverse Simulator")
+    this.setDefaultCloseOperation(EXIT_ON_CLOSE)
+    this.setResizable(false)
+    this.setLocationRelativeTo(null)
+    this.pack()
+
+    override def setPanel(panel: JPanel): Unit =
+      this.getContentPane.removeAll()
+      this.add(panel, BorderLayout.CENTER)
+      this.validate()

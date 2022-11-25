@@ -25,70 +25,52 @@ import javax.swing.text.StyleConstants
 import javax.swing.text.Highlighter
 import javax.swing.text.Highlighter.HighlightPainter
 import javax.swing.text.DefaultHighlighter
-import it.unibo.warverse.controllers.GameStateController
+import it.unibo.warverse.presentation.controllers.GameStateController
 import it.unibo.warverse.data.data_sources.json.SimulationConfigDataSource
 
 import scala.io.Source
 import javax.swing.JOptionPane
+import it.unibo.warverse.domain.model.world.Relations
+import it.unibo.warverse.domain.model.world.Relations.InterstateRelations
 
 class Hud extends GameMouseMotion:
   super.setCountries(UIConstants.testCountries)
-  this.setPreferredSize(new Dimension(350, 20))
-  val uploadConfig = new JButton("Upload Configuration")
-  val fileChooser = new JFileChooser()
+  this.setPreferredSize(Dimension(350, 20))
+  private val uploadConfig = JButton("Upload Configuration")
+  private val fileChooser = JFileChooser()
   fileChooser.setCurrentDirectory(
-    new File(
+    File(
       System.getProperty("user.home") + System.getProperty(
         "file.separator"
       ) + "Desktop"
     )
   )
   uploadConfig.addActionListener(_ => uploadJson())
-  val startButton = new JButton("Start")
+  private val startButton = JButton("Start")
   startButton.setForeground(Color.BLUE)
-  val stopButton = new JButton("Stop")
+  private val stopButton = JButton("Stop")
   stopButton.setForeground(Color.RED)
-  val speed1Button = new JButton("X1")
-  val speed2Button = new JButton("X2")
-  val speed3Button = new JButton("X3")
+  private val speed1Button = JButton("X1")
+  private val speed2Button = JButton("X2")
+  private val speed3Button = JButton("X3")
   private val verticalContainer = Box.createVerticalBox()
   private val firstButtonsRow = Box.createHorizontalBox()
   private val secondButtonsRow = Box.createHorizontalBox()
-  private val console: JTextArea = new JTextArea(25, 25)
-  this.console.setMargin(new Insets(10, 10, 10, 10))
+  private val console: JTextArea = JTextArea(25, 25)
+  this.console.setMargin(Insets(10, 10, 10, 10))
   this.console.setEditable(false)
   this.console.setLineWrap(true)
   this.console.setWrapStyleWord(true)
   val highlighter: Highlighter = console.getHighlighter
-  val countries = super.getCountries()
+  var countries: List[World.Country] = _
   var text = ""
   var controller: GameStateController = _
-  private val gameStatus: JScrollPane = new JScrollPane(console)
+  private val gameStatus: JScrollPane = JScrollPane(console)
   gameStatus.setVerticalScrollBarPolicy(22)
   this.add(uploadConfig)
   console.setBackground(Color.BLACK)
   console.setForeground(Color.WHITE)
   this.add(gameStatus)
-
-  countries.foreach(country =>
-    console.append(
-      country.name + " start with " + country.citizens + " Citizen, " + country.armyUnits.length + " Army units and " + country.resources + " Resources\n\n"
-    )
-  )
-
-  console.append("Country1 is in war with Country2\n\n")
-  console.append("Country2 is allied with Country3\n\n")
-
-  text = console.getText()
-  countries.foreach(country =>
-    highlightText(
-      text,
-      country.name,
-      Color.decode(getCountryColor(country.name))
-    )
-  )
-  highlightText(text, "war", Color.RED)
-  highlightText(text, "allied", new Color(0, 153, 0))
 
   speed1Button.addActionListener(_ => console.append("Speed X1\n"))
   speed2Button.addActionListener(_ => console.append("Speed X2\n"))
@@ -107,15 +89,55 @@ class Hud extends GameMouseMotion:
   )
   this.add(verticalContainer)
 
+  def updateConsole(relations: InterstateRelations): Unit =
+    countries.foreach(country =>
+      console.append(
+        country.name + " start with " + country.citizens + " Citizen, " + country.armyUnits.length + " Army units and " + country.resources + " Resources\n\n"
+      )
+    )
+
+    countries.foreach(country =>
+      relations
+        .getAllies(country.id)
+        .foreach(allyId =>
+          val ally = countries.find(_.id == allyId).get;
+          console.append(country.name + " is allied with " + ally.name + "\n\n")
+        )
+    )
+    countries.foreach(country =>
+      relations
+        .getEnemies(country.id)
+        .foreach(enemyId =>
+          val enemy = countries.find(_.id == enemyId).get;
+          console.append(
+            country.name + " is in war with " + enemy.name + "\n\n"
+          )
+        )
+    )
+    text = console.getText()
+    countries.foreach(country =>
+      highlightText(
+        text,
+        country.name,
+        Color.decode(getCountryColor(country.name))
+      )
+    )
+
+    highlightText(text, "allied", Color(0, 153, 0))
+    highlightText(text, "war", Color.RED)
+
   def setController(controller: GameStateController): Unit =
     this.controller = controller
 
   def highlightText(text: String, name: String, color: Color): Unit =
-    val p0: Integer = text.indexOf(name)
-    val p1: Integer = p0 + name.length()
-    val painter: HighlightPainter =
-      new DefaultHighlighter.DefaultHighlightPainter(color)
-    highlighter.addHighlight(p0, p1, painter)
+    var c: Integer = 0
+    while text.indexOf(name, c) != -1 do
+      val p0: Integer = text.indexOf(name, c)
+      val p1: Integer = p0 + name.length()
+      val painter: HighlightPainter =
+        DefaultHighlighter.DefaultHighlightPainter(color)
+      highlighter.addHighlight(p0, p1, painter)
+      c = p1
 
   def getCountryColor(name: String): String =
     String.format("#%X", name.hashCode())
@@ -139,6 +161,8 @@ class Hud extends GameMouseMotion:
           simulationConfig.interstateRelations
         )
         super.setCountries(simulationConfig.countries)
+        this.countries = simulationConfig.countries
+        updateConsole(this.controller.getRelationship)
         JOptionPane.showMessageDialog(
           null,
           "Configuration uploaded successfully."

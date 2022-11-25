@@ -87,6 +87,6 @@ object GeometryTest:
 
 class GeometryTest
     extends Suites(
-      new GeometryTest.Point2DTest(),
-      new GeometryTest.Polygon2DTest()
+      GeometryTest.Point2DTest(),
+      GeometryTest.Polygon2DTest()
     )

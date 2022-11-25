@@ -1,5 +1,6 @@
-package it.unibo.warverse.controllers
+package it.unibo.warverse.presentation.controllers
 
 class MovementController:
 
-  def moveUnitArmys(): Unit = ???
+  def moveUnitArmies(): Unit =
+    println("MoveArmy")

@@ -1,7 +1,7 @@
 package it.unibo.warverse
 
 import it.unibo.warverse.data.data_sources.json.SimulationConfigDataSource
-import it.unibo.warverse.presentation.view.{MainFrame, Menu}
+import it.unibo.warverse.presentation.view.MainFrame
 
 import java.awt.{BorderLayout, Dimension}
 import java.io.File

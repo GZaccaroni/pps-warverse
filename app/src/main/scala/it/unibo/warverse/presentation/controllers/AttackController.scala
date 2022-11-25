@@ -1,5 +1,6 @@
-package it.unibo.warverse.controllers
+package it.unibo.warverse.presentation.controllers
 
 class AttackController:
 
-  def attackAndUpdate(): Unit = ???
+  def attackAndUpdate(): Unit =
+    println("Attack")

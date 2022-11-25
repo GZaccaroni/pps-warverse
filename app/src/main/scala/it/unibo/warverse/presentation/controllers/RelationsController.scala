@@ -1,7 +1,8 @@
-package it.unibo.warverse.controllers
+package it.unibo.warverse.presentation.controllers
 
 import it.unibo.warverse.domain.model.world.Relations.*
 
 class RelationsController:
 
-  def updateRelations(): List[InterstateRelation] = ???
+  def updateRelations(): Unit =
+    println("updateRelations")

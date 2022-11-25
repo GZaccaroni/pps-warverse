@@ -11,48 +11,66 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.geom.RoundRectangle2D
 import javax.swing.JPanel
-import it.unibo.warverse.controllers.GameStateController
+import it.unibo.warverse.presentation.controllers.GameStateController
+import it.unibo.warverse.presentation.view.MenuActions
 
-class MenuMouseAdapter(
-  menuItems: Array[String],
-  panel: JPanel,
-  var menuBounds: Map[String, RoundRectangle2D],
-  setMenuValue: String => Unit,
-  setFocusValue: String => Unit,
-  setNewPanel: JPanel => Unit,
-  mainFrame: MainFrame
-) extends MouseAdapter:
-  override def mouseClicked(e: MouseEvent): Unit =
-    var newItem: String = ""
-    menuItems.foreach(text =>
-      if menuBounds.nonEmpty
-      then
-        val bounds: RoundRectangle2D = menuBounds(text)
-        if bounds.contains(e.getPoint) then newItem = text
+trait MenuMouseAdapter extends MouseAdapter:
+  def menuItems: Array[String]
+  def panel: MenuActions
+  def menuBounds: Map[String, RoundRectangle2D]
+  def mainFrame: MainFrame
+
+object MenuMouseAdapter:
+  def apply(
+    menuItems: Array[String],
+    panel: MenuActions,
+    menuBounds: Map[String, RoundRectangle2D],
+    mainFrame: MainFrame
+  ): MenuMouseAdapter =
+    MenuMouseAdapterImpl(
+      menuItems,
+      panel,
+      menuBounds,
+      mainFrame
     )
-    if newItem != null then
-      setMenuValue(newItem)
-      panel.repaint()
+
+  private class MenuMouseAdapterImpl(
+    override val menuItems: Array[String],
+    override val panel: MenuActions,
+    override val menuBounds: Map[String, RoundRectangle2D],
+    override val mainFrame: MainFrame
+  ) extends MenuMouseAdapter:
+
+    override def mouseClicked(e: MouseEvent): Unit =
+      var newItem: String = ""
+      menuItems.foreach(text =>
+        if menuBounds.nonEmpty
+        then
+          val bounds: RoundRectangle2D = menuBounds(text)
+          if bounds.contains(e.getPoint) then newItem = text
+      )
       if newItem != null then
-        newItem match
-          case "Start Game" => new GameStateController().setMain(mainFrame)
-          case "Options"    => setNewPanel(new MenuOptions())
-          case "Help"       => setNewPanel(new MenuHelp(mainFrame))
-          case "Exit"       => System.exit(0)
-          case _            =>
+        panel.setMenuValue(newItem)
+        if newItem != null then
+          newItem match
+            case "Start Game" => GameStateController(mainFrame).setPanel()
+            case "Options"    => mainFrame.setPanel(MenuOptions())
+            case "Help"       => mainFrame.setPanel(MenuHelp(mainFrame))
+            case "Exit"       => System.exit(0)
+            case _            =>
 
-  override def mouseMoved(e: MouseEvent): Unit =
-    mouseTrigger(e)
-  override def mouseEntered(e: MouseEvent): Unit =
-    mouseTrigger(e)
+    override def mouseMoved(e: MouseEvent): Unit =
+      mouseTrigger(e)
+    override def mouseEntered(e: MouseEvent): Unit =
+      mouseTrigger(e)
 
-  def mouseTrigger(e: MouseEvent): Unit =
-    setFocusValue("")
-    menuItems.foreach(text =>
-      if menuBounds.nonEmpty
-      then
-        val bounds: RoundRectangle2D = menuBounds(text)
-        if bounds.contains(e.getPoint) then
-          setFocusValue(text)
-          this.panel.repaint()
-    )
+    def mouseTrigger(e: MouseEvent): Unit =
+      panel.setFocusValue("")
+      menuItems.foreach(text =>
+        if menuBounds.nonEmpty
+        then
+          val bounds: RoundRectangle2D = menuBounds(text)
+          if bounds.contains(e.getPoint) then
+            panel.setFocusValue(text)
+            this.panel.repaint()
+      )
