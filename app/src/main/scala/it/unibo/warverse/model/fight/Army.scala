@@ -18,6 +18,10 @@ object Army:
     def countryId: World.CountryId
     def attackType: Fight.AttackType
     def speed: Double
+    def chanceOfHit: Percentage
+    def rangeOfHit: Double
+    def availableHits: Int
+    def dailyConsume: Double
     protected def copied(position: Position): ArmyUnit
 
     override def moved(world: World.WorldState): ArmyUnit =
