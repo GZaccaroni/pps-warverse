@@ -2,15 +2,16 @@ package it.unibo.warverse.data.data_sources.json
 
 import it.unibo.warverse.data.models.ArmyDtos.{ArmyUnitKind, UnitAttackType}
 import it.unibo.warverse.data.models.SimulationConfigDtos.SimulationConfigDto
-import it.unibo.warverse.model.common.Geometry
-import it.unibo.warverse.model.common.Geometry.{Point2D, Polygon, Polygon2D}
-import it.unibo.warverse.model.fight.Army
-import it.unibo.warverse.model.world.World
-import it.unibo.warverse.model.world.World.Citizen
+import it.unibo.warverse.domain.model.common.Geometry
+import it.unibo.warverse.domain.model.common.Geometry.{Point2D, Polygon, Polygon2D}
+import it.unibo.warverse.domain.model.fight.Army
+import it.unibo.warverse.domain.model.world.World
+import it.unibo.warverse.domain.model.world.World.Citizen
 import it.unibo.warverse.data.data_sources.json.Serializers.*
 import it.unibo.warverse.data.models.{ArmyDtos, GeometryDtos}
 import it.unibo.warverse.data.models.WorldDtos.CountryDto
-import it.unibo.warverse.model.SimulationConfig
+import it.unibo.warverse.domain.model.SimulationConfig
+import it.unibo.warverse.domain.model.world.Relations.*
 import org.json4s.*
 import org.json4s.jackson.JsonMethods.*
 
@@ -39,20 +40,38 @@ object SimulationConfigDataSource:
       val simulationConfigDto =
         jsonObj.camelizeKeys.extract[SimulationConfigDto]
       mapSimulationConfigDto(simulationConfigDto)
+
     private def mapSimulationConfigDto(
       dto: SimulationConfigDto
     ): SimulationConfig =
-      SimulationConfig(countries = dto.countries.map(mapCountryDto))
+      SimulationConfig(
+        countries = dto.countries.map(mapCountryDto),
+        interstateRelations = mapDtoToInterstateRelations(dto)
+      )
 
     private def mapCountryDto(dto: CountryDto): World.Country =
       World.Country(
         id = dto.id,
         name = dto.id,
         resources = dto.resources,
+        citizens = dto.citizens,
         boundaries = Polygon2D(dto.boundaries.map(mapPoint2DDto)),
-        citizens = List.empty,
         armyUnits = mapArmyDto(dto.id, dto.army)
       )
+
+    private def mapDtoToInterstateRelations(
+      configDto: SimulationConfigDto
+    ): InterstateRelations =
+      val relations = configDto.countries
+        .flatMap(country =>
+          country.relations.allies.map(ally =>
+            ((country.id, ally), RelationStatus.ALLIANCE)
+          )
+            ++ country.relations.enemies.map(enemy =>
+              ((country.id, enemy), RelationStatus.WAR)
+            )
+        )
+      InterstateRelations(relations)
 
     private def mapArmyDto(
       countryId: World.CountryId,
@@ -65,7 +84,6 @@ object SimulationConfigDataSource:
           case None =>
             throw RuntimeException(s"Unit kind ${unit.kind} not found")
       )
-
     private def mapArmyUnitDto(
       countryId: World.CountryId,
       kind: ArmyDtos.ArmyUnitKind,

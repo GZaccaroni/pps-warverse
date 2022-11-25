@@ -1,8 +1,8 @@
-package it.unibo.warverse.model.common
+package it.unibo.warverse.domain.model.common
 
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.must.Matchers
-import it.unibo.warverse.model.common.Geometry
+import it.unibo.warverse.domain.model.common.Geometry
 import org.scalatest.Suites;
 
 object GeometryTest:

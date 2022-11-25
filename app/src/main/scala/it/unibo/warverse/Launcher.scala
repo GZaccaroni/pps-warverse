@@ -1,6 +1,6 @@
 package it.unibo.warverse
 
-import it.unibo.warverse.ui.view.{MainFrame, Menu}
+import it.unibo.warverse.presentation.view.{MainFrame, Menu}
 import javax.swing.SwingUtilities
 import javax.swing.JFrame
 import javax.swing.JPanel

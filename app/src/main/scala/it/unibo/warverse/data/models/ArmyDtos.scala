@@ -1,7 +1,7 @@
 package it.unibo.warverse.data.models
 
 import it.unibo.warverse.data.models.GeometryDtos.Point2DDto
-import it.unibo.warverse.model.common.Math
+import it.unibo.warverse.domain.model.common.Math
 
 object ArmyDtos:
   case class CountryArmy(
