@@ -26,7 +26,7 @@ import javax.swing.text.Highlighter
 import javax.swing.text.Highlighter.HighlightPainter
 import javax.swing.text.DefaultHighlighter
 import it.unibo.warverse.presentation.controllers.GameStateController
-import it.unibo.warverse.data.data_sources.json.SimulationConfigDataSource
+import it.unibo.warverse.data.data_sources.simulation_config.SimulationConfigDataSource
 
 import scala.io.Source
 import javax.swing.JOptionPane
@@ -153,7 +153,8 @@ class Hud extends GameMouseMotion:
     val file = fileChooser.getSelectedFile
     if getExtensionByStringHandling(file.getName) then
 
-      val jsonConfigParser = SimulationConfigDataSource(file)
+      val jsonConfigParser =
+        SimulationConfigDataSource(file, SimulationConfigDataSource.Format.Json)
       try
         val simulationConfig = jsonConfigParser.simulationConfig
         this.controller.setAllCountries(simulationConfig.countries)
