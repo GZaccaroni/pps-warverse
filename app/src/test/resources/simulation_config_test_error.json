@@ -1,0 +1,130 @@
+{
+    "countries": [
+        {
+            "id": "Test1",
+            "citizens": -500,
+            "army": {
+                "unit_kinds": [
+                    {
+                        "id": "soldier",
+                        "name": "Soldier",
+                        "attack_type": "precision",
+                        "hit_chance": 50,
+                        "hit_range": 200.0,
+                        "maximum_hits": 5,
+                        "daily_resources_usage": 200.0,
+                        "speed": 15.0
+                    },
+                    {
+                        "id": "mortar",
+                        "name": "Mortar",
+                        "attack_type": "area",
+                        "hit_chance": 50,
+                        "hit_range": 200.0,
+                        "maximum_hits": 5,
+                        "daily_resources_usage": 200.0,
+                        "speed": 15.0,
+                        "damage_area": 200.0
+                    }
+                ],
+                "units": [
+                    {
+                        "kind": "soldier",
+                        "position": {
+                            "x": 250,
+                            "y": 150
+                        }
+                    },
+                    {
+                        "kind": "soldier",
+                        "position": {
+                            "x": 250,
+                            "y": 150
+                        }
+                    },
+                    {
+                        "kind": "soldier",
+                        "position": {
+                            "x": 250,
+                            "y": 150
+                        }
+                    },
+                    {
+                        "kind": "soldier",
+                        "position": {
+                            "x": 250,
+                            "y": 150
+                        }
+                    },
+                    {
+                        "kind": "mortar",
+                        "position": {
+                            "x": 250,
+                            "y": 150
+                        }
+                    },
+                    {
+                        "kind": "mortar",
+                        "position": {
+                            "x": 250,
+                            "y": 150
+                        }
+                    },
+                    {
+                        "kind": "mortar",
+                        "position": {
+                            "x": 250,
+                            "y": 150
+                        }
+                    },
+                    {
+                        "kind": "mortar",
+                        "position": {
+                            "x": 250,
+                            "y": 150
+                        }
+                    }
+                ]
+            },
+            "resources": 20007000.20,
+            "boundaries": [
+                {
+                    "x": 100,
+                    "y": 200
+                },
+                {
+                    "x": 150,
+                    "y": 150
+                },
+                {
+                    "x": 250,
+                    "y": 100
+                },
+                {
+                    "x": 325,
+                    "y": 125
+                },
+                {
+                    "x": 375,
+                    "y": 225
+                },
+                {
+                    "x": 450,
+                    "y": 250
+                },
+                {
+                    "x": 275,
+                    "y": 375
+                },
+                {
+                    "x": 100,
+                    "y": 300
+                }
+            ],
+            "relations": {
+                "allies": ["Test1"],
+                "enemies": []
+            }
+        }
+    ]
+}

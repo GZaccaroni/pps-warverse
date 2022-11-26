@@ -18,7 +18,8 @@ lazy val root = project
     jacocoReportSettings := JacocoReportSettings()
       .withFormats(JacocoReportFormats.ScalaHTML, JacocoReportFormats.XML),
     jacocoReportDirectory := file("target/coverage_report"),
-    Global / gitHooksDir := Some(file("../.git/hooks"))
+    Global / gitHooksDir := Some(file("../.git/hooks")),
+    Test / fork := true
   )
 // Write hooks before compiling
 (Compile / compile) := ((Compile / compile) dependsOn writeHooks).value

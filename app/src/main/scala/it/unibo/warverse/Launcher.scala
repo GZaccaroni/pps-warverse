@@ -1,12 +1,12 @@
 package it.unibo.warverse
 
-import it.unibo.warverse.ui.view.MainFrame
+import it.unibo.warverse.presentation.view.MainFrame
 import javax.swing.SwingUtilities
 import javax.swing.JFrame
 import javax.swing.JPanel
 import java.awt.Dimension
 import java.awt.BorderLayout
-import it.unibo.warverse.ui.view.MenuActions
+import it.unibo.warverse.presentation.view.MenuActions
 
 object Launcher extends App:
   val mainFrame = MainFrame()
