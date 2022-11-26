@@ -1,13 +1,17 @@
-package it.unibo.warverse.data.data_sources.json
+package it.unibo.warverse.data.data_sources.simulation_config
 
 import it.unibo.warverse.data.models.ArmyDtos.{ArmyUnitKind, UnitAttackType}
 import it.unibo.warverse.data.models.SimulationConfigDtos.SimulationConfigDto
 import it.unibo.warverse.domain.model.common.Geometry
-import it.unibo.warverse.domain.model.common.Geometry.{Point2D, Polygon, Polygon2D}
+import it.unibo.warverse.domain.model.common.Geometry.{
+  Point2D,
+  Polygon,
+  Polygon2D
+}
 import it.unibo.warverse.domain.model.fight.Army
 import it.unibo.warverse.domain.model.world.World
 import it.unibo.warverse.domain.model.world.World.Citizen
-import it.unibo.warverse.data.data_sources.json.Serializers.*
+import it.unibo.warverse.data.data_sources.simulation_config.Serializers.*
 import it.unibo.warverse.data.models.{ArmyDtos, GeometryDtos}
 import it.unibo.warverse.data.models.WorldDtos.CountryDto
 import it.unibo.warverse.domain.model.SimulationConfig
@@ -26,8 +30,12 @@ trait SimulationConfigDataSource:
 
 object SimulationConfigDataSource:
 
-  def apply(file: File): SimulationConfigDataSource =
-    JsonSimulationConfigDataSource(file)
+  def apply(file: File, format: Format): SimulationConfigDataSource =
+    format match
+      case Format.Json => JsonSimulationConfigDataSource(file)
+
+  enum Format:
+    case Json
 
   private class JsonSimulationConfigDataSource(file: File)
       extends SimulationConfigDataSource:
@@ -39,7 +47,9 @@ object SimulationConfigDataSource:
 
       val simulationConfigDto =
         jsonObj.camelizeKeys.extract[SimulationConfigDto]
-      mapSimulationConfigDto(simulationConfigDto)
+      val result = mapSimulationConfigDto(simulationConfigDto)
+      simulationConfigDto.validate()
+      result
 
     private def mapSimulationConfigDto(
       dto: SimulationConfigDto

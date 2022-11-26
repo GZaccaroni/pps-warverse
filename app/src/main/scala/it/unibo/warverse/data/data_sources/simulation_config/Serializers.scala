@@ -1,4 +1,4 @@
-package it.unibo.warverse.data.data_sources.json
+package it.unibo.warverse.data.data_sources.simulation_config
 
 import it.unibo.warverse.data.models.ArmyDtos.{ArmyUnitKind, UnitAttackType}
 import org.json4s.{MappingException, *}
