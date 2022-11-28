@@ -48,6 +48,8 @@ class Hud extends GameMouseMotion:
   uploadConfig.addActionListener(_ => uploadJson())
   private val startButton = JButton("Start")
   startButton.setForeground(Color.BLUE)
+  private val pauseButton = JButton("Pause")
+  pauseButton.setForeground(Color.ORANGE)
   private val stopButton = JButton("Stop")
   stopButton.setForeground(Color.RED)
   private val speed1Button = JButton("X1")
@@ -76,9 +78,10 @@ class Hud extends GameMouseMotion:
   speed2Button.addActionListener(_ => console.append("Speed X2\n"))
   speed3Button.addActionListener(_ => console.append("Speed X3\n"))
   startButton.addActionListener(_ => controller.startClicked())
+  pauseButton.addActionListener(_ => controller.pauseClicked())
   stopButton.addActionListener(_ => controller.stopClicked())
 
-  addJComponents(firstButtonsRow, List(startButton, stopButton))
+  addJComponents(firstButtonsRow, List(startButton, pauseButton, stopButton))
   addJComponents(
     secondButtonsRow,
     List(speed1Button, speed2Button, speed3Button)
