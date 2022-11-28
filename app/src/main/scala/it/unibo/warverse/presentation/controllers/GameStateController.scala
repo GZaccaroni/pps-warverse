@@ -12,6 +12,7 @@ trait GameStateController:
   def setPanel(): Unit
   def startClicked(): Unit
   def pauseClicked(): Unit
+  def resumeClicked(): Unit
   def stopClicked(): Unit
   def setAllCountries(countries: List[Country]): Unit
   def getRelationship: InterstateRelations
@@ -49,6 +50,9 @@ object GameStateController:
 
     override def pauseClicked(): Unit =
       gameLoop.pauseGameLoop()
+
+    override def resumeClicked(): Unit =
+      gameLoop.resumeGameLoop()
 
     override def stopClicked(): Unit =
       gameLoop.stopGameLoop()

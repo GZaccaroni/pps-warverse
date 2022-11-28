@@ -33,9 +33,12 @@ class GameLoop:
   private val timeFrame = 1000
 
   def startGameLoop(): Unit =
-    if paused then paused = false
     gameThread = Thread(() => gameLoop())
     gameThread.start()
+
+  def resumeGameLoop(): Unit =
+    paused = false
+    startGameLoop()
 
   def pauseGameLoop(): Unit =
     paused = true
