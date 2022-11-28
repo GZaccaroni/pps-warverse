@@ -22,7 +22,8 @@ import it.unibo.warverse.presentation.controllers.*
 
 class GameLoop:
 
-  var exit: Boolean = true
+  private var exit: Boolean = true
+  private var paused: Boolean = false
   private var gameThread: Thread = _
   private val attackController = AttackController()
   private val movementController = MovementController()
@@ -35,9 +36,15 @@ class GameLoop:
     gameThread = Thread(() => gameLoop())
     gameThread.start()
 
+  def resumeGameLoop(): Unit =
+    paused = false
+    startGameLoop()
+
+  def pauseGameLoop(): Unit =
+    paused = true
+
   def stopGameLoop(): Unit =
     exit = false
-    gameThread.interrupt()
 
   def gameLoop(): Unit =
     waitForNextLoop()
@@ -56,7 +63,7 @@ class GameLoop:
     nextLoop = System.currentTimeMillis() + timeFrame
 
   private def continue(): Boolean =
-    exit
+    exit && !paused
 
   def updateResources(): Unit =
     println("Update Res")
