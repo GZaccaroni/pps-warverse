@@ -5,12 +5,14 @@ import it.unibo.warverse.domain.model.fight.Fight.Attackable
 import it.unibo.warverse.domain.model.common.{Geometry, Life, Movement}
 import it.unibo.warverse.domain.model.fight.Army.ArmyUnit
 import it.unibo.warverse.domain.model.fight.Fight
+import it.unibo.warverse.domain.model.world.Relations.InterstateRelations
 
 object World:
   type CountryId = String
 
   case class WorldState(
-    countries: List[Country]
+    countries: List[Country],
+    interstateRelations: InterstateRelations
   )
   case class Country(
     id: CountryId,
