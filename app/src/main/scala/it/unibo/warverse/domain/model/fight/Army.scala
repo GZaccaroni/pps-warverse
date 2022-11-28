@@ -25,7 +25,7 @@ object Army:
     protected def copied(position: Position): ArmyUnit
 
     override def moved(world: World.WorldState): ArmyUnit =
-      val strategy = AttackStrategy.attackStrategy2D(world)
+      val strategy = AttackStrategy.attackStrategy2D(world, countryId)
       val potentialTargets = strategy.attackTargets(attackType)
       val nearestTarget = potentialTargets.minByOption(_.distanceFrom(position))
       val targetPosition = nearestTarget match
