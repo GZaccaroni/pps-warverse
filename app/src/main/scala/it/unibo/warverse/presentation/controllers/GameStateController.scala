@@ -6,6 +6,7 @@ import it.unibo.warverse.domain.model.world.Relations
 import java.awt.BorderLayout
 import it.unibo.warverse.domain.model.world.Relations.*
 import it.unibo.warverse.domain.model.world.World.Country
+import it.unibo.warverse.domain.model.Environment
 
 trait GameStateController:
   def mainFrame: MainFrame
@@ -15,6 +16,7 @@ trait GameStateController:
   def resumeClicked(): Unit
   def stopClicked(): Unit
   def setAllCountries(countries: List[Country]): Unit
+  def getAllCountries(): List[Country]
   def getRelationship: InterstateRelations
   def setInterstateRelations(
     interstateRelations: InterstateRelations
@@ -28,6 +30,8 @@ object GameStateController:
   private class GameStateControllerImpl(override val mainFrame: MainFrame)
       extends GameStateController:
 
+    private val environment: Environment = Environment(List(), 0)
+
     private val gameLoop = GameLoop()
 
     private val gameMap = GameMap()
@@ -37,11 +41,10 @@ object GameStateController:
     private val gamePanel = GamePanel()
 
     var interstateRelation: InterstateRelations = _
-    var countries: List[Country] = List()
 
     override def setPanel(): Unit =
-      gamePanel.addToPanel(gameMap, BorderLayout.WEST)
       hud.setController(this)
+      gamePanel.addToPanel(gameMap, BorderLayout.WEST)
       gamePanel.addToPanel(hud, BorderLayout.EAST)
       mainFrame.setPanel(gamePanel)
 
@@ -58,7 +61,13 @@ object GameStateController:
       gameLoop.stopGameLoop()
 
     override def setAllCountries(countries: List[Country]): Unit =
-      this.countries = countries
+      val newEnv = this.environment.updateCountries(countries)
+      gameMap.setEnvironment(newEnv)
+      gameLoop.setEnvironment(newEnv)
+      gameLoop.setController(this)
+
+    override def getAllCountries(): List[Country] =
+      this.environment.getCountries()
 
     override def getRelationship: InterstateRelations =
       this.interstateRelation
