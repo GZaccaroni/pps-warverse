@@ -14,6 +14,9 @@ trait GameMouseMotion extends JPanel with MouseMotionListener:
   private var countries: List[Country] = _
   val popUp: JPopupMenu = JPopupMenu()
 
+  def getCountryColor(name: String): String =
+    String.format("#%X", name.hashCode())
+  
   def setCountries(countries: List[Country]): Unit =
     this.countries = countries
     

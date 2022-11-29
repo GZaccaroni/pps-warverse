@@ -23,7 +23,6 @@ import java.awt.Shape
 import it.unibo.warverse.domain.model.Environment
 
 class GameMap extends GameMouseMotion:
-
   this.requestFocus()
   this.setBackground(Color.BLACK)
   this.setPreferredSize(Dimension(1050, 20))
@@ -32,9 +31,6 @@ class GameMap extends GameMouseMotion:
   def setEnvironment(environment: Environment): Unit =
     this.environment = environment
     repaint()
-
-  def getCountryColor(name: String): String =
-    String.format("#%X", name.hashCode())
 
   override def paintComponent(g: Graphics): Unit =
     super.paintComponent(g)
@@ -49,7 +45,7 @@ class GameMap extends GameMouseMotion:
           pointList
             .foreach(point => polygon.addPoint(point.x.toInt, point.y.toInt))
           val g2d: Graphics2D = g.asInstanceOf[Graphics2D]
-          g2d.setColor(Color.decode(getCountryColor(country.name)))
+          g2d.setColor(Color.decode(super.getCountryColor(country.name)))
           g2d.fillPolygon(polygon)
           g2d.setColor(Color.WHITE)
           country.armyUnits.foreach(soldier =>
