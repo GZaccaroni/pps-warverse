@@ -98,7 +98,8 @@ class Hud extends GameMouseMotion:
   def updateConsole(relations: InterstateRelations): Unit =
     countries.foreach(country =>
       console.append(
-        country.name + " start with " + country.citizens + " Citizen, " + country.armyUnits.length + " Army units and " + String.format("%.02f", country.resources) + " Resources\n\n"
+        country.name + " start with " + country.citizens + " Citizen, " + country.armyUnits.length + " Army units and " + String
+          .format("%.02f", country.resources) + " Resources\n\n"
       )
     )
 
@@ -109,8 +110,6 @@ class Hud extends GameMouseMotion:
           val ally = countries.find(_.id == allyId).get;
           console.append(country.name + " is allied with " + ally.name + "\n\n")
         )
-    )
-    countries.foreach(country =>
       relations
         .getEnemies(country.id)
         .foreach(enemyId =>
@@ -119,12 +118,10 @@ class Hud extends GameMouseMotion:
             country.name + " is in war with " + enemy.name + "\n\n"
           )
         )
-    )
-    countries.foreach(country =>
       highlightText(
         console.getText,
         country.name,
-        Color.decode(getCountryColor(country.name))
+        Color.decode(super.getCountryColor(country.name))
       )
     )
 
@@ -143,9 +140,6 @@ class Hud extends GameMouseMotion:
         DefaultHighlighter.DefaultHighlightPainter(color)
       highlighter.addHighlight(p0, p1, painter)
       c = p1
-
-  def getCountryColor(name: String): String =
-    String.format("#%X", name.hashCode())
 
   def addJComponents(box: Box, list: List[JComponent]): Unit =
     list.foreach(component => box.add(component))
