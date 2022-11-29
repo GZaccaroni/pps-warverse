@@ -18,12 +18,20 @@ import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.Toolkit
 import it.unibo.warverse.domain.model.fight.Army.*
+import it.unibo.warverse.presentation.controllers.GameStateController
+import java.awt.Shape
+import it.unibo.warverse.domain.model.Environment
 
 class GameMap extends GameMouseMotion:
-  super.setCountries(UIConstants.testCountries)
+
   this.requestFocus()
   this.setBackground(Color.BLACK)
   this.setPreferredSize(Dimension(1050, 20))
+  var environment: Environment = _
+
+  def setEnvironment(environment: Environment): Unit =
+    this.environment = environment
+    repaint()
 
   def getCountryColor(name: String): String =
     String.format("#%X", name.hashCode())
@@ -31,43 +39,45 @@ class GameMap extends GameMouseMotion:
   override def paintComponent(g: Graphics): Unit =
     super.paintComponent(g)
     this.addMouseMotionListener(this)
-    super.getCountries
-      .foreach(country =>
-        val polygon = Polygon()
-        val pointList: List[Point2D] = country.boundaries.vertexes
-        pointList
-          .foreach(point => polygon.addPoint(point.x.toInt, point.y.toInt))
-        val g2d: Graphics2D = g.asInstanceOf[Graphics2D]
-        g2d.setColor(Color.decode(getCountryColor(country.name)))
-        g2d.fillPolygon(polygon)
-        // Drawing Soldiers
-        g2d.setColor(Color.WHITE)
-        country.armyUnits.foreach(soldier =>
-          if soldier.isInstanceOf[PrecisionArmyUnit] then
-            g2d.fillRect(
-              soldier.position.x.asInstanceOf[Int],
-              soldier.position.y.asInstanceOf[Int],
-              5,
-              5
-            )
-          else
-            g2d.fillPolygon(
-              Polygon(
-                Array(
-                  soldier.position.x.asInstanceOf[Int] - 5,
-                  soldier.position.x.asInstanceOf[Int] + 5,
-                  soldier.position.x.asInstanceOf[Int]
-                ),
-                Array(
-                  soldier.position.y.asInstanceOf[Int] + 5,
-                  soldier.position.y.asInstanceOf[Int] + 5,
-                  soldier.position.y.asInstanceOf[Int]
-                ),
+    if environment != null then
+      super.setCountries(environment.getCountries())
+      environment
+        .getCountries()
+        .foreach(country =>
+          val polygon = Polygon()
+          val pointList: List[Point2D] = country.boundaries.vertexes
+          pointList
+            .foreach(point => polygon.addPoint(point.x.toInt, point.y.toInt))
+          val g2d: Graphics2D = g.asInstanceOf[Graphics2D]
+          g2d.setColor(Color.decode(getCountryColor(country.name)))
+          g2d.fillPolygon(polygon)
+          g2d.setColor(Color.WHITE)
+          country.armyUnits.foreach(soldier =>
+            if soldier.isInstanceOf[PrecisionArmyUnit] then
+              g2d.fillRect(
+                soldier.position.x.asInstanceOf[Int],
+                soldier.position.y.asInstanceOf[Int],
+                3,
                 3
               )
-            )
+            else
+              g2d.fillPolygon(
+                Polygon(
+                  Array(
+                    soldier.position.x.asInstanceOf[Int] - 3,
+                    soldier.position.x.asInstanceOf[Int] + 3,
+                    soldier.position.x.asInstanceOf[Int]
+                  ),
+                  Array(
+                    soldier.position.y.asInstanceOf[Int] + 3,
+                    soldier.position.y.asInstanceOf[Int] + 3,
+                    soldier.position.y.asInstanceOf[Int]
+                  ),
+                  3
+                )
+              )
+          )
+          g2d.setColor(Color.RED)
+          g2d.setStroke(UIConstants.borderRegion)
+          g2d.drawPolygon(polygon)
         )
-        g2d.setColor(Color.RED)
-        g2d.setStroke(UIConstants.borderRegion)
-        g2d.drawPolygon(polygon)
-      )

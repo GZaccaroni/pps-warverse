@@ -19,6 +19,7 @@ import java.awt.Dimension
 import java.awt.Toolkit
 import it.unibo.warverse.domain.model.fight.Army.*
 import it.unibo.warverse.presentation.controllers.*
+import it.unibo.warverse.domain.model.Environment
 
 class GameLoop:
 
@@ -31,6 +32,14 @@ class GameLoop:
   private val gameMap = GameMap()
   private var nextLoop: Long = 0
   private val timeFrame = 1000
+  var controller: GameStateController = _
+  var environment: Environment = _
+
+  def setEnvironment(environment: Environment): Unit =
+    this.environment = environment
+
+  def setController(controller: GameStateController): Unit =
+    this.controller = controller
 
   def startGameLoop(): Unit =
     gameThread = Thread(() => gameLoop())
@@ -66,7 +75,13 @@ class GameLoop:
     exit && !paused
 
   def updateResources(): Unit =
-    println("Update Res")
+    controller.setAllCountries(
+      controller
+        .getAllCountries()
+        .map(country =>
+          country.updateResources(country.resources + country.citizens)
+        )
+    )
 
   def checkAndUpdateEndedWars(): Unit =
     println("Check End War")
