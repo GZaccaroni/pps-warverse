@@ -39,6 +39,7 @@ object Geometry:
   trait Polygon[Point]:
     def vertexes: List[Point]
     def center: Point
+    def area: Double
     def contains(point: Point): Boolean
 
   type Polygon2D = Polygon[Point2D]
@@ -54,6 +55,21 @@ object Geometry:
         vertexes.map(_.x).sum / vertexes.length,
         vertexes.map(_.y).sum / vertexes.length
       )
+
+    /** Compute te area with the Sohelace formula
+      *
+      * @return
+      *   the area of Polygon2D
+      */
+    override def area: Double =
+      val X = vertexes.map(_.x)
+      val Y = vertexes.map(_.y)
+      (for
+        i <- vertexes.indices
+        j = (i - 1 + vertexes.length) % vertexes.length
+        area = (X(j) + X(i)) * (Y(j) - Y(i))
+      yield area).sum / 2
+
     private def awtPath2D: AwtGeom.Path2D =
       val path2D = AwtGeom.Path2D.Double()
       vertexes.headOption match
