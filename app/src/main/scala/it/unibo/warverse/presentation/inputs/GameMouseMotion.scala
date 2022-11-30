@@ -16,10 +16,10 @@ trait GameMouseMotion extends JPanel with MouseMotionListener:
 
   def getCountryColor(name: String): String =
     String.format("#%X", name.hashCode())
-  
+
   def setCountries(countries: List[Country]): Unit =
     this.countries = countries
-    
+
   def getCountries: List[Country] = this.countries
 
   override def mouseDragged(e: MouseEvent): Unit = mouseMotion(e)
