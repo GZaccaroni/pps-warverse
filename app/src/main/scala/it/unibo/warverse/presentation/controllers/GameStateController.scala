@@ -2,8 +2,6 @@ package it.unibo.warverse.presentation.controllers
 
 import it.unibo.warverse.presentation.view.*
 import it.unibo.warverse.domain.model.world.Relations
-
-import java.awt.BorderLayout
 import it.unibo.warverse.domain.model.world.Relations.*
 import it.unibo.warverse.domain.model.world.World.Country
 import it.unibo.warverse.domain.model.Environment
@@ -65,8 +63,8 @@ object GameStateController:
       )
     override def setPanel(): Unit =
       hud.setController(this)
-      gamePanel.addToPanel(gameMap, BorderLayout.WEST)
-      gamePanel.addToPanel(hud, BorderLayout.EAST)
+      gamePanel.addToPanel(gameMap, GuiEnum.WEST)
+      gamePanel.addToPanel(hud, GuiEnum.EAST)
       mainFrame.setPanel(gamePanel)
       gameLoop.setController(this)
 

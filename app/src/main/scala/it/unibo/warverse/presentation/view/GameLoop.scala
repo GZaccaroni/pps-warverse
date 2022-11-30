@@ -67,7 +67,6 @@ class GameLoop:
     )
     checkAndUpdateEndedWars()
     movementController.moveUnitArmies()
-    checkWar()
     if continue() then gameLoop()
 
   private def waitForNextLoop(): Unit =
@@ -75,11 +74,8 @@ class GameLoop:
     catch case ex: InterruptedException => ()
     nextLoop = System.currentTimeMillis() + timeFrame
 
-  def checkWar(): Unit =
+  def checkAndUpdateEndedWars(): Unit =
     if this.relationsController.noWars(this.gameStateController.getRelationship, this.environment.countries) then stopGameLoop()
 
   private def continue(): Boolean =
     exit && !paused
-
-  def checkAndUpdateEndedWars(): Unit =
-    println("Check End War")
