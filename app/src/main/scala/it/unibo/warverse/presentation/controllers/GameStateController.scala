@@ -24,6 +24,7 @@ trait GameStateController:
   def updateResources(environment: Environment): Environment
   def setMapEnv(environment: Environment): Unit
   def show(x: Option[Country]): Country
+  def isInWar(country: Country): Boolean
 
 object GameStateController:
   def apply(mainFrame: MainFrame): GameStateController =
@@ -47,13 +48,18 @@ object GameStateController:
     override def setMapEnv(environment: Environment): Unit =
       this.gameMap.setEnvironment(environment)
 
+    override def isInWar(country: Country): Boolean =
+      interstateRelation.getEnemies(country.id).size > 0
+
     override def updateResources(environment: Environment): Environment =
       environment.updateCountries(
         environment
           .getCountries()
           .map(country =>
             country.updateResources(
-              country.resources + country.citizens - country.armyUnits.size * 100
+              if isInWar(country) then
+                country.resources + country.citizens - country.armyUnits.size * 100
+              else country.resources + country.citizens
             )
           )
       )
