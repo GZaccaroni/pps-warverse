@@ -35,7 +35,7 @@ object AttackStrategy:
   object AttackStrategy2D:
     def apply(countryEnemies: Iterable[Country]): AttackStrategy2D =
       AttackStrategy2dImpl(countryEnemies)
-    case class AttackStrategy2dImpl(countryEnemies: Iterable[Country])
+    private case class AttackStrategy2dImpl(countryEnemies: Iterable[Country])
         extends AttackStrategy2D:
       override def attackTargets(
         attackType: Fight.AttackType
