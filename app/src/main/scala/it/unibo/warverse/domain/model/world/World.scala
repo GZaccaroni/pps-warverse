@@ -25,7 +25,6 @@ object World:
     boundaries: Geometry.Polygon2D
   ) extends UpdateResources:
     override def updateResources(newResources: Life.Resources): Country =
-      // println(newResources)
       if newResources < 0 then this.copy(resources = 0)
       else this.copy(resources = newResources)
 

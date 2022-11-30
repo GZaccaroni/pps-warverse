@@ -21,6 +21,8 @@ trait GameStateController:
   def setInterstateRelations(
     interstateRelations: InterstateRelations
   ): Unit
+  def updateResources(environment: Environment): Environment
+  def setMapEnv(environment: Environment): Unit
   def show(x: Option[Country]): Country
 
 object GameStateController:
@@ -42,6 +44,19 @@ object GameStateController:
 
     var interstateRelation: InterstateRelations = _
 
+    override def setMapEnv(environment: Environment): Unit =
+      this.gameMap.setEnvironment(environment)
+
+    override def updateResources(environment: Environment): Environment =
+      environment.updateCountries(
+        environment
+          .getCountries()
+          .map(country =>
+            country.updateResources(
+              country.resources + country.citizens - country.armyUnits.size * 100
+            )
+          )
+      )
     override def setPanel(): Unit =
       hud.setController(this)
       gamePanel.addToPanel(gameMap, BorderLayout.WEST)
@@ -61,7 +76,9 @@ object GameStateController:
       gameLoop.stopGameLoop()
 
     override def setAllCountries(countries: List[Country]): Unit =
+      this.gameLoop.setController(this)
       val newEnv = this.environment.updateCountries(countries)
+      this.environment.setCountries(countries)
       gameMap.setEnvironment(newEnv)
       gameLoop.setEnvironment(newEnv)
 
