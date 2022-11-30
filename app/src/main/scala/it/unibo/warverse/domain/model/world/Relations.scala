@@ -4,6 +4,7 @@ import it.unibo.warverse.domain.model.world.World.Country
 
 import scala.::
 import javax.swing.JOptionPane
+import it.unibo.warverse.domain.model.world.World.CountryId
 
 object Relations:
 
@@ -23,6 +24,10 @@ object Relations:
     def getAllies(country: World.CountryId): Iterable[World.CountryId]
 
     def getEnemies(country: World.CountryId): Iterable[World.CountryId]
+
+    def getStatus(country1: World.CountryId, country2: World.CountryId): RelationStatus
+
+    def setWar(country1: World.CountryId, country2: World.CountryId): Unit
 
   object InterstateRelations:
     def apply(relations: List[InterstateRelation]): InterstateRelations =
@@ -54,6 +59,25 @@ object Relations:
         country: World.CountryId
       ): Iterable[World.CountryId] =
         getRelatedCountry(country, RelationStatus.WAR)
+
+      override def getStatus(country1: World.CountryId, country2: World.CountryId): RelationStatus = 
+        getRelatedStatus(country1, country2)
+      
+      override def setWar(country1: CountryId, country2: CountryId): Unit =
+        withoutRelation(((country1, country2), RelationStatus.NEUTRAL))
+        withRelation(((country1, country2), RelationStatus.WAR))
+
+
+      private def getRelatedStatus(
+        country1: World.CountryId,
+        country2: World.CountryId
+      ) =
+        relations.collect({
+          case ((`country1`, `country2`), status) =>
+            status
+          case ((`country2`, `country1`), status) =>
+            status
+        }).last
 
       private def getRelatedCountry(
         country: World.CountryId,

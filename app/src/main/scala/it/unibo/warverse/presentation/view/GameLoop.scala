@@ -54,11 +54,12 @@ class GameLoop:
 
   def stopGameLoop(): Unit =
     exit = false
+    this.gameStateController.mainFrame.setPanel(EndPanel())
 
   def gameLoop(): Unit =
     waitForNextLoop()
     relationsController
-      .updateRelations() // quali stati devono intervenire in guerra (forse in prolog)
+      .updateRelations(this.gameStateController.getRelationship, this.environment.countries) // quali stati devono intervenire in guerra (forse in prolog)
     attackController.attackAndUpdate()
     setEnvironment(
       gameStateController
@@ -66,12 +67,16 @@ class GameLoop:
     )
     checkAndUpdateEndedWars()
     movementController.moveUnitArmies()
+    checkWar()
     if continue() then gameLoop()
 
   private def waitForNextLoop(): Unit =
     try Thread.sleep(Math.max(0, nextLoop - System.currentTimeMillis()))
     catch case ex: InterruptedException => ()
     nextLoop = System.currentTimeMillis() + timeFrame
+
+  def checkWar(): Unit =
+    if this.relationsController.noWars(this.gameStateController.getRelationship, this.environment.countries) then stopGameLoop()
 
   private def continue(): Boolean =
     exit && !paused
