@@ -133,11 +133,11 @@ class Hud extends GameMouseMotion:
 
   def highlightText(text: String, name: String, color: Color): Unit =
     var c: Integer = 0
+    val painter: HighlightPainter =
+      DefaultHighlighter.DefaultHighlightPainter(color)
     while text.indexOf(name, c) != -1 do
       val p0: Integer = text.indexOf(name, c)
       val p1: Integer = p0 + name.length()
-      val painter: HighlightPainter =
-        DefaultHighlighter.DefaultHighlightPainter(color)
       highlighter.addHighlight(p0, p1, painter)
       c = p1
 

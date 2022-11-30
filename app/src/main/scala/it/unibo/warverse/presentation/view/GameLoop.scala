@@ -32,14 +32,10 @@ class GameLoop:
   private val gameMap = GameMap()
   private var nextLoop: Long = 0
   private val timeFrame = 1000
-  var controller: GameStateController = _
-  var environment: Environment = _
+  var environment: Environment = Environment()
 
   def setEnvironment(environment: Environment): Unit =
     this.environment = environment
-
-  def setController(controller: GameStateController): Unit =
-    this.controller = controller
 
   def startGameLoop(): Unit =
     gameThread = Thread(() => gameLoop())
@@ -75,11 +71,13 @@ class GameLoop:
     exit && !paused
 
   def updateResources(): Unit =
-    controller.setAllCountries(
-      controller
-        .getAllCountries()
+    environment.setCountries(
+      environment
+        .getCountries()
         .map(country =>
-          country.updateResources(country.resources + country.citizens)
+          country.updateResources(
+            country.resources + country.citizens - country.armyUnits.size * 100
+          )
         )
     )
 

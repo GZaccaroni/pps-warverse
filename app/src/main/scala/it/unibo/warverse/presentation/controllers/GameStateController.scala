@@ -64,7 +64,6 @@ object GameStateController:
       val newEnv = this.environment.updateCountries(countries)
       gameMap.setEnvironment(newEnv)
       gameLoop.setEnvironment(newEnv)
-      gameLoop.setController(this)
 
     override def getAllCountries(): List[Country] =
       this.environment.getCountries()
