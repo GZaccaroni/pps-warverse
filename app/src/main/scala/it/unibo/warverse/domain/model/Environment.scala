@@ -16,6 +16,9 @@ object Environment:
   def apply(countries: List[Country], day: Integer): Environment =
     EnvironmentImpl(countries, day)
 
+  def apply(): Environment =
+    EnvironmentImpl(List(), 0)
+
   private case class EnvironmentImpl(
     override val countries: List[Country],
     override var day: Integer
