@@ -14,6 +14,10 @@ object World:
     countries: List[Country],
     interstateRelations: InterstateRelations
   )
+
+  trait UpdateResources:
+    def updateResources(newResources: Life.Resources): Country
+
   case class Country(
     id: CountryId,
     name: String,
@@ -21,7 +25,10 @@ object World:
     armyUnits: List[ArmyUnit],
     resources: Life.Resources,
     boundaries: Geometry.Polygon2D
-  )
+  ) extends UpdateResources:
+    override def updateResources(newResources: Life.Resources): Country =
+      if newResources < 0 then this.copy(resources = 0)
+      else this.copy(resources = newResources)
 
   case class Citizen(
     position: Geometry.Point2D

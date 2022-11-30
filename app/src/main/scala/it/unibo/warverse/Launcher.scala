@@ -15,3 +15,4 @@ object Launcher extends App:
   mainFrame.pack()
   menu.requestFocus()
   mainFrame.setVisible(true)
+  mainFrame.setLocationRelativeTo(null)
