@@ -34,7 +34,6 @@ import it.unibo.warverse.domain.model.world.Relations
 import it.unibo.warverse.domain.model.world.Relations.InterstateRelations
 
 class Hud extends GameMouseMotion:
-  super.setCountries(UIConstants.testCountries)
   this.setPreferredSize(Dimension(350, 20))
   private val uploadConfig = JButton("Upload Configuration")
   private val fileChooser = JFileChooser()
@@ -63,7 +62,6 @@ class Hud extends GameMouseMotion:
   this.console.setWrapStyleWord(true)
   val highlighter: Highlighter = console.getHighlighter
   var countries: List[World.Country] = _
-  var text = ""
   var controller: GameStateController = _
   private val gameStatus: JScrollPane = JScrollPane(console)
   gameStatus.setVerticalScrollBarPolicy(22)
@@ -100,7 +98,8 @@ class Hud extends GameMouseMotion:
   def updateConsole(relations: InterstateRelations): Unit =
     countries.foreach(country =>
       console.append(
-        country.name + " start with " + country.citizens + " Citizen, " + country.armyUnits.length + " Army units and " + country.resources + " Resources\n\n"
+        country.name + " start with " + country.citizens + " Citizen, " + country.armyUnits.length + " Army units and " + String
+          .format("%.02f", country.resources) + " Resources\n\n"
       )
     )
 
@@ -111,8 +110,6 @@ class Hud extends GameMouseMotion:
           val ally = countries.find(_.id == allyId).get;
           console.append(country.name + " is allied with " + ally.name + "\n\n")
         )
-    )
-    countries.foreach(country =>
       relations
         .getEnemies(country.id)
         .foreach(enemyId =>
@@ -121,34 +118,28 @@ class Hud extends GameMouseMotion:
             country.name + " is in war with " + enemy.name + "\n\n"
           )
         )
-    )
-    text = console.getText()
-    countries.foreach(country =>
       highlightText(
-        text,
+        console.getText,
         country.name,
-        Color.decode(getCountryColor(country.name))
+        Color.decode(super.getCountryColor(country.name))
       )
     )
 
-    highlightText(text, "allied", Color(0, 153, 0))
-    highlightText(text, "war", Color.RED)
+    highlightText(console.getText, "allied", Color(0, 153, 0))
+    highlightText(console.getText, "war", Color.RED)
 
   def setController(controller: GameStateController): Unit =
     this.controller = controller
 
   def highlightText(text: String, name: String, color: Color): Unit =
     var c: Integer = 0
+    val painter: HighlightPainter =
+      DefaultHighlighter.DefaultHighlightPainter(color)
     while text.indexOf(name, c) != -1 do
       val p0: Integer = text.indexOf(name, c)
       val p1: Integer = p0 + name.length()
-      val painter: HighlightPainter =
-        DefaultHighlighter.DefaultHighlightPainter(color)
       highlighter.addHighlight(p0, p1, painter)
       c = p1
-
-  def getCountryColor(name: String): String =
-    String.format("#%X", name.hashCode())
 
   def addJComponents(box: Box, list: List[JComponent]): Unit =
     list.foreach(component => box.add(component))
