@@ -7,6 +7,9 @@ import it.unibo.warverse.domain.model.common.Movement.Movable
 import it.unibo.warverse.domain.model.fight.Fight
 import it.unibo.warverse.domain.model.world.World
 import it.unibo.warverse.domain.model.fight.AttackStrategy
+import it.unibo.warverse.domain.model.fight.AttackStrategy.AttackStrategy2D
+
+import scala.util.Random
 
 object Army:
   trait ResourcesConsumer:
@@ -52,7 +55,7 @@ object Army:
     override def attackType: Fight.AttackType = Fight.AttackType.Precision
     override def copied(position: Point2D): ArmyUnit = copy(position = position)
     override def attack(
-      strategy: AttackStrategy
+      strategy: AttackStrategy2D
     ): List[SimulationEvent.AttackEvent] =
       ???
 
@@ -71,6 +74,13 @@ object Army:
     override def attackType: Fight.AttackType = Fight.AttackType.Area
     override def copied(position: Point2D): ArmyUnit = copy(position = position)
     override def attack(
-      strategy: AttackStrategy
+      strategy: AttackStrategy2D
     ): List[SimulationEvent.AttackEvent] =
-      ???
+      val availableTargets = strategy
+        .attackTargets(attackType)
+        .filter(target => position.distanceFrom(target) < rangeOfHit)
+      for
+        (target, _) <- availableTargets.zip(1 until availableHits)
+        probabilityOfSuccess <- List.fill(availableHits)(Random.nextInt(100))
+        if probabilityOfSuccess < chanceOfHit
+      yield SimulationEvent.AreaAttackEvent(target, areaOfImpact)
