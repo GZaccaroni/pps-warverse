@@ -68,6 +68,7 @@ object GameStateController:
       gamePanel.addToPanel(gameMap, BorderLayout.WEST)
       gamePanel.addToPanel(hud, BorderLayout.EAST)
       mainFrame.setPanel(gamePanel)
+      gameLoop.setController(this)
 
     override def startClicked(): Unit =
       gameLoop.startGameLoop()
