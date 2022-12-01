@@ -15,14 +15,14 @@ import it.unibo.warverse.presentation.controllers.GameStateController
 import it.unibo.warverse.presentation.view.MenuActions
 
 trait MenuMouseAdapter extends MouseAdapter:
-  def menuItems: Array[String]
+  def menuItems: Seq[String]
   def panel: MenuActions
   def menuBounds: Map[String, RoundRectangle2D]
   def mainFrame: MainFrame
 
 object MenuMouseAdapter:
   def apply(
-    menuItems: Array[String],
+    menuItems: Seq[String],
     panel: MenuActions,
     menuBounds: Map[String, RoundRectangle2D],
     mainFrame: MainFrame
@@ -35,7 +35,7 @@ object MenuMouseAdapter:
     )
 
   private class MenuMouseAdapterImpl(
-    override val menuItems: Array[String],
+    override val menuItems: Seq[String],
     override val panel: MenuActions,
     override val menuBounds: Map[String, RoundRectangle2D],
     override val mainFrame: MainFrame

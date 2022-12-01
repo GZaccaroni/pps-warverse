@@ -61,7 +61,7 @@ class Hud extends GameMouseMotion:
   this.console.setLineWrap(true)
   this.console.setWrapStyleWord(true)
   val highlighter: Highlighter = console.getHighlighter
-  var countries: List[World.Country] = _
+  var countries: Seq[World.Country] = _
   var controller: GameStateController = _
   private val gameStatus: JScrollPane = JScrollPane(console)
   gameStatus.setVerticalScrollBarPolicy(22)

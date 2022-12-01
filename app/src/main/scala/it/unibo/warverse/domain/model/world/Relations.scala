@@ -14,7 +14,7 @@ object Relations:
 
   trait InterstateRelations:
 
-    def relations: List[InterstateRelation]
+    def relations: Seq[InterstateRelation]
 
     def withRelation(relation: InterstateRelation): InterstateRelations
 
@@ -25,11 +25,11 @@ object Relations:
     def getEnemies(country: World.CountryId): Iterable[World.CountryId]
 
   object InterstateRelations:
-    def apply(relations: List[InterstateRelation]): InterstateRelations =
+    def apply(relations: Seq[InterstateRelation]): InterstateRelations =
       InterstateRelationsImpl(relations).dropDuplicates
 
     private case class InterstateRelationsImpl(
-      override val relations: List[InterstateRelation]
+      override val relations: Seq[InterstateRelation]
     ) extends InterstateRelations:
 
       checkIllegalRelation()

@@ -53,7 +53,7 @@ object Army:
     override def copied(position: Point2D): ArmyUnit = copy(position = position)
     override def attack(
       strategy: AttackStrategy
-    ): List[SimulationEvent.AttackEvent] =
+    ): Seq[SimulationEvent.AttackEvent] =
       ???
 
   case class AreaArmyUnit(
@@ -72,5 +72,5 @@ object Army:
     override def copied(position: Point2D): ArmyUnit = copy(position = position)
     override def attack(
       strategy: AttackStrategy
-    ): List[SimulationEvent.AttackEvent] =
+    ): Seq[SimulationEvent.AttackEvent] =
       ???

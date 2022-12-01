@@ -9,7 +9,7 @@ trait AttackStrategy:
 
   def attackTargets(
     attackType: Fight.AttackType
-  ): List[AttackPosition]
+  ): Seq[AttackPosition]
 
 object AttackStrategy:
   def attackStrategy2D(world: WorldState): AttackStrategy2D =

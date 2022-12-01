@@ -10,7 +10,6 @@ import it.unibo.warverse.domain.model.common.Geometry.{
 }
 import it.unibo.warverse.domain.model.fight.Army
 import it.unibo.warverse.domain.model.world.World
-import it.unibo.warverse.domain.model.world.World.Citizen
 import it.unibo.warverse.data.data_sources.simulation_config.Serializers.*
 import it.unibo.warverse.data.models.{ArmyDtos, GeometryDtos}
 import it.unibo.warverse.data.models.WorldDtos.CountryDto
@@ -86,7 +85,7 @@ object SimulationConfigDataSource:
     private def mapArmyDto(
       countryId: World.CountryId,
       dto: ArmyDtos.CountryArmy
-    ): List[Army.ArmyUnit] =
+    ): Seq[Army.ArmyUnit] =
       dto.units.map(unit =>
         dto.unitKinds.find(_.id == unit.kind) match
           case Some(kind) =>

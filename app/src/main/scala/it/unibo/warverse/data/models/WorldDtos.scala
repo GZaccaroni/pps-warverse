@@ -9,7 +9,7 @@ object WorldDtos:
   case class CountryDto(
     id: World.CountryId,
     resources: Double,
-    boundaries: List[GeometryDtos.Point2DDto],
+    boundaries: Seq[GeometryDtos.Point2DDto],
     citizens: Int,
     relations: CountryRelationsDto = CountryRelationsDto(),
     army: ArmyDtos.CountryArmy
@@ -22,6 +22,6 @@ object WorldDtos:
       army.validate()
 
   case class CountryRelationsDto(
-    allies: List[World.CountryId] = List.empty,
-    enemies: List[World.CountryId] = List.empty
+    allies: Seq[World.CountryId] = Seq.empty,
+    enemies: Seq[World.CountryId] = Seq.empty
   )

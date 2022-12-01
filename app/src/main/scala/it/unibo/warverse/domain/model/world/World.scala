@@ -20,7 +20,7 @@ object World:
     id: CountryId,
     name: String,
     citizens: Int,
-    armyUnits: List[ArmyUnit],
+    armyUnits: Seq[ArmyUnit],
     resources: Life.Resources,
     boundaries: Geometry.Polygon2D
   ) extends UpdateResources:

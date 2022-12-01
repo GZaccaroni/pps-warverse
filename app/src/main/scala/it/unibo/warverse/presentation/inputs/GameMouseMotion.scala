@@ -11,16 +11,16 @@ import javax.swing.JLabel
 import javax.swing.JMenuItem
 
 trait GameMouseMotion extends JPanel with MouseMotionListener:
-  private var countries: List[Country] = _
+  private var countries: Seq[Country] = _
   val popUp: JPopupMenu = JPopupMenu()
 
   def getCountryColor(name: String): String =
     String.format("#%X", name.hashCode())
 
-  def setCountries(countries: List[Country]): Unit =
+  def setCountries(countries: Seq[Country]): Unit =
     this.countries = countries
 
-  def getCountries: List[Country] = this.countries
+  def getCountries: Seq[Country] = this.countries
 
   override def mouseDragged(e: MouseEvent): Unit = mouseMotion(e)
 
