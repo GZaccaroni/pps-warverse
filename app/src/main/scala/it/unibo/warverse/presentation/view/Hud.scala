@@ -118,13 +118,14 @@ class Hud extends GameMouseMotion:
             country.name + " is in war with " + enemy.name + "\n\n"
           )
         )
+    )
+    countries.foreach(country =>
       highlightText(
         console.getText,
         country.name,
         Color.decode(super.getCountryColor(country.name))
       )
     )
-
     highlightText(console.getText, "allied", Color(0, 153, 0))
     highlightText(console.getText, "war", Color.RED)
 
@@ -162,6 +163,7 @@ class Hud extends GameMouseMotion:
         )
         super.setCountries(simulationConfig.countries)
         this.countries = simulationConfig.countries
+        this.console.setText("")
         updateConsole(this.controller.getRelationship)
         JOptionPane.showMessageDialog(
           null,

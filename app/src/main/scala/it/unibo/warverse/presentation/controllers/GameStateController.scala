@@ -2,8 +2,6 @@ package it.unibo.warverse.presentation.controllers
 
 import it.unibo.warverse.presentation.view.*
 import it.unibo.warverse.domain.model.world.Relations
-
-import java.awt.BorderLayout
 import it.unibo.warverse.domain.model.world.Relations.*
 import it.unibo.warverse.domain.model.world.World.Country
 import it.unibo.warverse.domain.model.Environment
@@ -53,8 +51,7 @@ object GameStateController:
 
     override def updateResources(environment: Environment): Environment =
       environment.updateCountries(
-        environment
-          .getCountries()
+        environment.getCountries
           .map(country =>
             country.updateResources(
               if isInWar(country) then
@@ -65,9 +62,10 @@ object GameStateController:
       )
     override def setPanel(): Unit =
       hud.setController(this)
-      gamePanel.addToPanel(gameMap, BorderLayout.WEST)
-      gamePanel.addToPanel(hud, BorderLayout.EAST)
+      gamePanel.addToPanel(gameMap, GuiEnum.WEST)
+      gamePanel.addToPanel(hud, GuiEnum.EAST)
       mainFrame.setPanel(gamePanel)
+      gameLoop.setController(this)
 
     override def startClicked(): Unit =
       gameLoop.startGameLoop()
@@ -89,7 +87,7 @@ object GameStateController:
       gameLoop.setEnvironment(newEnv)
 
     override def getAllCountries(): List[Country] =
-      this.environment.getCountries()
+      this.environment.getCountries
 
     override def getRelationship: InterstateRelations =
       this.interstateRelation
