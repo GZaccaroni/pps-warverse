@@ -42,10 +42,10 @@ object SimulationConfigDataSource:
     override def simulationConfig: SimulationConfig =
       implicit val formats: Formats =
         DefaultFormats + ArmyUnitKindSerializer() + UnitAttackTypeSerializer()
-      val jsonObj: JObject = parse(file).asInstanceOf[JObject]
+      val jsonValue = parse(file)
 
       val simulationConfigDto =
-        jsonObj.camelizeKeys.extract[SimulationConfigDto]
+        jsonValue.camelizeKeys.extract[SimulationConfigDto]
       val result = mapSimulationConfigDto(simulationConfigDto)
       simulationConfigDto.validate()
       result
