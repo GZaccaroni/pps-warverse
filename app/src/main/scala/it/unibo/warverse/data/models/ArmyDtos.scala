@@ -6,8 +6,8 @@ import it.unibo.warverse.domain.model.common.Validation.*
 
 object ArmyDtos:
   case class CountryArmy(
-    unitKinds: List[ArmyUnitKind],
-    units: List[ArmyUnit]
+    unitKinds: Seq[ArmyUnitKind],
+    units: Seq[ArmyUnit]
   ) extends Validatable:
     override def validate(): Unit =
       given ValidatedEntity = ValidatedEntity(this.getClass.getTypeName)

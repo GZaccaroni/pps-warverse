@@ -7,7 +7,6 @@ import java.awt.Graphics
 import it.unibo.warverse.domain.model.common.Geometry.Point2D
 import it.unibo.warverse.domain.model.common.Geometry.Polygon2D
 import it.unibo.warverse.domain.model.world.World.Country
-import it.unibo.warverse.domain.model.world.World.Citizen
 import it.unibo.warverse.domain.model.common.Geometry
 import java.awt.Polygon
 import scala.language.postfixOps
@@ -29,17 +28,18 @@ class GameLoop:
   private val attackController = AttackController()
   private val movementController = MovementController()
   private val relationsController = RelationsController()
-  private var gameStateController: GameStateController = _
   private var nextLoop: Long = 0
   private val timeFrame = 1000
-  var environment: Environment = Environment()
+  private var _controller: GameStateController = _
+  private var _environment: Environment = Environment.initial(List.empty)
 
-  def setEnvironment(environment: Environment): Unit =
-    this.gameStateController.setMapEnv(environment)
-    this.environment = environment
+  def environment: Environment = _environment
+  def environment_=(environment: Environment): Unit =
+    _controller.environment = environment
+    _environment = environment
 
   def setController(controller: GameStateController): Unit =
-    this.gameStateController = controller
+    this._controller = controller
 
   def startGameLoop(): Unit =
     gameThread = Thread(() => gameLoop())
@@ -54,20 +54,20 @@ class GameLoop:
 
   def stopGameLoop(): Unit =
     exit = false
-    this.gameStateController.mainFrame.setPanel(EndPanel())
+    this._controller.mainFrame.setPanel(EndPanel())
 
   def gameLoop(): Unit =
     waitForNextLoop()
     relationsController
       .updateRelations(
-        this.gameStateController.getRelationship,
+        this._controller.interstateRelations,
         this.environment.countries
       ) // quali stati devono intervenire in guerra (forse in prolog)
     attackController.attackAndUpdate()
-    setEnvironment(
+    /*setEnvironment(
       gameStateController
         .updateResources(environment)
-    )
+    )*/
     checkAndUpdateEndedWars()
     movementController.moveUnitArmies()
     if continue() then gameLoop()
@@ -79,7 +79,7 @@ class GameLoop:
 
   def checkAndUpdateEndedWars(): Unit =
     if this.relationsController.noWars(
-        this.gameStateController.getRelationship,
+        this._controller.interstateRelations,
         this.environment.countries
       )
     then stopGameLoop()

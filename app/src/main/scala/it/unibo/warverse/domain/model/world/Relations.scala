@@ -15,29 +15,29 @@ object Relations:
 
   trait InterstateRelations:
 
-    def relations: List[InterstateRelation]
+    def relations: Seq[InterstateRelation]
 
     def withRelation(relation: InterstateRelation): InterstateRelations
 
     def withoutRelation(relation: InterstateRelation): InterstateRelations
 
-    def getAllies(country: World.CountryId): Iterable[World.CountryId]
+    def countryAllies(country: World.CountryId): Iterable[World.CountryId]
 
-    def getEnemies(country: World.CountryId): Iterable[World.CountryId]
+    def countryEnemies(country: World.CountryId): Iterable[World.CountryId]
 
     def getStatus(
       country1: World.CountryId,
       country2: World.CountryId
-    ): List[RelationStatus]
+    ): Seq[RelationStatus]
 
     def setWar(country1: World.CountryId, country2: World.CountryId): Unit
 
   object InterstateRelations:
-    def apply(relations: List[InterstateRelation]): InterstateRelations =
+    def apply(relations: Seq[InterstateRelation]): InterstateRelations =
       InterstateRelationsImpl(relations).dropDuplicates
 
     private case class InterstateRelationsImpl(
-      override val relations: List[InterstateRelation]
+      override val relations: Seq[InterstateRelation]
     ) extends InterstateRelations:
 
       checkIllegalRelation()
@@ -57,12 +57,12 @@ object Relations:
           )
         )
 
-      override def getAllies(
+      override def countryAllies(
         country: World.CountryId
       ): Iterable[World.CountryId] =
         getRelatedCountry(country, RelationStatus.ALLIANCE)
 
-      override def getEnemies(
+      override def countryEnemies(
         country: World.CountryId
       ): Iterable[World.CountryId] =
         getRelatedCountry(country, RelationStatus.WAR)
@@ -70,7 +70,7 @@ object Relations:
       override def getStatus(
         country1: World.CountryId,
         country2: World.CountryId
-      ): List[RelationStatus] =
+      ): Seq[RelationStatus] =
         getRelatedStatus(country1, country2)
 
       override def setWar(country1: CountryId, country2: CountryId): Unit =

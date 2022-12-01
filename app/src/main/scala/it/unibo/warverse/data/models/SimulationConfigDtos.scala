@@ -6,7 +6,7 @@ import it.unibo.warverse.domain.model.world.World
 
 object SimulationConfigDtos:
   case class SimulationConfigDto(
-    countries: List[WorldDtos.CountryDto]
+    countries: Seq[WorldDtos.CountryDto]
   ) extends Validatable:
     override def validate(): Unit =
       given ValidatedEntity = ValidatedEntity(this.getClass.getTypeName)
