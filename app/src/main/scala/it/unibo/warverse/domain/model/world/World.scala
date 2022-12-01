@@ -15,6 +15,8 @@ object World:
 
   trait UpdateResources:
     def updateResources(newResources: Life.Resources): Country
+    def updateCitizen(newCitizen: Int): Country
+    def updateArmy(newArmy: List[ArmyUnit]): Country
 
   case class Country(
     id: CountryId,
@@ -25,14 +27,12 @@ object World:
     boundaries: Geometry.Polygon2D
   ) extends UpdateResources:
     override def updateResources(newResources: Life.Resources): Country =
-      if newResources < 0 then this.copy(resources = 0)
-      else this.copy(resources = newResources)
+      if resources + newResources < 0 then this.copy(resources = 0)
+      else this.copy(resources = resources + newResources)
 
-  case class Citizen(
-    position: Geometry.Point2D
-  ) extends Movement.Locatable,
-        Life.LivingEntity,
-        Attackable:
-    override type Position = Geometry.Point2D
+    override def updateCitizen(newCitizen: Int): Country =
+      if citizens + newCitizen < 0 then this.copy(citizens = 0)
+      this.copy(citizens = citizens + newCitizen)
 
-    def alive: Boolean = ???
+    override def updateArmy(newArmy: List[ArmyUnit]): Country =
+      this.copy(armyUnits = armyUnits.concat(newArmy))

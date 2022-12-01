@@ -10,7 +10,6 @@ import it.unibo.warverse.domain.model.common.Geometry.{
 }
 import it.unibo.warverse.domain.model.fight.Army
 import it.unibo.warverse.domain.model.world.World
-import it.unibo.warverse.domain.model.world.World.Citizen
 import it.unibo.warverse.data.data_sources.simulation_config.Serializers.*
 import it.unibo.warverse.data.models.{ArmyDtos, GeometryDtos}
 import it.unibo.warverse.data.models.WorldDtos.CountryDto
