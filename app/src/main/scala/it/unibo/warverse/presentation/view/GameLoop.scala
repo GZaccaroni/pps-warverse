@@ -20,6 +20,7 @@ import java.awt.Toolkit
 import it.unibo.warverse.domain.model.fight.Army.*
 import it.unibo.warverse.presentation.controllers.*
 import it.unibo.warverse.domain.model.Environment
+import it.unibo.warverse.domain.model.world.Relations.InterstateRelations
 
 class GameLoop:
 
@@ -30,6 +31,7 @@ class GameLoop:
   private val movementController = MovementController()
   private val relationsController = RelationsController()
   private var gameStateController: GameStateController = _
+  private val gameStatsController: GameStatsController = GameStatsController()
   private var nextLoop: Long = 0
   private val timeFrame = 1000
   var environment: Environment = Environment()
@@ -62,7 +64,7 @@ class GameLoop:
       .updateRelations(
         this.gameStateController.getRelationship,
         this.environment.countries
-      ) // quali stati devono intervenire in guerra (forse in prolog)
+      )
     attackController.attackAndUpdate()
     setEnvironment(
       gameStateController
@@ -78,11 +80,43 @@ class GameLoop:
     nextLoop = System.currentTimeMillis() + timeFrame
 
   def checkAndUpdateEndedWars(): Unit =
+    val currentRelation = this.gameStateController.getRelationship
+    val currentCountries = this.environment.countries
     if this.relationsController.noWars(
-        this.gameStateController.getRelationship,
-        this.environment.countries
+        currentRelation,
+        currentCountries
       )
     then stopGameLoop()
+    else
+      this.relationsController
+        .getWars(currentRelation, currentCountries)
+        .foreach(countryInWar =>
+          if countryInWar.armyUnits.size <= 0 || countryInWar.citizens <= 0 || countryInWar.resources <= 0
+          then
+            assignLostResources(countryInWar, currentCountries, currentRelation)
+        )
+      this.setEnvironment(this.environment.nextDay())
+
+  private def assignLostResources(
+    countryInWar: Country,
+    currentCountries: List[Country],
+    currentRelation: InterstateRelations
+  ): Unit =
+    this.gameStateController.setInterstateRelations(
+      this.relationsController
+        .removeLostStateRelation(countryInWar, currentRelation)
+    )
+    this.environment
+      .setCountries(currentCountries.filterNot(_ == countryInWar))
+    currentRelation
+      .getEnemies(countryInWar.id)
+      .foreach(winner =>
+        this.gameStatsController.updateStatsEvents(
+          winner,
+          countryInWar,
+          this.environment.day
+        )
+      )
 
   private def continue(): Boolean =
     exit && !paused

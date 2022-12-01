@@ -14,7 +14,7 @@ trait GameStateController:
   def resumeClicked(): Unit
   def stopClicked(): Unit
   def setAllCountries(countries: List[Country]): Unit
-  def getAllCountries(): List[Country]
+  def getAllCountries: List[Country]
   def getRelationship: InterstateRelations
   def setInterstateRelations(
     interstateRelations: InterstateRelations
@@ -47,7 +47,7 @@ object GameStateController:
       this.gameMap.setEnvironment(environment)
 
     override def isInWar(country: Country): Boolean =
-      interstateRelation.getEnemies(country.id).size > 0
+      interstateRelation.getEnemies(country.id).nonEmpty
 
     override def updateResources(environment: Environment): Environment =
       environment.updateCountries(
@@ -62,6 +62,7 @@ object GameStateController:
       )
     override def setPanel(): Unit =
       hud.setController(this)
+      gameLoop.setController(this)
       gamePanel.addToPanel(gameMap, GuiEnum.WEST)
       gamePanel.addToPanel(hud, GuiEnum.EAST)
       mainFrame.setPanel(gamePanel)
@@ -86,7 +87,7 @@ object GameStateController:
       gameMap.setEnvironment(newEnv)
       gameLoop.setEnvironment(newEnv)
 
-    override def getAllCountries(): List[Country] =
+    override def getAllCountries: List[Country] =
       this.environment.getCountries
 
     override def getRelationship: InterstateRelations =
