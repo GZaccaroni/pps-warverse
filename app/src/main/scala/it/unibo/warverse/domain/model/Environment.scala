@@ -8,7 +8,7 @@ trait Environment:
   def day_=(day: Integer): Unit
   def day: Integer
   def setCountries(countries: List[Country]): Environment
-  def getCountries(): List[Country]
+  def getCountries: List[Country]
   def nextDay(): Environment
   def updateCountries(newCountries: List[Country]): Environment
 
@@ -30,6 +30,6 @@ object Environment:
     override def setCountries(countries: List[Country]): Environment =
       Environment(countries, this.day)
 
-    override def getCountries(): List[Country] = this.countries
+    override def getCountries: List[Country] = this.countries
     def nextDay(): Environment =
       Environment(this.countries, this.day + 1)

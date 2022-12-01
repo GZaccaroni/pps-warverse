@@ -22,4 +22,3 @@ object GamePanel:
       constraints match
         case GuiEnum.WEST => this.add(component, BorderLayout.WEST)
         case GuiEnum.EAST => this.add(component, BorderLayout.EAST)
-      

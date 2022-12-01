@@ -5,7 +5,7 @@ import it.unibo.warverse.domain.model.world.World.Country
 import it.unibo.warverse.domain.model.world.World
 
 class GameStatsController:
-  val gameStats = GameStats()
+  private val gameStats: GameStats = GameStats()
 
   def updateStatsEvents(
     winnerCountry: World.CountryId,
