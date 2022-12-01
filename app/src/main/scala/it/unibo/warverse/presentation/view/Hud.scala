@@ -121,13 +121,14 @@ class Hud extends JPanel:
             country.name + " is in war with " + enemy.name + "\n\n"
           )
         )
+    )
+    countries.foreach(country =>
       highlightText(
         console.getText,
         country.name,
         countryColor(country.id)
       )
     )
-
     highlightText(console.getText, "allied", Color(0, 153, 0))
     highlightText(console.getText, "war", Color.RED)
 
@@ -160,8 +161,10 @@ class Hud extends JPanel:
       try
         val simulationConfig = jsonConfigParser.simulationConfig
         this.controller.allCountries = simulationConfig.countries
-        this.controller.interstateRelations = simulationConfig.interstateRelations
+        this.controller.interstateRelations =
+          simulationConfig.interstateRelations
         this.countries = simulationConfig.countries
+        this.console.setText("")
         updateConsole(this.controller.interstateRelations)
         JOptionPane.showMessageDialog(
           null,
