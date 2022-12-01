@@ -52,7 +52,7 @@ object GameStateController:
     override def updateResources(environment: Environment): Environment =
       environment.updateCountries(
         environment
-          .getCountries()
+          .getCountries
           .map(country =>
             country.updateResources(
               if isInWar(country) then
@@ -88,7 +88,7 @@ object GameStateController:
       gameLoop.setEnvironment(newEnv)
 
     override def getAllCountries(): List[Country] =
-      this.environment.getCountries()
+      this.environment.getCountries
 
     override def getRelationship: InterstateRelations =
       this.interstateRelation
