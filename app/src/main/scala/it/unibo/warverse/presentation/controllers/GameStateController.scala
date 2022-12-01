@@ -51,8 +51,7 @@ object GameStateController:
 
     override def updateResources(environment: Environment): Environment =
       environment.updateCountries(
-        environment
-          .getCountries
+        environment.getCountries
           .map(country =>
             country.updateResources(
               if isInWar(country) then
