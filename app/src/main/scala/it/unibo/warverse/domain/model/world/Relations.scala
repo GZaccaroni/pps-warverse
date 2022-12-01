@@ -25,7 +25,10 @@ object Relations:
 
     def getEnemies(country: World.CountryId): Iterable[World.CountryId]
 
-    def getStatus(country1: World.CountryId, country2: World.CountryId): RelationStatus
+    def getStatus(
+      country1: World.CountryId,
+      country2: World.CountryId
+    ): List[RelationStatus]
 
     def setWar(country1: World.CountryId, country2: World.CountryId): Unit
 
@@ -46,9 +49,13 @@ object Relations:
 
       override def withoutRelation(
         relation: InterstateRelation
-      ): InterstateRelations = InterstateRelationsImpl(
-        relations.filterNot(_ == relation)
-      )
+      ): InterstateRelations =
+        InterstateRelationsImpl(
+          relations.filterNot(r =>
+            r == relation ||
+              (r._1.swap, r._2) == relation
+          )
+        )
 
       override def getAllies(
         country: World.CountryId
@@ -60,13 +67,15 @@ object Relations:
       ): Iterable[World.CountryId] =
         getRelatedCountry(country, RelationStatus.WAR)
 
-      override def getStatus(country1: World.CountryId, country2: World.CountryId): RelationStatus = 
+      override def getStatus(
+        country1: World.CountryId,
+        country2: World.CountryId
+      ): List[RelationStatus] =
         getRelatedStatus(country1, country2)
-      
+
       override def setWar(country1: CountryId, country2: CountryId): Unit =
         withoutRelation(((country1, country2), RelationStatus.NEUTRAL))
         withRelation(((country1, country2), RelationStatus.WAR))
-
 
       private def getRelatedStatus(
         country1: World.CountryId,
@@ -77,7 +86,7 @@ object Relations:
             status
           case ((`country2`, `country1`), status) =>
             status
-        }).last
+        })
 
       private def getRelatedCountry(
         country: World.CountryId,
