@@ -60,11 +60,13 @@ class GameLoop:
 
   def gameLoop(): Unit =
     waitForNextLoop()
-    relationsController
-      .updateRelations(
-        this.gameStateController.getRelationship,
-        this.environment.countries
-      )
+    this.gameStateController.setInterstateRelations(
+      relationsController
+        .updateRelations(
+          this.gameStateController.getRelationship,
+          this.environment.countries
+        )
+    )
     attackController.attackAndUpdate()
     setEnvironment(
       gameStateController

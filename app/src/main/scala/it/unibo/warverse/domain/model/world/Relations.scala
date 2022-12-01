@@ -30,8 +30,6 @@ object Relations:
       country2: World.CountryId
     ): List[RelationStatus]
 
-    def setWar(country1: World.CountryId, country2: World.CountryId): Unit
-
   object InterstateRelations:
     def apply(relations: List[InterstateRelation]): InterstateRelations =
       InterstateRelationsImpl(relations).dropDuplicates
@@ -72,10 +70,6 @@ object Relations:
         country2: World.CountryId
       ): List[RelationStatus] =
         getRelatedStatus(country1, country2)
-
-      override def setWar(country1: CountryId, country2: CountryId): Unit =
-        withoutRelation(((country1, country2), RelationStatus.NEUTRAL))
-        withRelation(((country1, country2), RelationStatus.WAR))
 
       private def getRelatedStatus(
         country1: World.CountryId,

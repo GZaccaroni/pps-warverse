@@ -8,18 +8,19 @@ class RelationsController:
   def updateRelations(
     relations: InterstateRelations,
     countries: List[Country]
-  ): Unit =
+  ): InterstateRelations =
+    var newRel: InterstateRelations = relations
     countries.foreach(country =>
       val enemies = relations.getEnemies(country.id)
       val allied = relations.getAllies(country.id)
       enemies.map(enemy =>
         allied.foreach(ally =>
-          if relations.getStatus(enemy, ally).nonEmpty then
-            if relations.getStatus(enemy, ally).last == RelationStatus.NEUTRAL
-            then relations.setWar(enemy, ally)
+          if relations.getStatus(enemy, ally).isEmpty then
+            newRel = newRel.withRelation((enemy, ally), RelationStatus.WAR)
         )
       )
     )
+    newRel
 
   def noWars(
     relations: InterstateRelations,
@@ -35,11 +36,7 @@ class RelationsController:
     relations: InterstateRelations,
     countries: List[Country]
   ): List[Country] =
-    countries.map(country =>
-      if relations.getEnemies(country.id).size > 0
-      then country
-      else null
-    )
+    countries.filter(country => relations.getEnemies(country.id).size > 0)
 
   def removeLostStateRelation(
     country: Country,
