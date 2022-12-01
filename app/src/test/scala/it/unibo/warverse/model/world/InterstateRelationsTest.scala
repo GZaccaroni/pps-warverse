@@ -6,7 +6,7 @@ import it.unibo.warverse.domain.model.world.Relations.{
   InterstateRelations,
   RelationStatus
 }
-import it.unibo.warverse.domain.model.world.World.{Citizen, Country}
+import it.unibo.warverse.domain.model.world.World.Country
 import org.scalatest.BeforeAndAfter
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.must.Matchers

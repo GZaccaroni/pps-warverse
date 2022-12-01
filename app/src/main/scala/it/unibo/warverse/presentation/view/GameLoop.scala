@@ -7,7 +7,6 @@ import java.awt.Graphics
 import it.unibo.warverse.domain.model.common.Geometry.Point2D
 import it.unibo.warverse.domain.model.common.Geometry.Polygon2D
 import it.unibo.warverse.domain.model.world.World.Country
-import it.unibo.warverse.domain.model.world.World.Citizen
 import it.unibo.warverse.domain.model.common.Geometry
 import java.awt.Polygon
 import scala.language.postfixOps

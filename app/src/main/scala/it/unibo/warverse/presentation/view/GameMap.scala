@@ -7,13 +7,15 @@ import java.awt.Graphics
 import it.unibo.warverse.domain.model.common.Geometry.Point2D
 import it.unibo.warverse.domain.model.common.Geometry.Polygon2D
 import it.unibo.warverse.domain.model.world.World.Country
-import it.unibo.warverse.domain.model.world.World.Citizen
 import it.unibo.warverse.domain.model.common.Geometry
+
 import java.awt.Polygon
 import scala.language.postfixOps
 import it.unibo.warverse.domain.model.fight.Army
+
 import java.awt.BasicStroke
 import it.unibo.warverse.presentation.common.UIConstants
+
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.Toolkit

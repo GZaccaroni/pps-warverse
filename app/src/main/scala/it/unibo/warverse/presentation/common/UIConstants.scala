@@ -6,7 +6,6 @@ import it.unibo.warverse.domain.model.common.Geometry.Point2D
 import it.unibo.warverse.domain.model.common.Geometry.Polygon2D
 import it.unibo.warverse.domain.model.world.World.Country
 import it.unibo.warverse.domain.model.world.World.CountryId
-import it.unibo.warverse.domain.model.world.World.Citizen
 import it.unibo.warverse.domain.model.common.Geometry
 import java.awt.Dimension
 import it.unibo.warverse.domain.model.fight.Army.*

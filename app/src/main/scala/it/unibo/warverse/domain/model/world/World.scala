@@ -23,12 +23,3 @@ object World:
     override def updateResources(newResources: Life.Resources): Country =
       if newResources < 0 then this.copy(resources = 0)
       else this.copy(resources = newResources)
-
-  case class Citizen(
-    position: Geometry.Point2D
-  ) extends Movement.Locatable,
-        Life.LivingEntity,
-        Attackable:
-    override type Position = Geometry.Point2D
-
-    def alive: Boolean = ???
