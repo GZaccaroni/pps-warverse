@@ -20,9 +20,9 @@ object Relations:
 
     def withoutRelation(relation: InterstateRelation): InterstateRelations
 
-    def getAllies(country: World.CountryId): Iterable[World.CountryId]
+    def countryAllies(country: World.CountryId): Iterable[World.CountryId]
 
-    def getEnemies(country: World.CountryId): Iterable[World.CountryId]
+    def countryEnemies(country: World.CountryId): Iterable[World.CountryId]
 
   object InterstateRelations:
     def apply(relations: Seq[InterstateRelation]): InterstateRelations =
@@ -45,12 +45,12 @@ object Relations:
         relations.filterNot(_ == relation)
       )
 
-      override def getAllies(
+      override def countryAllies(
         country: World.CountryId
       ): Iterable[World.CountryId] =
         getRelatedCountry(country, RelationStatus.ALLIANCE)
 
-      override def getEnemies(
+      override def countryEnemies(
         country: World.CountryId
       ): Iterable[World.CountryId] =
         getRelatedCountry(country, RelationStatus.WAR)

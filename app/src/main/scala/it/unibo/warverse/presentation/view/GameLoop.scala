@@ -28,17 +28,18 @@ class GameLoop:
   private val attackController = AttackController()
   private val movementController = MovementController()
   private val relationsController = RelationsController()
-  private var gameStateController: GameStateController = _
   private var nextLoop: Long = 0
   private val timeFrame = 1000
-  var environment: Environment = Environment()
+  private var _controller: GameStateController = _
+  private var _environment: Environment = Environment.initial(List.empty)
 
-  def setEnvironment(environment: Environment): Unit =
-    this.gameStateController.setMapEnv(environment)
-    this.environment = environment
+  def environment: Environment = _environment
+  def environment_=(environment: Environment): Unit =
+    _controller.environment = environment
+    _environment = environment
 
   def setController(controller: GameStateController): Unit =
-    this.gameStateController = controller
+    this._controller = controller
 
   def startGameLoop(): Unit =
     gameThread = Thread(() => gameLoop())
@@ -59,10 +60,10 @@ class GameLoop:
     relationsController
       .updateRelations() // quali stati devono intervenire in guerra (forse in prolog)
     attackController.attackAndUpdate()
-    setEnvironment(
+    /*setEnvironment(
       gameStateController
         .updateResources(environment)
-    )
+    )*/
     checkAndUpdateEndedWars()
     movementController.moveUnitArmies()
     if continue() then gameLoop()
