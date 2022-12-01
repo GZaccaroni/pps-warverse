@@ -55,8 +55,8 @@ object GameStateController:
           .map(country =>
             country.updateResources(
               if isInWar(country) then
-                country.resources + country.citizens - country.armyUnits.size * 100
-              else country.resources + country.citizens
+                country.citizens - country.armyUnits.size * 100
+              else country.citizens
             )
           )
       )

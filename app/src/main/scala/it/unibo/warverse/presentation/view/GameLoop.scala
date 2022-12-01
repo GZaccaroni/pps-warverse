@@ -7,7 +7,6 @@ import java.awt.Graphics
 import it.unibo.warverse.domain.model.common.Geometry.Point2D
 import it.unibo.warverse.domain.model.common.Geometry.Polygon2D
 import it.unibo.warverse.domain.model.world.World.Country
-import it.unibo.warverse.domain.model.world.World.Citizen
 import it.unibo.warverse.domain.model.common.Geometry
 import java.awt.Polygon
 import scala.language.postfixOps
@@ -74,6 +73,7 @@ class GameLoop:
     )
     checkAndUpdateEndedWars()
     movementController.moveUnitArmies()
+    checkEnd()
     if continue() then gameLoop()
 
   private def waitForNextLoop(): Unit =
@@ -81,7 +81,7 @@ class GameLoop:
     catch case ex: InterruptedException => ()
     nextLoop = System.currentTimeMillis() + timeFrame
 
-  def checkAndUpdateEndedWars(): Unit =
+  def checkEnd(): Unit =
     val currentRelation = this.gameStateController.getRelationship
     val currentCountries = this.environment.countries
     if this.relationsController.noWars(
@@ -89,34 +89,61 @@ class GameLoop:
         currentCountries
       )
     then stopGameLoop()
-    else
-      this.relationsController
-        .getWars(currentRelation, currentCountries)
-        .foreach(countryInWar =>
-          if countryInWar.armyUnits.size <= 0 || countryInWar.citizens <= 0 || countryInWar.resources <= 0
-          then
-            assignLostResources(countryInWar, currentCountries, currentRelation)
-        )
-      this.setEnvironment(this.environment.nextDay())
+
+  def checkAndUpdateEndedWars(): Unit =
+    val currentRelation = this.gameStateController.getRelationship
+    val currentCountries = this.environment.countries
+    this.relationsController
+      .getWars(currentRelation, currentCountries)
+      .foreach(countryInWar =>
+        if countryInWar.armyUnits.size <= 0 || countryInWar.citizens <= 0 || countryInWar.resources <= 0
+        then
+          assignLostResources(countryInWar, currentCountries, currentRelation)
+      )
+    this.setEnvironment(this.environment.nextDay())
 
   private def assignLostResources(
-    countryInWar: Country,
+    countryDefeated: Country,
     currentCountries: List[Country],
     currentRelation: InterstateRelations
   ): Unit =
+    val winnersId = currentRelation.getEnemies(countryDefeated.id)
+    val lostResources = countryDefeated.resources
+    val lostCitizen = countryDefeated.citizens
+    val lostArmy = countryDefeated.armyUnits
     this.gameStateController.setInterstateRelations(
       this.relationsController
-        .removeLostStateRelation(countryInWar, currentRelation)
+        .removeLostStateRelation(countryDefeated, currentRelation)
     )
     this.environment
-      .setCountries(currentCountries.filterNot(_ == countryInWar))
-    currentRelation
-      .getEnemies(countryInWar.id)
-      .foreach(winner =>
+      .setCountries(currentCountries.filterNot(_ == countryDefeated))
+    winnersId
+      .foreach(winnerId =>
+        val index = currentCountries.indexOf(
+          currentCountries
+            .find(country => country.id == winnerId)
+            .get
+        )
+        val winnerCountry =
+          currentCountries
+            .find(country => country.id == winnerId)
+            .get
+            .updateResources(lostResources / winnersId.size)
+            .updateArmy(lostArmy.take(lostArmy.size / winnersId.size))
+            .updateCitizen(lostCitizen / winnersId.size)
         this.gameStatsController.updateStatsEvents(
-          winner,
-          countryInWar,
+          winnerId,
+          countryDefeated,
           this.environment.day
+        )
+        setEnvironment(
+          this.environment
+            .updateCountries(
+              currentCountries.updated(
+                index,
+                winnerCountry
+              )
+            )
         )
       )
 
