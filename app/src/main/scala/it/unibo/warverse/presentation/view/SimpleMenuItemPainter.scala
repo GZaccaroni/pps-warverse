@@ -8,7 +8,7 @@ import java.awt.FontMetrics
 
 class SimpleMenuItemPainter extends MenuItemPainter:
 
-  def getPreferredSize(g2d: Graphics2D, text: String): Dimension =
+  def preferredSize(g2d: Graphics2D, text: String): Dimension =
     g2d
       .getFontMetrics()
       .getStringBounds(text, g2d)

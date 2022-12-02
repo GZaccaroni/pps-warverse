@@ -10,11 +10,8 @@ object Serializers:
     def deserialize(implicit
       format: Formats
     ): PartialFunction[(TypeInfo, JValue), ArmyUnitKind] = {
-      case (TypeInfo(MyClassClass, _), json) =>
-        val attackType = (json
-          .asInstanceOf[
-            JObject
-          ] \ "attackType").extract[UnitAttackType]
+      case (TypeInfo(MyClassClass, _), json: JObject) =>
+        val attackType = (json \ "attackType").extract[UnitAttackType]
         attackType match
           case UnitAttackType.Precision =>
             json.extract[ArmyUnitKind.PrecisionArmyUnitKind]

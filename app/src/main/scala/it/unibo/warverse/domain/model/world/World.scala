@@ -9,10 +9,6 @@ import it.unibo.warverse.domain.model.fight.Fight
 object World:
   type CountryId = String
 
-  case class WorldState(
-    countries: List[Country]
-  )
-
   trait UpdateResources:
     def updateResources(newResources: Life.Resources): Country
     def updateCitizen(newCitizen: Int): Country
@@ -22,7 +18,7 @@ object World:
     id: CountryId,
     name: String,
     citizens: Int,
-    armyUnits: List[ArmyUnit],
+    armyUnits: Seq[ArmyUnit],
     resources: Life.Resources,
     boundaries: Geometry.Polygon2D
   ) extends UpdateResources:

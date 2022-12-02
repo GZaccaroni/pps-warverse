@@ -33,14 +33,16 @@ class GameLoop:
   private val gameStatsController: GameStatsController = GameStatsController()
   private var nextLoop: Long = 0
   private val timeFrame = 1000
-  var environment: Environment = Environment()
+  private var _controller: GameStateController = _
+  private var _environment: Environment = Environment.initial(List.empty)
 
-  def setEnvironment(environment: Environment): Unit =
-    this.gameStateController.setMapEnv(environment)
-    this.environment = environment
+  def environment: Environment = _environment
+  def environment_=(environment: Environment): Unit =
+    _controller.environment = environment
+    _environment = environment
 
   def setController(controller: GameStateController): Unit =
-    this.gameStateController = controller
+    this._controller = controller
 
   def startGameLoop(): Unit =
     gameThread = Thread(() => gameLoop())
@@ -55,7 +57,7 @@ class GameLoop:
 
   def stopGameLoop(): Unit =
     exit = false
-    this.gameStateController.mainFrame.setPanel(EndPanel())
+    this._controller.mainFrame.setPanel(EndPanel())
 
   def gameLoop(): Unit =
     waitForNextLoop()
@@ -67,10 +69,10 @@ class GameLoop:
         )
     )
     attackController.attackAndUpdate()
-    setEnvironment(
+    /*setEnvironment(
       gameStateController
         .updateResources(environment)
-    )
+    )*/
     checkAndUpdateEndedWars()
     movementController.moveUnitArmies()
     checkEnd()

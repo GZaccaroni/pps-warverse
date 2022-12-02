@@ -9,8 +9,8 @@ import java.awt.BorderLayout
 import it.unibo.warverse.presentation.view.MenuActions
 
 object Launcher extends App:
-  val mainFrame = MainFrame()
-  val menu = MenuActions(mainFrame)
+  private val mainFrame = MainFrame()
+  private val menu = MenuActions(mainFrame)
   mainFrame.setPanel(menu)
   mainFrame.pack()
   menu.requestFocus()

@@ -37,15 +37,15 @@ object Geometry:
           Point2D(x + xMovement, y + yMovement)
 
   trait Polygon[Point]:
-    def vertexes: List[Point]
+    def vertexes: Seq[Point]
     def center: Point
     def contains(point: Point): Boolean
 
   type Polygon2D = Polygon[Point2D]
   object Polygon2D:
-    def apply(vertexes: List[Point2D]): Polygon2D = JavaAwtPolygon2D(vertexes)
+    def apply(vertexes: Seq[Point2D]): Polygon2D = JavaAwtPolygon2D(vertexes)
 
-  case class JavaAwtPolygon2D(vertexes: List[Point2D]) extends Polygon2D:
+  case class JavaAwtPolygon2D(vertexes: Seq[Point2D]) extends Polygon2D:
     override def contains(point: Point2D): Boolean =
       awtPath2D.contains(point.x, point.y) || vertexes.contains(point);
 

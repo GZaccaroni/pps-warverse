@@ -13,4 +13,4 @@ trait MenuItemPainter:
     isFocused: Boolean
   ): Unit
 
-  def getPreferredSize(g2d: Graphics2D, text: String): Dimension
+  def preferredSize(g2d: Graphics2D, text: String): Dimension

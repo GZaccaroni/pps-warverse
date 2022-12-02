@@ -7,12 +7,12 @@ class RelationsController:
 
   def updateRelations(
     relations: InterstateRelations,
-    countries: List[Country]
+    countries: Seq[Country]
   ): InterstateRelations =
-    var newRel: InterstateRelations = relations
+  var newRel: InterstateRelations = relations
     countries.foreach(country =>
-      val enemies = relations.getEnemies(country.id)
-      val allied = relations.getAllies(country.id)
+      val enemies = relations.countryEnemies(country.id)
+      val allied = relations.countryAllies(country.id)
       enemies.map(enemy =>
         allied.foreach(ally =>
           if newRel.getStatus(enemy, ally).isEmpty then
@@ -24,11 +24,11 @@ class RelationsController:
 
   def noWars(
     relations: InterstateRelations,
-    countries: List[Country]
+    countries: Seq[Country]
   ): Boolean =
     var check = true
     countries.foreach(country =>
-      if relations.getEnemies(country.id).nonEmpty then check = false
+      if relations.countryEnemies(country.id).nonEmpty then check = false
     )
     check
 
