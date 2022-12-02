@@ -72,9 +72,6 @@ class GameLoop:
         .updateResources(environment)
     )
     checkAndUpdateEndedWars()
-    this.environment.countries.foreach(c =>
-      println(c.id + " " + c.citizens + " " + c.armyUnits.size)
-    )
     movementController.moveUnitArmies()
     checkEnd()
     if continue() then gameLoop()
