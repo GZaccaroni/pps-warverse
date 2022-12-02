@@ -12,7 +12,7 @@ object World:
   trait UpdateResources:
     def updateResources(newResources: Life.Resources): Country
     def updateCitizen(newCitizen: Int): Country
-    def updateArmy(newArmy: List[ArmyUnit]): Country
+    def updateArmy(newArmy: Seq[ArmyUnit]): Country
 
   case class Country(
     id: CountryId,
@@ -30,5 +30,5 @@ object World:
       if citizens + newCitizen < 0 then this.copy(citizens = 0)
       this.copy(citizens = citizens + newCitizen)
 
-    override def updateArmy(newArmy: List[ArmyUnit]): Country =
+    override def updateArmy(newArmy: Seq[ArmyUnit]): Country =
       this.copy(armyUnits = armyUnits.concat(newArmy))

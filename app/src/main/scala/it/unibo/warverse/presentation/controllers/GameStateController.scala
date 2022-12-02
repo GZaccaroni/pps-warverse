@@ -61,11 +61,9 @@ object GameStateController:
       )
     override def setPanel(): Unit =
       hud.setController(this)
-      gameLoop.setController(this)
       gamePanel.addToPanel(gameMap, GuiEnum.WEST)
       gamePanel.addToPanel(hud, GuiEnum.EAST)
       mainFrame.setPanel(gamePanel)
-      gameLoop.setController(this)
 
     override def onStartClicked(): Unit =
       gameLoop.startGameLoop()
@@ -80,11 +78,10 @@ object GameStateController:
       gameLoop.stopGameLoop()
 
     def allCountries_=(countries: Seq[Country]): Unit =
-      this.gameLoop.setController(this)
+      this.gameLoop.controller = (this)
       val newEnv = this.environment.copiedWith(countries = countries)
       gameMap.environment = newEnv
       gameLoop.environment = newEnv
-
 
     def allCountries: Seq[Country] =
       this.environment.countries

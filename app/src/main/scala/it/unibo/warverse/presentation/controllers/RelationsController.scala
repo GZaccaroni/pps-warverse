@@ -9,7 +9,7 @@ class RelationsController:
     relations: InterstateRelations,
     countries: Seq[Country]
   ): InterstateRelations =
-  var newRel: InterstateRelations = relations
+    var newRel: InterstateRelations = relations
     countries.foreach(country =>
       val enemies = relations.countryEnemies(country.id)
       val allied = relations.countryAllies(country.id)
@@ -34,17 +34,17 @@ class RelationsController:
 
   def getWars(
     relations: InterstateRelations,
-    countries: List[Country]
-  ): List[Country] =
-    countries.filter(country => relations.getEnemies(country.id).nonEmpty)
+    countries: Seq[Country]
+  ): Seq[Country] =
+    countries.filter(country => relations.countryEnemies(country.id).nonEmpty)
 
   def removeLostStateRelation(
     country: Country,
     relations: InterstateRelations
   ): InterstateRelations =
     var result: InterstateRelations = relations
-    val enemies = relations.getEnemies(country.id)
-    val allied = relations.getAllies(country.id)
+    val enemies = relations.countryEnemies(country.id)
+    val allied = relations.countryAllies(country.id)
     allied.foreach(ally =>
       result =
         result.withoutRelation((country.id, ally), RelationStatus.ALLIANCE)

@@ -29,7 +29,6 @@ class GameLoop:
   private val attackController = AttackController()
   private val movementController = MovementController()
   private val relationsController = RelationsController()
-  private var gameStateController: GameStateController = _
   private val gameStatsController: GameStatsController = GameStatsController()
   private var nextLoop: Long = 0
   private val timeFrame = 1000
@@ -41,8 +40,10 @@ class GameLoop:
     _controller.environment = environment
     _environment = environment
 
-  def setController(controller: GameStateController): Unit =
-    this._controller = controller
+  def controller: Unit = _controller
+
+  def controller_=(controller: GameStateController): Unit =
+    _controller = controller
 
   def startGameLoop(): Unit =
     gameThread = Thread(() => gameLoop())
@@ -61,18 +62,17 @@ class GameLoop:
 
   def gameLoop(): Unit =
     waitForNextLoop()
-    this.gameStateController.setInterstateRelations(
+    this._controller.interstateRelations = (
       relationsController
         .updateRelations(
-          this.gameStateController.getRelationship,
+          this._controller.interstateRelations,
           this.environment.countries
         )
     )
     attackController.attackAndUpdate()
-    /*setEnvironment(
-      gameStateController
-        .updateResources(environment)
-    )*/
+    this.environment = (
+      _controller.updateResources(environment)
+    )
     checkAndUpdateEndedWars()
     movementController.moveUnitArmies()
     checkEnd()
@@ -84,7 +84,7 @@ class GameLoop:
     nextLoop = System.currentTimeMillis() + timeFrame
 
   def checkEnd(): Unit =
-    val currentRelation = this.gameStateController.getRelationship
+    val currentRelation = this._controller.interstateRelations
     val currentCountries = this.environment.countries
     if this.relationsController.noWars(
         currentRelation,
@@ -93,7 +93,7 @@ class GameLoop:
     then stopGameLoop()
 
   def checkAndUpdateEndedWars(): Unit =
-    val currentRelation = this.gameStateController.getRelationship
+    val currentRelation = this._controller.interstateRelations
     val currentCountries = this.environment.countries
     this.relationsController
       .getWars(currentRelation, currentCountries)
@@ -102,32 +102,33 @@ class GameLoop:
         then
           assignLostResources(countryInWar, currentCountries, currentRelation)
       )
-    this.setEnvironment(this.environment.nextDay())
+    this.environment =
+      (this.environment.copiedWith(day = this.environment.day + 1))
 
   private def assignLostResources(
     countryDefeated: Country,
-    currentCountries: List[Country],
+    currentCountries: Seq[Country],
     currentRelation: InterstateRelations
   ): Unit =
-    val winnersId = currentRelation.getEnemies(countryDefeated.id)
+    val winnersId = currentRelation.countryEnemies(countryDefeated.id)
     val lostResources = countryDefeated.resources
     val lostCitizen = countryDefeated.citizens
     val lostArmy = countryDefeated.armyUnits
     val unitIndex = lostArmy.size / winnersId.size
     val citizenIndex = lostCitizen / winnersId.size
     val resourcesIndex = lostResources / winnersId.size
-    this.gameStateController.setInterstateRelations(
+    this._controller.interstateRelations = (
       this.relationsController
         .removeLostStateRelation(countryDefeated, currentRelation)
     )
-    this.setEnvironment(
+    this.environment = (
       this.environment
-        .setCountries(currentCountries.filterNot(_ == countryDefeated))
+        .copiedWith(currentCountries.filterNot(_ == countryDefeated))
     )
     winnersId.toSeq
       .foreach(winnerId =>
         val c = winnersId.toSeq.indexOf(winnerId)
-        val currentCountries = this.environment.getCountries
+        val currentCountries = this.environment.countries
         val idToCountry = currentCountries
           .find(country => country.id == winnerId)
           .get
@@ -159,9 +160,9 @@ class GameLoop:
           countryDefeated,
           this.environment.day
         )
-        this.setEnvironment(
+        this.environment = (
           this.environment
-            .updateCountries(
+            .copiedWith(
               currentCountries.updated(
                 index,
                 winnerCountry
