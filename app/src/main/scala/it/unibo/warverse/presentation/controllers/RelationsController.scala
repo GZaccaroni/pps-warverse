@@ -15,7 +15,7 @@ class RelationsController:
       val allied = relations.getAllies(country.id)
       enemies.map(enemy =>
         allied.foreach(ally =>
-          if relations.getStatus(enemy, ally).isEmpty then
+          if newRel.getStatus(enemy, ally).isEmpty then
             newRel = newRel.withRelation((enemy, ally), RelationStatus.WAR)
         )
       )
