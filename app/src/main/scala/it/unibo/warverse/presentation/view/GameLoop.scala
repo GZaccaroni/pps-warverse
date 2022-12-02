@@ -108,9 +108,13 @@ class GameLoop:
     currentRelation: InterstateRelations
   ): Unit =
     val winnersId = currentRelation.getEnemies(countryDefeated.id)
-    val lostResources = countryDefeated.resources
-    val lostCitizen = countryDefeated.citizens
-    val lostArmy = countryDefeated.armyUnits
+    var lostResources = countryDefeated.resources
+    var lostCitizen = countryDefeated.citizens
+    var lostArmy = countryDefeated.armyUnits
+    val unitIndex =
+      (lostArmy.size / winnersId.size) + (if lostArmy.size % winnersId.size == 0 then 0 else 1)
+    var citizenIndex = lostCitizen / winnersId.size
+    var resourcesIndex = lostResources / winnersId.size
     this.gameStateController.setInterstateRelations(
       this.relationsController
         .removeLostStateRelation(countryDefeated, currentRelation)
@@ -122,18 +126,22 @@ class GameLoop:
     winnersId
       .foreach(winnerId =>
         val currentCountries = this.environment.getCountries
+        val idToCountry = currentCountries
+          .find(country => country.id == winnerId)
+          .get
         val index = currentCountries.indexOf(
-          currentCountries
-            .find(country => country.id == winnerId)
-            .get
+          idToCountry
         )
         val winnerCountry =
-          currentCountries
-            .find(country => country.id == winnerId)
-            .get
-            .updateResources(lostResources / winnersId.size)
-            .updateArmy(lostArmy.take(lostArmy.size / winnersId.size))
-            .updateCitizen(lostCitizen / winnersId.size)
+          idToCountry
+            .updateResources(resourcesIndex)
+            .updateArmy(lostArmy.take(unitIndex))
+            .updateCitizen(citizenIndex)
+        lostArmy = lostArmy.drop(unitIndex)
+        lostCitizen = lostCitizen - citizenIndex
+        lostResources = lostResources - resourcesIndex
+        if lostCitizen - citizenIndex < citizenIndex then citizenIndex = lostCitizen
+        if lostResources - resourcesIndex < resourcesIndex then resourcesIndex = lostResources
         this.gameStatsController.updateStatsEvents(
           winnerId,
           countryDefeated,
