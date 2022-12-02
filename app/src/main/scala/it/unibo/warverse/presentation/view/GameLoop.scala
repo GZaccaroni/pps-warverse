@@ -115,10 +115,13 @@ class GameLoop:
       this.relationsController
         .removeLostStateRelation(countryDefeated, currentRelation)
     )
-    this.environment
-      .setCountries(currentCountries.filterNot(_ == countryDefeated))
+    this.setEnvironment(
+      this.environment
+        .setCountries(currentCountries.filterNot(_ == countryDefeated))
+    )
     winnersId
       .foreach(winnerId =>
+        val currentCountries = this.environment.getCountries
         val index = currentCountries.indexOf(
           currentCountries
             .find(country => country.id == winnerId)
@@ -136,7 +139,7 @@ class GameLoop:
           countryDefeated,
           this.environment.day
         )
-        setEnvironment(
+        this.setEnvironment(
           this.environment
             .updateCountries(
               currentCountries.updated(
