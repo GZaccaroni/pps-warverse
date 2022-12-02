@@ -72,7 +72,9 @@ class GameLoop:
         .updateResources(environment)
     )
     checkAndUpdateEndedWars()
-    this.environment.countries.foreach(c => println(c.id + " " + c.citizens + " " + c.armyUnits.size))
+    this.environment.countries.foreach(c =>
+      println(c.id + " " + c.citizens + " " + c.armyUnits.size)
+    )
     movementController.moveUnitArmies()
     checkEnd()
     if continue() then gameLoop()
@@ -112,10 +114,9 @@ class GameLoop:
     val lostResources = countryDefeated.resources
     val lostCitizen = countryDefeated.citizens
     val lostArmy = countryDefeated.armyUnits
-    val unitIndex =
-      (lostArmy.size / winnersId.size) + (if lostArmy.size % winnersId.size == 0 then 0 else 1)
-    var citizenIndex = lostCitizen / winnersId.size
-    var resourcesIndex = lostResources / winnersId.size
+    val unitIndex = lostArmy.size / winnersId.size
+    val citizenIndex = lostCitizen / winnersId.size
+    val resourcesIndex = lostResources / winnersId.size
     this.gameStateController.setInterstateRelations(
       this.relationsController
         .removeLostStateRelation(countryDefeated, currentRelation)
@@ -126,7 +127,7 @@ class GameLoop:
     )
     winnersId.toSeq
       .foreach(winnerId =>
-        val c = winnersId.toSeq.indexOf(winnerId)+1
+        val c = winnersId.toSeq.indexOf(winnerId)
         val currentCountries = this.environment.getCountries
         val idToCountry = currentCountries
           .find(country => country.id == winnerId)
@@ -134,13 +135,26 @@ class GameLoop:
         val index = currentCountries.indexOf(
           idToCountry
         )
-        if lostCitizen - citizenIndex*c < citizenIndex then citizenIndex = lostCitizen - citizenIndex*(c-1)
-        if lostResources - resourcesIndex*c < resourcesIndex then resourcesIndex = lostResources - resourcesIndex*(c-1)
         val winnerCountry: Country =
           idToCountry
-            .updateResources(resourcesIndex)
-            .updateArmy(lostArmy.drop(unitIndex*(c-1)).take(unitIndex))
-            .updateCitizen(citizenIndex)
+            .updateResources(
+              if lostResources - resourcesIndex * (c + 1) < resourcesIndex then
+                lostResources - resourcesIndex * c
+              else resourcesIndex
+            )
+            .updateArmy(
+              lostArmy
+                .drop(unitIndex * c)
+                .take(
+                  if winnersId.size - 1 == c then lostArmy.size
+                  else unitIndex
+                )
+            )
+            .updateCitizen(
+              if lostCitizen - citizenIndex * (c + 1) < citizenIndex then
+                lostCitizen - citizenIndex * c
+              else citizenIndex
+            )
         this.gameStatsController.updateStatsEvents(
           winnerId,
           countryDefeated,
