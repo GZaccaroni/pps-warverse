@@ -28,7 +28,7 @@ class RelationsController:
   ): Boolean =
     var check = true
     countries.foreach(country =>
-      if relations.getEnemies(country.id).size > 0 then check = false
+      if relations.getEnemies(country.id).nonEmpty then check = false
     )
     check
 
@@ -36,7 +36,7 @@ class RelationsController:
     relations: InterstateRelations,
     countries: List[Country]
   ): List[Country] =
-    countries.filter(country => relations.getEnemies(country.id).size > 0)
+    countries.filter(country => relations.getEnemies(country.id).nonEmpty)
 
   def removeLostStateRelation(
     country: Country,
