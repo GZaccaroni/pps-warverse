@@ -52,10 +52,10 @@ object GameStateController:
           .map(country =>
             country.updateResources(
               if isInWar(country) then
-                country.resources + country.citizens - country.armyUnits
+                country.citizens - country.armyUnits
                   .map(_.dailyConsume)
                   .sum
-              else country.resources + country.citizens
+              else country.citizens
             )
           )
       )
@@ -64,7 +64,6 @@ object GameStateController:
       gamePanel.addToPanel(gameMap, GuiEnum.WEST)
       gamePanel.addToPanel(hud, GuiEnum.EAST)
       mainFrame.setPanel(gamePanel)
-      gameLoop.setController(this)
 
     override def onStartClicked(): Unit =
       gameLoop.startGameLoop()
@@ -79,7 +78,7 @@ object GameStateController:
       gameLoop.stopGameLoop()
 
     def allCountries_=(countries: Seq[Country]): Unit =
-      this.gameLoop.setController(this)
+      this.gameLoop.controller = (this)
       val newEnv = this.environment.copiedWith(countries = countries)
       gameMap.environment = newEnv
       gameLoop.environment = newEnv
