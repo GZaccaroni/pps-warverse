@@ -3,7 +3,7 @@ package it.unibo.warverse.domain.model.fight
 import it.unibo.warverse.domain.model.Environment
 import it.unibo.warverse.domain.model.fight.Fight
 import it.unibo.warverse.domain.model.common.Geometry
-import it.unibo.warverse.domain.model.world.World.WorldState
+import it.unibo.warverse.domain.model.world.World.{Country, CountryId}
 
 trait AttackStrategy:
   type AttackPosition
@@ -20,7 +20,7 @@ object AttackStrategy:
     AttackStrategy2D(
       environment.countries.filter(country =>
         environment.interstateRelations
-          .getEnemies(myCountry)
+          .countryEnemies(myCountry)
           .toSet
           .contains(country.id)
       )
