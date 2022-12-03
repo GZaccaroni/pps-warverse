@@ -15,7 +15,6 @@ trait GameStateController:
   def onResumeClicked(): Unit
   def onStopClicked(): Unit
   var allCountries: Seq[Country]
-  var interstateRelations: InterstateRelations
   def updateResources(environment: Environment): Environment
   var environment: Environment
   def show(x: Option[Country]): Country
@@ -36,15 +35,13 @@ object GameStateController:
 
     private val gamePanel = GamePanel()
 
-    private var _interstateRelations: InterstateRelations = _
-
     def environment: Environment =
       gameMap.environment
     def environment_=(environment: Environment): Unit =
       gameMap.environment = environment
 
     override def isInWar(country: Country): Boolean =
-      interstateRelations.countryEnemies(country.id).nonEmpty
+      environment.interstateRelations.countryEnemies(country.id).nonEmpty
 
     override def updateResources(environment: Environment): Environment =
       environment.copiedWith(
@@ -85,14 +82,6 @@ object GameStateController:
 
     def allCountries: Seq[Country] =
       this.environment.countries
-
-    def interstateRelations: InterstateRelations =
-      this._interstateRelations
-
-    def interstateRelations_=(
-      interstateRelations: InterstateRelations
-    ): Unit =
-      this._interstateRelations = interstateRelations
 
     override def show(x: Option[Country]): Country = x match
       case Some(s) => s

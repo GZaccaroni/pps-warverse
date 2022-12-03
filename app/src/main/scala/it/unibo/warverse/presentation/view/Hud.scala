@@ -31,6 +31,7 @@ import javax.swing.text.Highlighter.HighlightPainter
 import javax.swing.text.DefaultHighlighter
 import it.unibo.warverse.presentation.controllers.GameStateController
 import it.unibo.warverse.data.data_sources.simulation_config.SimulationConfigDataSource
+import it.unibo.warverse.domain.model.Environment
 
 import scala.io.Source
 import it.unibo.warverse.domain.model.world.Relations
@@ -160,12 +161,14 @@ class Hud extends JPanel:
         SimulationConfigDataSource(file, SimulationConfigDataSource.Format.Json)
       try
         val simulationConfig = jsonConfigParser.simulationConfig
-        this.controller.allCountries = simulationConfig.countries
-        this.controller.interstateRelations =
-          simulationConfig.interstateRelations
-        this.countries = simulationConfig.countries
+        val environment = Environment(
+          simulationConfig.countries,
+          simulationConfig.interstateRelations,
+          0
+        )
+        this.countries = environment.countries
         this.console.setText("")
-        updateConsole(this.controller.interstateRelations)
+        updateConsole(environment.interstateRelations)
         JOptionPane.showMessageDialog(
           null,
           "Configuration uploaded successfully."

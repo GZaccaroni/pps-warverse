@@ -40,7 +40,7 @@ class GameLoop:
     _controller.environment = environment
     _environment = environment
 
-  def controller: Unit = _controller
+  def controller(): Unit = _controller
 
   def controller_=(controller: GameStateController): Unit =
     _controller = controller
@@ -62,17 +62,16 @@ class GameLoop:
 
   def gameLoop(): Unit =
     waitForNextLoop()
-    this._controller.interstateRelations = (
+    this.environment = environment.copiedWith(interstateRelations =
       relationsController
         .updateRelations(
-          this._controller.interstateRelations,
+          this.environment.interstateRelations,
           this.environment.countries
         )
     )
-    attackController.attackAndUpdate()
-    this.environment = (
-      _controller.updateResources(environment)
-    )
+
+    this.environment = attackController.attackAndUpdate(environment)
+    this.environment = _controller.updateResources(environment)
     checkAndUpdateEndedWars()
     movementController.moveUnitArmies()
     checkEnd()
@@ -84,7 +83,7 @@ class GameLoop:
     nextLoop = System.currentTimeMillis() + timeFrame
 
   def checkEnd(): Unit =
-    val currentRelation = this._controller.interstateRelations
+    val currentRelation = this.environment.interstateRelations
     val currentCountries = this.environment.countries
     if this.relationsController.noWars(
         currentRelation,
@@ -93,7 +92,7 @@ class GameLoop:
     then stopGameLoop()
 
   def checkAndUpdateEndedWars(): Unit =
-    val currentRelation = this._controller.interstateRelations
+    val currentRelation = this.environment.interstateRelations
     val currentCountries = this.environment.countries
     this.relationsController
       .getWars(currentRelation, currentCountries)
@@ -117,13 +116,13 @@ class GameLoop:
     val unitIndex = lostArmy.size / winnersId.size
     val citizenIndex = lostCitizen / winnersId.size
     val resourcesIndex = lostResources / winnersId.size
-    this._controller.interstateRelations = (
-      this.relationsController
-        .removeLostStateRelation(countryDefeated, currentRelation)
-    )
     this.environment = (
       this.environment
-        .copiedWith(currentCountries.filterNot(_ == countryDefeated))
+        .copiedWith(
+          countries = currentCountries.filterNot(_ == countryDefeated),
+          interstateRelations = this.relationsController
+            .removeLostStateRelation(countryDefeated, currentRelation)
+        )
     )
     winnersId.toSeq
       .foreach(winnerId =>
@@ -160,15 +159,13 @@ class GameLoop:
           countryDefeated,
           this.environment.day
         )
-        this.environment = (
-          this.environment
-            .copiedWith(
-              currentCountries.updated(
-                index,
-                winnerCountry
-              )
+        this.environment = this.environment
+          .copiedWith(
+            currentCountries.updated(
+              index,
+              winnerCountry
             )
-        )
+          )
       )
 
   private def continue(): Boolean =
