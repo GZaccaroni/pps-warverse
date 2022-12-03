@@ -80,7 +80,7 @@ object Army:
         .attackTargets(attackType)
         .filter(target => position.distanceFrom(target) < rangeOfHit)
       for
-        (target, _) <- availableTargets.zip(1 until availableHits)
+        (target, _) <- availableTargets.zip(0 until availableHits)
         probabilityOfSuccess <- Seq.fill(availableHits)(Random.nextInt(100))
         if probabilityOfSuccess < chanceOfHit
       yield SimulationEvent.AreaAttackEvent(target, areaOfImpact)
