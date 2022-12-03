@@ -11,7 +11,7 @@ import it.unibo.warverse.domain.model.world.Relations.{
   InterstateRelations,
   RelationStatus
 }
-import it.unibo.warverse.domain.model.world.World.{Citizen, Country}
+import it.unibo.warverse.domain.model.world.World.Country
 import org.scalatest.BeforeAndAfter
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.must.Matchers
@@ -76,11 +76,11 @@ class InterstateRelationsTest extends AnyFunSuite with Matchers:
     val interstateRelations: InterstateRelations =
       InterstateRelations(List(AWarB, BAlliedC, CAlliedA))
 
-    interstateRelations getAllies countryC.id must contain only (countryA.id, countryB.id)
-    interstateRelations getAllies countryB.id must contain only countryC.id
+    interstateRelations countryAllies countryC.id must contain only (countryA.id, countryB.id)
+    interstateRelations countryAllies countryB.id must contain only countryC.id
     interstateRelations.withoutRelation(
       BAlliedC
-    ) getAllies countryB.id mustBe empty
+    ) countryAllies countryB.id mustBe empty
   }
 
   test("Function getWars must get WAR related country") {
@@ -90,7 +90,7 @@ class InterstateRelationsTest extends AnyFunSuite with Matchers:
     val interstateRelations: InterstateRelations =
       InterstateRelations(List(AWarB, BAlliedC, ANeutralC))
 
-    interstateRelations getEnemies countryC.id mustBe empty
-    interstateRelations getEnemies countryA.id must contain only countryB.id
-    interstateRelations getEnemies countryB.id must contain only countryA.id
+    interstateRelations countryEnemies countryC.id mustBe empty
+    interstateRelations countryEnemies countryA.id must contain only countryB.id
+    interstateRelations countryEnemies countryB.id must contain only countryA.id
   }

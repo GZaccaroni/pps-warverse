@@ -5,36 +5,30 @@ import it.unibo.warverse.domain.model.fight.Fight.Attackable
 import it.unibo.warverse.domain.model.common.{Geometry, Life, Movement}
 import it.unibo.warverse.domain.model.fight.Army.ArmyUnit
 import it.unibo.warverse.domain.model.fight.Fight
-import it.unibo.warverse.domain.model.world.Relations.InterstateRelations
 
 object World:
   type CountryId = String
 
-  case class WorldState(
-    countries: List[Country],
-    interstateRelations: InterstateRelations
-  )
-
   trait UpdateResources:
     def updateResources(newResources: Life.Resources): Country
+    def updateCitizen(newCitizen: Int): Country
+    def updateArmy(newArmy: Seq[ArmyUnit]): Country
 
   case class Country(
     id: CountryId,
     name: String,
     citizens: Int,
-    armyUnits: List[ArmyUnit],
+    armyUnits: Seq[ArmyUnit],
     resources: Life.Resources,
     boundaries: Geometry.Polygon2D
   ) extends UpdateResources:
     override def updateResources(newResources: Life.Resources): Country =
-      if newResources < 0 then this.copy(resources = 0)
-      else this.copy(resources = newResources)
+      if resources + newResources < 0 then this.copy(resources = 0)
+      else this.copy(resources = resources + newResources)
 
-  case class Citizen(
-    position: Geometry.Point2D
-  ) extends Movement.Locatable,
-        Life.LivingEntity,
-        Attackable:
-    override type Position = Geometry.Point2D
+    override def updateCitizen(newCitizen: Int): Country =
+      if citizens + newCitizen < 0 then this.copy(citizens = 0)
+      this.copy(citizens = citizens + newCitizen)
 
-    def alive: Boolean = ???
+    override def updateArmy(newArmy: Seq[ArmyUnit]): Country =
+      this.copy(armyUnits = armyUnits.concat(newArmy))

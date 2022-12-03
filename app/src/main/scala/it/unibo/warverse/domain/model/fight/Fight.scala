@@ -9,7 +9,7 @@ object Fight:
   trait Attacker:
     def attack(
       strategy: AttackStrategy2D
-    ): List[AttackEvent]
+    ): Seq[AttackEvent]
   trait Attackable
   trait AttackableUnit extends Attackable, Locatable:
     override type Position = Geometry.Point2D

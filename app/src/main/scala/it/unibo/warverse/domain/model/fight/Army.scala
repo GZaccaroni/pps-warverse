@@ -1,14 +1,12 @@
 package it.unibo.warverse.domain.model.fight
 
+import it.unibo.warverse.domain.model.Environment
 import it.unibo.warverse.domain.model.common.Life
 import it.unibo.warverse.domain.model.common.Geometry.Point2D
 import it.unibo.warverse.domain.model.common.Math.Percentage
 import it.unibo.warverse.domain.model.common.Movement.Movable
 import it.unibo.warverse.domain.model.fight.Fight
-import it.unibo.warverse.domain.model.world.World
-import it.unibo.warverse.domain.model.fight.AttackStrategy
 import it.unibo.warverse.domain.model.fight.AttackStrategy.AttackStrategy2D
-
 import scala.util.Random
 
 object Army:
@@ -27,14 +25,14 @@ object Army:
     def dailyConsume: Double
     protected def copied(position: Position): ArmyUnit
 
-    override def moved(world: World.WorldState): ArmyUnit =
-      val strategy = AttackStrategy.attackStrategy2D(world, countryId)
+    override def moved(environment: Environment): ArmyUnit =
+      val strategy = AttackStrategy.attackStrategy2D(environment, countryId)
       val potentialTargets = strategy.attackTargets(attackType)
       val nearestTarget = potentialTargets.minByOption(_.distanceFrom(position))
       val targetPosition = nearestTarget match
         case Some(targetPosition) => targetPosition
         case None =>
-          world.countries
+          environment.countries
             .find(_.id == countryId)
             .map(_.boundaries.center)
             .getOrElse(position)
@@ -56,7 +54,7 @@ object Army:
     override def copied(position: Point2D): ArmyUnit = copy(position = position)
     override def attack(
       strategy: AttackStrategy2D
-    ): List[SimulationEvent.AttackEvent] =
+    ): Seq[SimulationEvent.AttackEvent] =
       ???
 
   case class AreaArmyUnit(
@@ -75,12 +73,12 @@ object Army:
     override def copied(position: Point2D): ArmyUnit = copy(position = position)
     override def attack(
       strategy: AttackStrategy2D
-    ): List[SimulationEvent.AttackEvent] =
+    ): Seq[SimulationEvent.AttackEvent] =
       val availableTargets = strategy
         .attackTargets(attackType)
         .filter(target => position.distanceFrom(target) < rangeOfHit)
       for
         (target, _) <- availableTargets.zip(1 until availableHits)
-        probabilityOfSuccess <- List.fill(availableHits)(Random.nextInt(100))
+        probabilityOfSuccess <- Seq.fill(availableHits)(Random.nextInt(100))
         if probabilityOfSuccess < chanceOfHit
       yield SimulationEvent.AreaAttackEvent(target, areaOfImpact)

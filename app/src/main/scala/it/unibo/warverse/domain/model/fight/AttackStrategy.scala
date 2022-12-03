@@ -1,28 +1,25 @@
 package it.unibo.warverse.domain.model.fight
 
+import it.unibo.warverse.domain.model.Environment
 import it.unibo.warverse.domain.model.fight.Fight
 import it.unibo.warverse.domain.model.common.Geometry
-import it.unibo.warverse.domain.model.world.World.{
-  Country,
-  CountryId,
-  WorldState
-}
+import it.unibo.warverse.domain.model.world.World.WorldState
 
 trait AttackStrategy:
   type AttackPosition
 
   def attackTargets(
     attackType: Fight.AttackType
-  ): List[AttackPosition]
+  ): Seq[AttackPosition]
 
 object AttackStrategy:
   def attackStrategy2D(
-    world: WorldState,
+    environment: Environment,
     myCountry: CountryId
   ): AttackStrategy2D =
     AttackStrategy2D(
-      world.countries.filter(country =>
-        world.interstateRelations
+      environment.countries.filter(country =>
+        environment.interstateRelations
           .getEnemies(myCountry)
           .toSet
           .contains(country.id)

@@ -20,17 +20,18 @@ import java.awt.Image
 import java.awt.Graphics2D
 import java.net.URL
 import it.unibo.warverse.presentation.common.UIConstants
+import it.unibo.warverse.presentation.model.MenuItems.*
 import javax.swing.JComponent
 
 trait MenuActions extends JPanel:
   def mainFrame: MainFrame
-  def setMenuValue(value: String): Unit
-  def setFocusValue(value: String): Unit
+  def menuItems: Seq[MenuItem]
+  var selectedItem: MenuItem
+  var focusedItem: Option[MenuItem]
   def setNewPanel(value: JPanel): Unit
   def upAction: MenuKeyAction
   def downAction: MenuKeyAction
   def enterAction: EnterAction
-  def getMenuItems: String
   def updateMouseAdapter(): Unit
 
 object MenuActions:
@@ -44,32 +45,24 @@ object MenuActions:
       UIConstants.Resources.MainMenuBackground.url
     )
 
-    val menuItems: Array[String] =
-      Array("Start Game", "Options", "Help", "Exit")
+    val menuItems = MainMenuItem.values.toSeq
 
-    private var selectedMenuItem: String = menuItems(0)
+    var selectedItem: MenuItem = MainMenuItem.StartGame
 
-    private var focusedItem: Option[String] = None
+    var focusedItem: Option[MenuItem] = None
 
     private val painter: SimpleMenuItemPainter = SimpleMenuItemPainter()
 
-    private var menuBounds: Option[Map[String, RoundRectangle2D]] = Some(
+    private var menuBounds: Option[Map[MenuItem, RoundRectangle2D]] = Some(
       Map.empty
     )
-
-    override def setMenuValue(value: String): Unit =
-      this.selectedMenuItem = value
-    override def setFocusValue(value: String): Unit =
-      this.focusedItem = Some(value)
     override def setNewPanel(value: JPanel): Unit =
       this.mainFrame.setPanel(value)
 
-    override def getMenuItems: String = selectedMenuItem
-
     override def upAction: MenuKeyAction =
-      MenuKeyAction(menuItems, selectedMenuItem, this, -1)
+      MenuKeyAction(this, -1)
     override def downAction: MenuKeyAction =
-      MenuKeyAction(menuItems, selectedMenuItem, this, 1)
+      MenuKeyAction(this, 1)
     override def enterAction: EnterAction = EnterAction(this, mainFrame)
 
     override def updateMouseAdapter(): Unit =
@@ -114,8 +107,8 @@ object MenuActions:
       var boxWidth: Int = 0
       var boxHeight: Int = 0
       if menuBounds.isEmpty then
-        menuItems.foreach(text =>
-          val dim: Dimension = painter.getPreferredSize(g2d, text);
+        menuItems.foreach(menuItem =>
+          val dim: Dimension = painter.preferredSize(g2d, menuItem.label);
           boxWidth = Math.max(boxWidth, dim.width);
           boxHeight = Math.max(boxHeight, dim.height);
         )
@@ -145,10 +138,10 @@ object MenuActions:
       backgroundImage.foreach(
         g.drawImage(_, 0, 0, this.getSize().width, this.getSize().height, this)
       )
-      menuItems.foreach(text =>
-        val bounds = menuBounds.get(text)
-        val isSelected = text.equals(selectedMenuItem)
-        val isFocused = focusedItem.contains(text)
-        this.painter.paint(g2d, text, bounds, isSelected, isFocused)
+      menuItems.foreach(menuItem =>
+        val bounds = menuBounds.get(menuItem)
+        val isSelected = menuItem.equals(selectedItem)
+        val isFocused = focusedItem.contains(menuItem)
+        this.painter.paint(g2d, menuItem.label, bounds, isSelected, isFocused)
       )
       g2d.dispose()

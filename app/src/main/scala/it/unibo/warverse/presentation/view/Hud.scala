@@ -3,20 +3,24 @@ import it.unibo.warverse.domain.model.world.World
 import it.unibo.warverse.presentation.inputs.GameMouseMotion
 
 import java.awt.Dimension
-import javax.swing.JButton
-import javax.swing.JFileChooser
+import javax.swing.{
+  BorderFactory,
+  Box,
+  JButton,
+  JComponent,
+  JFileChooser,
+  JOptionPane,
+  JPanel,
+  JScrollPane,
+  JTextArea,
+  JTextPane
+}
 import java.io.File
 import java.awt.Color
-import javax.swing.Box
-import javax.swing.JTextArea
-import javax.swing.JScrollPane
 import java.awt.Insets
-import javax.swing.JComponent
 import java.awt.Graphics
-import javax.swing.BorderFactory
 import it.unibo.warverse.presentation.common.UIConstants
 
-import javax.swing.JTextPane
 import javax.swing.border.EmptyBorder
 import javax.swing.text.StyleContext
 import javax.swing.text.AttributeSet
@@ -29,11 +33,10 @@ import it.unibo.warverse.presentation.controllers.GameStateController
 import it.unibo.warverse.data.data_sources.simulation_config.SimulationConfigDataSource
 
 import scala.io.Source
-import javax.swing.JOptionPane
 import it.unibo.warverse.domain.model.world.Relations
 import it.unibo.warverse.domain.model.world.Relations.InterstateRelations
 
-class Hud extends GameMouseMotion:
+class Hud extends JPanel:
   this.setPreferredSize(Dimension(350, 20))
   private val uploadConfig = JButton("Upload Configuration")
   private val fileChooser = JFileChooser()
@@ -61,7 +64,7 @@ class Hud extends GameMouseMotion:
   this.console.setLineWrap(true)
   this.console.setWrapStyleWord(true)
   val highlighter: Highlighter = console.getHighlighter
-  var countries: List[World.Country] = _
+  var countries: Seq[World.Country] = _
   var controller: GameStateController = _
   private val gameStatus: JScrollPane = JScrollPane(console)
   gameStatus.setVerticalScrollBarPolicy(22)
@@ -76,13 +79,13 @@ class Hud extends GameMouseMotion:
   toggleSimulationButton.addActionListener(_ =>
     toggleSimulationButton.getText match
       case "Start" =>
-        controller.startClicked(); toggleSimulationButton.setText("Pause")
+        controller.onStartClicked(); toggleSimulationButton.setText("Pause")
       case "Pause" =>
-        controller.pauseClicked(); toggleSimulationButton.setText("Resume")
+        controller.onPauseClicked(); toggleSimulationButton.setText("Resume")
       case "Resume" =>
-        controller.resumeClicked(); toggleSimulationButton.setText("Pause")
+        controller.onResumeClicked(); toggleSimulationButton.setText("Pause")
   )
-  stopButton.addActionListener(_ => controller.stopClicked())
+  stopButton.addActionListener(_ => controller.onStopClicked())
 
   addJComponents(firstButtonsRow, List(toggleSimulationButton, stopButton))
   addJComponents(
@@ -105,26 +108,27 @@ class Hud extends GameMouseMotion:
 
     countries.foreach(country =>
       relations
-        .getAllies(country.id)
+        .countryAllies(country.id)
         .foreach(allyId =>
           val ally = countries.find(_.id == allyId).get;
           console.append(country.name + " is allied with " + ally.name + "\n\n")
         )
       relations
-        .getEnemies(country.id)
+        .countryEnemies(country.id)
         .foreach(enemyId =>
           val enemy = countries.find(_.id == enemyId).get;
           console.append(
             country.name + " is in war with " + enemy.name + "\n\n"
           )
         )
+    )
+    countries.foreach(country =>
       highlightText(
         console.getText,
         country.name,
-        Color.decode(super.getCountryColor(country.name))
+        countryColor(country.id)
       )
     )
-
     highlightText(console.getText, "allied", Color(0, 153, 0))
     highlightText(console.getText, "war", Color.RED)
 
@@ -141,7 +145,7 @@ class Hud extends GameMouseMotion:
       highlighter.addHighlight(p0, p1, painter)
       c = p1
 
-  def addJComponents(box: Box, list: List[JComponent]): Unit =
+  def addJComponents(box: Box, list: Seq[JComponent]): Unit =
     list.foreach(component => box.add(component))
 
   def getExtensionByStringHandling(filename: String): Boolean =
@@ -156,13 +160,12 @@ class Hud extends GameMouseMotion:
         SimulationConfigDataSource(file, SimulationConfigDataSource.Format.Json)
       try
         val simulationConfig = jsonConfigParser.simulationConfig
-        this.controller.setAllCountries(simulationConfig.countries)
-        this.controller.setInterstateRelations(
+        this.controller.allCountries = simulationConfig.countries
+        this.controller.interstateRelations =
           simulationConfig.interstateRelations
-        )
-        super.setCountries(simulationConfig.countries)
         this.countries = simulationConfig.countries
-        updateConsole(this.controller.getRelationship)
+        this.console.setText("")
+        updateConsole(this.controller.interstateRelations)
         JOptionPane.showMessageDialog(
           null,
           "Configuration uploaded successfully."
@@ -173,3 +176,12 @@ class Hud extends GameMouseMotion:
 
   override def paintComponent(g: Graphics): Unit =
     super.paintComponent(g)
+
+  def countryColor(name: String): Color =
+    val hash: Int = name.hashCode
+
+    val r: Int = (hash & 0xff0000) >> 16
+    val g: Int = (hash & 0x00ff00) >> 8
+    val b: Int = hash & 0x0000ff
+
+    Color(r, g, b)
