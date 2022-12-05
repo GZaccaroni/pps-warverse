@@ -3,12 +3,13 @@ package it.unibo.warverse.domain.model.fight
 import it.unibo.warverse.domain.model.common.Movement.Locatable
 import it.unibo.warverse.domain.model.common.{Geometry, Life}
 import it.unibo.warverse.domain.model.fight.SimulationEvent.AttackEvent
-import it.unibo.warverse.domain.model.fight.AttackStrategy.AttackStrategy2D
+import it.unibo.warverse.domain.model.fight.TargetFinderStrategy.TargetFinderStrategy2D
 
 object Fight:
   trait Attacker:
-    def attack(
-      strategy: AttackStrategy2D
+    type Position
+    def attack()(using
+      strategy: TargetFinderStrategy[Position]
     ): Seq[AttackEvent]
   trait Attackable
   trait AttackableUnit extends Attackable, Locatable:
