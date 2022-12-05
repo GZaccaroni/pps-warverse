@@ -20,14 +20,14 @@ object TargetFinderStrategyTest:
     test(
       "A country that isn't in war should have no targets"
     ) {
-      val strategy = TargetFinderStrategy.attackStrategy2D()
+      val strategy = TargetFinderStrategy2D()
       strategy.findTargets(countryC.id, AttackType.Area) mustBe Seq.empty
     }
 
     test(
       "The targets of Area AttackType should be the centers of enemies countries"
     ) {
-      val strategy = TargetFinderStrategy.attackStrategy2D()
+      val strategy = TargetFinderStrategy2D()
       strategy.findTargets(countryA.id, AttackType.Area) mustBe Seq(
         countryB.boundaries.center
       )
@@ -39,7 +39,7 @@ object TargetFinderStrategyTest:
     test(
       "The targets of Precision Attack type should be the positions of enemies army units"
     ) {
-      val strategy = TargetFinderStrategy.attackStrategy2D()
+      val strategy = TargetFinderStrategy2D()
       strategy.findTargets(
         countryA.id,
         AttackType.Precision
@@ -50,7 +50,7 @@ object TargetFinderStrategyTest:
     test(
       "The targets of Precision Attack type should be none if country not in war"
     ) {
-      val strategy = TargetFinderStrategy.attackStrategy2D()
+      val strategy = TargetFinderStrategy2D()
       strategy.findTargets(
         countryC.id,
         AttackType.Precision

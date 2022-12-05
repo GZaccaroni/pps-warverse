@@ -3,11 +3,14 @@ package it.unibo.warverse.presentation.controllers
 import it.unibo.warverse.domain.model.Environment
 import it.unibo.warverse.domain.model.common.Geometry.Point2D
 import it.unibo.warverse.domain.model.fight.TargetFinderStrategy
-import it.unibo.warverse.domain.model.fight.TargetFinderStrategy.TargetFinderStrategy2D
 import it.unibo.warverse.domain.model.fight.SimulationEvent.{
   AreaAttackEvent,
   AttackEvent,
   PrecisionAttackEvent
+}
+import it.unibo.warverse.domain.model.fight.TargetFinderStrategy.{
+  TargetFinderStrategy,
+  TargetFinderStrategy2D
 }
 import it.unibo.warverse.domain.model.world.World.Country
 
@@ -23,7 +26,7 @@ object AttackController:
 
     def attackAndUpdate(environment: Environment): Environment =
       given Environment = environment
-      given TargetFinderStrategy2D = TargetFinderStrategy.attackStrategy2D()
+      given TargetFinderStrategy2D = TargetFinderStrategy2D()
       val events = for
         country <- environment.countries
         unit <- country.armyUnits

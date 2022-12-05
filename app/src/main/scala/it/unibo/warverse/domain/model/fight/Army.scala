@@ -6,7 +6,7 @@ import it.unibo.warverse.domain.model.common.Geometry.Point2D
 import it.unibo.warverse.domain.model.common.Math.Percentage
 import it.unibo.warverse.domain.model.common.Movement.Movable
 import it.unibo.warverse.domain.model.fight.Fight
-import it.unibo.warverse.domain.model.fight.TargetFinderStrategy
+import it.unibo.warverse.domain.model.fight.TargetFinderStrategy.TargetFinderStrategy
 import it.unibo.warverse.domain.model.world.World
 
 import scala.util.Random
