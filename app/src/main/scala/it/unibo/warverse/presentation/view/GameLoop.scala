@@ -26,7 +26,7 @@ class GameLoop:
   private var exit: Boolean = true
   private var paused: Boolean = false
   private var gameThread: Thread = _
-  private val attackController = AttackController()
+  private val attackController = AttackController(_environment)
   private val movementController = MovementController()
   private val relationsController = RelationsController()
   private val gameStatsController: GameStatsController = GameStatsController()
