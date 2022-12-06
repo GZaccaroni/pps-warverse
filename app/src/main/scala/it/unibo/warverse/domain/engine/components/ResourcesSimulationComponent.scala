@@ -7,10 +7,12 @@ import it.unibo.warverse.domain.model.fight.{
   TargetFinderStrategy
 }
 import it.unibo.warverse.domain.model.world.World.Country
-
+import it.unibo.warverse.domain.model.common.Listen.*
 import scala.annotation.tailrec
 
-class ResourcesSimulationComponent extends SimulationComponent:
+class ResourcesSimulationComponent
+    extends SimpleListenable[SimulationEvent]
+    with SimulationComponent:
   override def run(using environment: Environment): Environment =
     environment.copiedWith(
       countries = environment.countries

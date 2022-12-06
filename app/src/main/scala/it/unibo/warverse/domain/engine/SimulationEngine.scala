@@ -16,6 +16,7 @@ import it.unibo.warverse.domain.engine.components.*
 import scala.annotation.tailrec
 
 trait SimulationEngine extends Listenable[SimulationEvent]:
+  def simulationConfig: SimulationConfig
   def start(): Unit
   def resume(): Unit
   def pause(): Unit
@@ -26,7 +27,8 @@ object SimulationEngine:
     SimulationEngineImpl(simulationConfig)
 
   private class SimulationEngineImpl(val simulationConfig: SimulationConfig)
-      extends SimulationEngine:
+      extends SimpleListenable[SimulationEvent]
+      with SimulationEngine:
 
     private var exit: Boolean = true
     private var paused: Boolean = false
@@ -49,9 +51,9 @@ object SimulationEngine:
       simulationComponents.map { component =>
         onReceiveEvent[SimulationEvent] from component run handleEvent
       }
+    emitEvent(SimulationLoaded(environment))
     override def start(): Unit =
       gameThread = Thread(() => gameLoop())
-      emitEvent(SimulationStarted(environment))
       gameThread.start()
 
     override def resume(): Unit =

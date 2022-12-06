@@ -1,15 +1,19 @@
 package it.unibo.warverse.domain.engine.components
 
 import it.unibo.warverse.domain.model.Environment
-import it.unibo.warverse.domain.model.common.Listen.Listenable
+import it.unibo.warverse.domain.model.common.Listen.*
+import it.unibo.warverse.domain.model.fight.SimulationEvent
 import it.unibo.warverse.domain.model.fight.SimulationEvent.CountryWonWar
 import it.unibo.warverse.domain.model.world.Relations.{
   InterstateRelations,
   RelationStatus
 }
 import it.unibo.warverse.domain.model.world.World.{Country, CountryId}
+import it.unibo.warverse.domain.model.fight.SimulationEvent
 
-class WarSimulationComponent extends SimulationComponent:
+class WarSimulationComponent
+    extends SimpleListenable[SimulationEvent]
+    with SimulationComponent:
   override def run(using environment: Environment): Environment =
     getFightingCountries()
       .foldLeft(environment) { (environment, countryInWarId) =>
