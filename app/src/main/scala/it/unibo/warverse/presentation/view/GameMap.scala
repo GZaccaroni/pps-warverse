@@ -12,7 +12,6 @@ import it.unibo.warverse.domain.model.world.World.Country
 import it.unibo.warverse.domain.model.common.Geometry
 
 import java.awt.Polygon
-import scala.language.postfixOps
 import it.unibo.warverse.domain.model.fight.Army
 
 import java.awt.BasicStroke

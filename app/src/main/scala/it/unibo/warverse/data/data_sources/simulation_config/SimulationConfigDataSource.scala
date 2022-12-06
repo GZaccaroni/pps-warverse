@@ -19,7 +19,6 @@ import org.json4s.*
 import org.json4s.jackson.JsonMethods.*
 
 import javax.swing.JOptionPane
-import scala.language.postfixOps
 import scala.util.control.Breaks.*
 import java.io.File
 import java.text.ParseException
