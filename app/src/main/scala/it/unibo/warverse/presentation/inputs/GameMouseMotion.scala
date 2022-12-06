@@ -11,7 +11,7 @@ import java.awt.{Color, Polygon}
 import it.unibo.warverse.domain.model.common.Geometry.Point2D
 
 trait GameMouseMotion extends JPanel with MouseMotionListener:
-  def environment: Environment
+  def environment: Option[Environment]
   private val popUp: JPopupMenu = JPopupMenu()
   def countryColor(name: String): Color =
     val hash: Int = name.hashCode
@@ -26,19 +26,20 @@ trait GameMouseMotion extends JPanel with MouseMotionListener:
   override def mouseMoved(e: MouseEvent): Unit = mouseMotion(e)
 
   private def mouseMotion(e: MouseEvent): Unit =
-    val mouseX = e.getX
-    val mouseY = e.getY
-    environment.countries.foreach(country =>
-      if country.boundaries.contains(
-          Point2D(e.getY, e.getY)
-        )
-      then
-        popUp.setVisible(false)
-        popUp.removeAll()
-        popUp.add(JMenuItem("Country: " + country.name))
-        popUp.add(JMenuItem("Army Units: " + country.armyUnits.size))
-        popUp.add(JMenuItem("Citizens: " + country.citizens))
-        popUp.add(JMenuItem("Resources: " + country.resources))
-        popUp.show(this, mouseX, mouseY)
-        popUp.setVisible(true)
-    )
+    for environment <- this.environment do
+      val mouseX = e.getX
+      val mouseY = e.getY
+      environment.countries.foreach(country =>
+        if country.boundaries.contains(
+            Point2D(e.getY, e.getY)
+          )
+        then
+          popUp.setVisible(false)
+          popUp.removeAll()
+          popUp.add(JMenuItem("Country: " + country.name))
+          popUp.add(JMenuItem("Army Units: " + country.armyUnits.size))
+          popUp.add(JMenuItem("Citizens: " + country.citizens))
+          popUp.add(JMenuItem("Resources: " + country.resources))
+          popUp.show(this, mouseX, mouseY)
+          popUp.setVisible(true)
+      )
