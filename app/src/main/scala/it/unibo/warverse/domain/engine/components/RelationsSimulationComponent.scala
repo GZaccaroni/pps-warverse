@@ -18,13 +18,3 @@ class RelationsSimulationComponent extends SimulationComponent:
       )
     )
     environment.copiedWith(interstateRelations = newRel)
-
-  def noWars(
-    relations: InterstateRelations,
-    countries: Seq[Country]
-  ): Boolean =
-    var check = true
-    countries.foreach(country =>
-      if relations.countryEnemies(country.id).nonEmpty then check = false
-    )
-    check
