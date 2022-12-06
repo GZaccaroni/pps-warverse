@@ -1,15 +1,15 @@
 package it.unibo.warverse.domain.model.common
 
-import it.unibo.warverse.domain.model.common.Cancellable
+import it.unibo.warverse.domain.model.common.Disposable
 
 object Listen:
   type ListenClosure[Event] = Event => Unit
 
   trait Listenable[Event]:
     private val listeners: List[ListenClosure[Event]] = List.empty
-    def addListener(closure: ListenClosure[Event]): Cancellable =
+    def addListener(closure: ListenClosure[Event]): Disposable =
       closure :: listeners
-      Cancellable(() => removeListener(closure))
+      Disposable(() => removeListener(closure))
     def removeListener(closure: ListenClosure[Event]): Unit =
       listeners.filter(_ == closure)
 
@@ -22,7 +22,7 @@ object Listen:
   case class OnEventWithListener[Event](
     listenable: Listenable[Event]
   ):
-    def run(closure: ListenClosure[Event]): Cancellable =
+    def run(closure: ListenClosure[Event]): Disposable =
       listenable.addListener(closure)
 
   def onReceiveEvent[Event]: OnEventPart[Event] =
