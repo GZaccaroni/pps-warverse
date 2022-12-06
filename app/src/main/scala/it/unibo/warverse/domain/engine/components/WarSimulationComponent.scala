@@ -84,13 +84,6 @@ class WarSimulationComponent extends SimulationComponent:
           emitEvent(
             CountryWonWar(winnerId, countryDefeated.id, environment.day)
           )
-
-          // TODO: Add Game Stats COntroller with listener
-          /*this.gameStatsController.updateStatsEvents(
-            winnerId,
-            countryDefeated,
-            this.environment.day
-          )*/
           envWithoutDefeatedCountry
             .copiedWith(
               currentCountries.updated(
