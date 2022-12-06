@@ -11,8 +11,9 @@ import it.unibo.warverse.domain.model.common.Listen.*
 import it.unibo.warverse.domain.model.fight.SimulationEvent
 trait GameStateController:
   def mainFrame: MainFrame
+  var simulationConfig: Option[SimulationConfig]
   def setPanel(): Unit
-  def onStartClicked(simulationConfig: SimulationConfig): Unit
+  def onStartClicked(): Unit
   def onPauseClicked(): Unit
   def onResumeClicked(): Unit
   def onStopClicked(): Unit
@@ -34,18 +35,24 @@ object GameStateController:
 
     private val gameStats = GameStats()
 
+    def simulationConfig: Option[SimulationConfig] =
+      simulationEngine.map(_.simulationConfig)
+
+    def simulationConfig_=(newValue: Option[SimulationConfig]): Unit =
+      if (simulationEngine.isDefined) then onStopClicked()
+      simulationEngine = newValue.map(SimulationEngine(_))
+
     override def setPanel(): Unit =
       hud.setController(this)
       gamePanel.addToPanel(gameMap, GuiEnum.WEST)
       gamePanel.addToPanel(hud, GuiEnum.EAST)
       mainFrame.setPanel(gamePanel)
 
-    override def onStartClicked(simulationConfig: SimulationConfig): Unit =
-      if simulationEngine.isEmpty then
-        simulationEngine = Some(SimulationEngine(simulationConfig))
-        for simulationEngine <- simulationEngine do
-          simulationEngine.start()
-          onReceiveEvent[SimulationEvent] from simulationEngine run onEvent
+    override def onStartClicked(): Unit =
+      for simulationEngine <- simulationEngine do
+        simulationEngine.start()
+        onReceiveEvent[SimulationEvent] from simulationEngine run onEvent
+
     override def onPauseClicked(): Unit =
       print("Pause clicked")
       simulationEngine foreach (_.pause())
@@ -59,7 +66,7 @@ object GameStateController:
 
     private def onEvent(event: SimulationEvent): Unit =
       event match
-        case SimulationEvent.SimulationStarted(environment) =>
+        case SimulationEvent.SimulationLoaded(environment) =>
           gameMap.environment = Some(environment)
         case SimulationEvent.IterationCompleted(environment) =>
           gameMap.environment = Some(environment)

@@ -67,7 +67,6 @@ class Hud extends JPanel:
   val highlighter: Highlighter = console.getHighlighter
   var controller: GameStateController = _
   private val gameStatus: JScrollPane = JScrollPane(console)
-  private var simulationConfig: Option[SimulationConfig] = None
   gameStatus.setVerticalScrollBarPolicy(22)
   this.add(uploadConfig)
   console.setBackground(Color.BLACK)
@@ -78,9 +77,9 @@ class Hud extends JPanel:
   speed2Button.addActionListener(_ => console.append("Speed X2\n"))
   speed3Button.addActionListener(_ => console.append("Speed X3\n"))
   toggleSimulationButton.addActionListener(_ =>
-    (toggleSimulationButton.getText, simulationConfig) match
-      case ("Start", Some(simulationConfig)) =>
-        controller.onStartClicked(simulationConfig)
+    (toggleSimulationButton.getText, controller.simulationConfig) match
+      case ("Start", Some(_)) =>
+        controller.onStartClicked()
         toggleSimulationButton.setText("Pause")
       case ("Pause", _) =>
         controller.onPauseClicked()
@@ -126,7 +125,7 @@ class Hud extends JPanel:
       try
         val simulationConfig = jsonConfigParser.simulationConfig
         displayInitialSimulationConfig(simulationConfig)
-        this.simulationConfig = Some(simulationConfig)
+        controller.simulationConfig = Some(simulationConfig)
         JOptionPane.showMessageDialog(
           null,
           "Configuration uploaded successfully."
