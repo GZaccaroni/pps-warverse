@@ -6,7 +6,7 @@ import it.unibo.warverse.domain.model.world.World.CountryId
 sealed trait SimulationEvent
 object SimulationEvent:
 
-  case class SimulationStarted(environment: Environment) extends SimulationEvent
+  case class SimulationLoaded(environment: Environment) extends SimulationEvent
   case class IterationCompleted(environment: Environment)
       extends SimulationEvent
   object SimulationCompleted extends SimulationEvent
