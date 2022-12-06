@@ -122,8 +122,8 @@
                 }
             ],
             "relations": {
-                "allies": ["Test2"],
-                "enemies": []
+                "allies": [],
+                "enemies": ["Test2"]
             }
         },
         {
@@ -249,7 +249,7 @@
             ],
             "relations": {
                 "allies": [],
-                "enemies": []
+                "enemies": ["Test1"]
             }
         }
     ]
