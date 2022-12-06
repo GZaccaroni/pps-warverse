@@ -6,12 +6,19 @@ object Listen:
   type ListenClosure[Event] = Event => Unit
 
   trait Listenable[Event]:
-    private val listeners: List[ListenClosure[Event]] = List.empty
+    def addListener(closure: ListenClosure[Event]): Disposable
+    def removeListener(closure: ListenClosure[Event]): Unit
+    protected def emitEvent(event: Event): Unit
+
+  abstract class SimpleListenable[Event] extends Listenable[Event]:
+    private var listeners: List[ListenClosure[Event]] = List.empty
+
     def addListener(closure: ListenClosure[Event]): Disposable =
-      closure :: listeners
+      listeners = closure :: listeners
       Disposable(() => removeListener(closure))
+
     def removeListener(closure: ListenClosure[Event]): Unit =
-      listeners.filter(_ == closure)
+      listeners = listeners.filter(_ == closure)
 
     protected def emitEvent(event: Event): Unit =
       listeners.foreach(_(event))
