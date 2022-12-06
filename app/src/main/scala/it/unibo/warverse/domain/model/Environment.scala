@@ -4,6 +4,8 @@ import it.unibo.warverse.domain.model.world.World.Country
 import it.unibo.warverse.domain.model.fight.Army.ArmyUnit
 import it.unibo.warverse.domain.model.world.Relations.InterstateRelations
 
+import scala.::
+
 trait Environment:
   def countries: Seq[Country]
   def interstateRelations: InterstateRelations
@@ -14,17 +16,18 @@ trait Environment:
     day: Int = day
   ): Environment =
     Environment(countries, interstateRelations, day)
+  def replacingCountry(newCountry: Country): Environment =
+    copiedWith(
+      newCountry :: countries.filter(_.id != newCountry.id).toList
+    )
 
 object Environment:
   def apply(
     countries: Seq[Country],
     interstateRelations: InterstateRelations,
-    day: Int
+    day: Int = 0
   ): Environment =
     EnvironmentImpl(countries, interstateRelations, day)
-
-  def initial(countries: Seq[Country]): Environment =
-    EnvironmentImpl(countries, InterstateRelations(Seq.empty), 0)
 
   private case class EnvironmentImpl(
     override val countries: Seq[Country],
