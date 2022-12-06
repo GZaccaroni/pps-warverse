@@ -44,16 +44,16 @@ object GameStateController:
       if simulationEngine.isEmpty then
         simulationEngine = Some(SimulationEngine(simulationConfig))
         for simulationEngine <- simulationEngine do
-          simulationEngine.startGameLoop()
+          simulationEngine.start()
           onReceiveEvent[SimulationEvent] from simulationEngine run onEvent
     override def onPauseClicked(): Unit =
-      simulationEngine foreach (_.pauseGameLoop())
+      simulationEngine foreach (_.pause())
 
     override def onResumeClicked(): Unit =
-      simulationEngine foreach (_.resumeGameLoop())
+      simulationEngine foreach (_.resume())
 
     override def onStopClicked(): Unit =
-      simulationEngine foreach (_.stopGameLoop())
+      simulationEngine foreach (_.terminate())
       simulationEngine = None
 
     private def onEvent(event: SimulationEvent): Unit =
