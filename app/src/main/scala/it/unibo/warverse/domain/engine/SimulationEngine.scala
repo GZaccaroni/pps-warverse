@@ -4,7 +4,7 @@ import it.unibo.warverse.domain.engine.components.SimulationComponent
 import it.unibo.warverse.domain.model.{Environment, SimulationConfig}
 import it.unibo.warverse.domain.model.common.Geometry.{Point2D, Polygon2D}
 import it.unibo.warverse.domain.model.common.Listen.*
-import it.unibo.warverse.domain.model.common.{Cancellable, Geometry}
+import it.unibo.warverse.domain.model.common.{Disposable, Geometry}
 import it.unibo.warverse.domain.model.fight.Army.*
 import it.unibo.warverse.domain.model.fight.{Army, SimulationEvent}
 import it.unibo.warverse.domain.model.fight.SimulationEvent.*
@@ -33,7 +33,7 @@ class SimulationEngine(val simulationConfig: SimulationConfig)
     simulationConfig.interstateRelations
   )
 
-  private val cancellables: Seq[Cancellable] =
+  private val cancellables: Seq[Disposable] =
     simulationComponents.map { component =>
       onReceiveEvent[SimulationEvent] from component run handleEvent
     }
@@ -51,7 +51,7 @@ class SimulationEngine(val simulationConfig: SimulationConfig)
   def stopGameLoop(): Unit =
     exit = false
     emitEvent(SimulationCompletedEvent)
-    cancellables foreach (_.cancel)
+    cancellables foreach (_.dispose)
 
   private def gameLoop(): Unit =
     waitForNextLoop()
