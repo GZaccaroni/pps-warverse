@@ -7,11 +7,11 @@ trait GameStats:
   def eventList: List[SingleEvent]
   def updateEventList(
     country1: World.CountryId,
-    country2: Country,
+    country2: World.CountryId,
     day: Int
   ): GameStats
 
-type SingleEvent = (World.CountryId, Country, Int)
+type SingleEvent = (World.CountryId, World.CountryId, Int)
 
 object GameStats:
   def apply(): GameStats = GameStatsImpl(List())
@@ -23,7 +23,7 @@ object GameStats:
     override def getResult(): List[SingleEvent] = this.eventList
     override def updateEventList(
       country1: World.CountryId,
-      country2: Country,
+      country2: World.CountryId,
       day: Int
     ): GameStats =
       this.copy(eventList = eventList ++ List((country1, country2, day)))

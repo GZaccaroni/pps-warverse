@@ -1,25 +1,22 @@
 package it.unibo.warverse.presentation.controllers
 
+import it.unibo.warverse.domain.engine.SimulationEngine
 import it.unibo.warverse.presentation.view.*
-import it.unibo.warverse.domain.model.world.Relations
+import it.unibo.warverse.domain.model.world.{GameStats, Relations}
 import it.unibo.warverse.domain.model.world.Relations.*
 import it.unibo.warverse.domain.model.world.World.Country
-import it.unibo.warverse.domain.model.Environment
+import it.unibo.warverse.domain.model.{Environment, SimulationConfig}
 import it.unibo.warverse.presentation.common.UIConstants
-
+import it.unibo.warverse.domain.model.common.Listen.*
+import it.unibo.warverse.domain.model.fight.SimulationEvent
 trait GameStateController:
   def mainFrame: MainFrame
+  var simulationConfig: Option[SimulationConfig]
   def setPanel(): Unit
   def onStartClicked(): Unit
   def onPauseClicked(): Unit
   def onResumeClicked(): Unit
   def onStopClicked(): Unit
-  var allCountries: Seq[Country]
-  var interstateRelations: InterstateRelations
-  def updateResources(environment: Environment): Environment
-  var environment: Environment
-  def show(x: Option[Country]): Country
-  def isInWar(country: Country): Boolean
 
 object GameStateController:
   def apply(mainFrame: MainFrame): GameStateController =
@@ -28,7 +25,7 @@ object GameStateController:
   private class GameStateControllerImpl(override val mainFrame: MainFrame)
       extends GameStateController:
 
-    private val gameLoop = GameLoop()
+    private var simulationEngine: Option[SimulationEngine] = None
 
     private val gameMap = GameMap()
 
@@ -36,29 +33,16 @@ object GameStateController:
 
     private val gamePanel = GamePanel()
 
-    private var _interstateRelations: InterstateRelations = _
+    private val gameStats = GameStats()
 
-    def environment: Environment =
-      gameMap.environment
-    def environment_=(environment: Environment): Unit =
-      gameMap.environment = environment
+    def simulationConfig: Option[SimulationConfig] =
+      simulationEngine.map(_.simulationConfig)
 
-    override def isInWar(country: Country): Boolean =
-      interstateRelations.countryEnemies(country.id).nonEmpty
+    def simulationConfig_=(newValue: Option[SimulationConfig]): Unit =
+      if (simulationEngine.isDefined) then onStopClicked()
+      simulationEngine = newValue.map(SimulationEngine(_))
+      gameMap.environment = simulationEngine.map(_.currentEnvironment)
 
-    override def updateResources(environment: Environment): Environment =
-      environment.copiedWith(
-        countries = environment.countries
-          .map(country =>
-            country.updateResources(
-              if isInWar(country) then
-                country.citizens - country.armyUnits
-                  .map(_.dailyConsume)
-                  .sum
-              else country.citizens
-            )
-          )
-      )
     override def setPanel(): Unit =
       hud.setController(this)
       gamePanel.addToPanel(gameMap, GuiEnum.WEST)
@@ -66,34 +50,29 @@ object GameStateController:
       mainFrame.setPanel(gamePanel)
 
     override def onStartClicked(): Unit =
-      gameLoop.startGameLoop()
+      for simulationEngine <- simulationEngine do
+        simulationEngine.start()
+        onReceiveEvent[SimulationEvent] from simulationEngine run onEvent
 
     override def onPauseClicked(): Unit =
-      gameLoop.pauseGameLoop()
+      simulationEngine foreach (_.pause())
 
     override def onResumeClicked(): Unit =
-      gameLoop.resumeGameLoop()
+      simulationEngine foreach (_.resume())
 
     override def onStopClicked(): Unit =
-      gameLoop.stopGameLoop()
+      simulationEngine foreach (_.terminate())
+      simulationEngine = None
 
-    def allCountries_=(countries: Seq[Country]): Unit =
-      this.gameLoop.controller = (this)
-      val newEnv = this.environment.copiedWith(countries = countries)
-      gameMap.environment = newEnv
-      gameLoop.environment = newEnv
-
-    def allCountries: Seq[Country] =
-      this.environment.countries
-
-    def interstateRelations: InterstateRelations =
-      this._interstateRelations
-
-    def interstateRelations_=(
-      interstateRelations: InterstateRelations
-    ): Unit =
-      this._interstateRelations = interstateRelations
-
-    override def show(x: Option[Country]): Country = x match
-      case Some(s) => s
-      case None    => null
+    private def onEvent(event: SimulationEvent): Unit =
+      event match
+        case SimulationEvent.IterationCompleted(environment) =>
+          gameMap.environment = Some(environment)
+        case SimulationEvent.SimulationCompleted =>
+          mainFrame.setPanel(EndPanel())
+        case SimulationEvent.CountryWonWar(winnerId, loserId, day) =>
+          this.gameStats.updateEventList(
+            winnerId,
+            loserId,
+            day
+          )

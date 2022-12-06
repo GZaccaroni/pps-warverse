@@ -12,7 +12,6 @@ import it.unibo.warverse.domain.model.world.World.Country
 import it.unibo.warverse.domain.model.common.Geometry
 
 import java.awt.Polygon
-import scala.language.postfixOps
 import it.unibo.warverse.domain.model.fight.Army
 
 import java.awt.BasicStroke
@@ -34,17 +33,16 @@ class GameMap extends GameMouseMotion:
   this.setPreferredSize(Dimension(1050, 20))
   this.addMouseMotionListener(this)
 
-  private var _environment: Environment =
-    Environment.initial(List.empty)
+  private var _environment: Option[Environment] = None
 
-  def environment: Environment = _environment
-  def environment_=(environment: Environment): Unit =
+  def environment: Option[Environment] = _environment
+  def environment_=(environment: Option[Environment]): Unit =
     this._environment = environment
     repaint()
 
   override def paintComponent(g: Graphics): Unit =
     super.paintComponent(g)
-    if environment != null then
+    for environment <- this.environment do
       environment.countries
         .foreach(country =>
           val polygon = Polygon(

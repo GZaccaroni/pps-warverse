@@ -3,7 +3,7 @@ package it.unibo.warverse.domain.model.common
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.must.Matchers
 import it.unibo.warverse.domain.model.common.Geometry
-import org.scalatest.Suites;
+import org.scalatest.Suites
 
 object GeometryTest:
   class Point2DTest() extends AnyFunSuite with Matchers:
@@ -73,14 +73,20 @@ object GeometryTest:
         Geometry.Point2D(x = 5, y = 0)
       )
     )
+    test("Polygon center is valid") {
+      polygon.center mustBe Geometry.Point2D(2.5, 2.5)
+    }
+
+    test("Polygon area is valid") {
+      polygon.area mustBe 25
+    }
+
     test("Polygon contains point") {
       polygon.contains(Geometry.Point2D(0, 0)) mustBe true
       polygon.contains(Geometry.Point2D(2, 2)) mustBe true
       polygon.contains(Geometry.Point2D(5, 5)) mustBe true
     }
-    test("Polygon center is valid") {
-      polygon.center mustBe Geometry.Point2D(2.5, 2.5)
-    }
+
     test("Polygon doesn't contain point") {
       polygon.contains(Geometry.Point2D(10, 10)) mustBe false
     }

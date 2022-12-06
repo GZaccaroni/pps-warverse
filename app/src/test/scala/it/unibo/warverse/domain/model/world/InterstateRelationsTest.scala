@@ -1,5 +1,10 @@
 package it.unibo.warverse.domain.model.world
 
+import it.unibo.warverse.domain.model.common.DomainExample.{
+  countryA,
+  countryB,
+  countryC
+}
 import it.unibo.warverse.domain.model.common.Geometry
 import it.unibo.warverse.domain.model.common.Geometry.{Point2D, Polygon2D}
 import it.unibo.warverse.domain.model.world.Relations.{
@@ -12,12 +17,6 @@ import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.must.Matchers
 
 class InterstateRelationsTest extends AnyFunSuite with Matchers:
-  private val countryA: Country =
-    Country("ID_1", "A", 40, List.empty, 0.0, Polygon2D(List.empty))
-  private val countryB: Country =
-    Country("ID_2", "B", 10, List.empty, 0.0, Polygon2D(List.empty))
-  private val countryC: Country =
-    Country("ID_3", "C", 20, List.empty, 0.0, Polygon2D(List.empty))
 
   test("When a relation is added it must compare in the new object") {
     val interstateRelations: InterstateRelations =
