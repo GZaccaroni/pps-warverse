@@ -13,6 +13,8 @@ import it.unibo.warverse.domain.model.world.Relations.InterstateRelations
 import it.unibo.warverse.domain.model.world.World.Country
 import it.unibo.warverse.domain.engine.components.*
 
+import scala.annotation.tailrec
+
 class SimulationEngine(val simulationConfig: SimulationConfig)
     extends Listenable[SimulationEvent]:
 
@@ -53,6 +55,7 @@ class SimulationEngine(val simulationConfig: SimulationConfig)
     emitEvent(SimulationCompletedEvent)
     cancellables foreach (_.dispose)
 
+  @tailrec
   private def gameLoop(): Unit =
     waitForNextLoop()
     environment = simulationComponents.foldLeft(environment) {
