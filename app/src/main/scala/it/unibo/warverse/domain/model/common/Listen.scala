@@ -15,3 +15,15 @@ object Listen:
 
     protected def emitEvent(event: Event): Unit =
       listeners.foreach(_(event))
+
+  case class OnEventPart[Event]():
+    def from(listenable: Listenable[Event]): OnEventWithListener[Event] =
+      OnEventWithListener(listenable)
+  case class OnEventWithListener[Event](
+    listenable: Listenable[Event]
+  ):
+    def run(closure: ListenClosure[Event]): Cancellable =
+      listenable.addListener(closure)
+
+  def onReceiveEvent[Event]: OnEventPart[Event] =
+    OnEventPart()
