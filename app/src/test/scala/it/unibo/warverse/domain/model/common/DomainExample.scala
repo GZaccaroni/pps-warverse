@@ -21,7 +21,7 @@ object DomainExample:
   val countryCId = "ID_C"
   object Army:
     object AreaArmyUnits:
-      val successfulUnit: AreaArmyUnit =
+      def successfulUnit: AreaArmyUnit =
         AreaArmyUnit(
           countryAId,
           "catapult",
@@ -33,7 +33,7 @@ object DomainExample:
           dailyConsume = 100,
           speed = 0.1
         )
-      val failingUnit: AreaArmyUnit =
+      def failingUnit: AreaArmyUnit =
         AreaArmyUnit(
           countryAId,
           "catapult",
@@ -45,7 +45,7 @@ object DomainExample:
           dailyConsume = 1,
           speed = 0.2
         )
-      val distantUnit: AreaArmyUnit =
+      def distantUnit: AreaArmyUnit =
         AreaArmyUnit(
           countryAId,
           "catapult",
@@ -58,7 +58,7 @@ object DomainExample:
           speed = 0.05
         )
     object PrecisionArmyUnits:
-      val successfulUnit =
+      def successfulUnit =
         PrecisionArmyUnit(
           countryBId,
           "soldier",
@@ -69,7 +69,7 @@ object DomainExample:
           dailyConsume = 100,
           speed = 0.1
         )
-      val failingUnit =
+      def failingUnit =
         PrecisionArmyUnit(
           countryBId,
           "soldier",
@@ -80,7 +80,7 @@ object DomainExample:
           dailyConsume = 1,
           speed = 0.2
         )
-      val distantUnit =
+      def distantUnit =
         PrecisionArmyUnit(
           countryBId,
           "soldier",
@@ -91,7 +91,7 @@ object DomainExample:
           dailyConsume = 1,
           speed = 0.05
         )
-  val countryA: Country =
+  def countryA: Country =
     Country(
       countryAId,
       "A",
@@ -104,7 +104,7 @@ object DomainExample:
       0.0,
       Polygon2D(Seq(Point2D(0, 0), Point2D(0, 3), Point2D(3, 3), Point2D(3, 0)))
     )
-  val countryB: Country =
+  def countryB: Country =
     Country(
       countryBId,
       "B",
@@ -117,7 +117,7 @@ object DomainExample:
       0.0,
       Polygon2D(Seq(Point2D(3, 0), Point2D(3, 3), Point2D(6, 3), Point2D(6, 0)))
     )
-  val countryC: Country =
+  def countryC: Country =
     Country(
       countryCId,
       "C",
