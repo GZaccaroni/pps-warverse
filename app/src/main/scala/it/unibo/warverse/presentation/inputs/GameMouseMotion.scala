@@ -31,7 +31,7 @@ trait GameMouseMotion extends JPanel with MouseMotionListener:
       val mouseY = e.getY
       environment.countries.foreach(country =>
         if country.boundaries.contains(
-            Point2D(e.getY, e.getY)
+            Point2D(mouseX, mouseY)
           )
         then
           popUp.setVisible(false)
