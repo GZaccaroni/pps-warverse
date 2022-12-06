@@ -51,6 +51,7 @@ object SimulationEngine:
       }
     override def start(): Unit =
       gameThread = Thread(() => gameLoop())
+      emitEvent(SimulationStarted(environment))
       gameThread.start()
 
     override def resume(): Unit =
@@ -62,7 +63,7 @@ object SimulationEngine:
 
     override def terminate(): Unit =
       exit = false
-      emitEvent(SimulationCompletedEvent)
+      emitEvent(SimulationCompleted)
       cancellables foreach (_.dispose)
 
     @tailrec

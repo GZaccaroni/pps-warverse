@@ -47,6 +47,7 @@ object GameStateController:
           simulationEngine.start()
           onReceiveEvent[SimulationEvent] from simulationEngine run onEvent
     override def onPauseClicked(): Unit =
+      print("Pause clicked")
       simulationEngine foreach (_.pause())
 
     override def onResumeClicked(): Unit =
@@ -58,11 +59,13 @@ object GameStateController:
 
     private def onEvent(event: SimulationEvent): Unit =
       event match
+        case SimulationEvent.SimulationStarted(environment) =>
+          gameMap.environment = Some(environment)
         case SimulationEvent.IterationCompleted(environment) =>
           gameMap.environment = Some(environment)
-        case SimulationEvent.SimulationCompletedEvent =>
+        case SimulationEvent.SimulationCompleted =>
           mainFrame.setPanel(EndPanel())
-        case SimulationEvent.CountryWinWarEvent(winnerId, loserId, day) =>
+        case SimulationEvent.CountryWonWar(winnerId, loserId, day) =>
           this.gameStats.updateEventList(
             winnerId,
             loserId,

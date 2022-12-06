@@ -2,7 +2,7 @@ package it.unibo.warverse.domain.engine.components
 
 import it.unibo.warverse.domain.model.Environment
 import it.unibo.warverse.domain.model.common.Listen.Listenable
-import it.unibo.warverse.domain.model.fight.SimulationEvent.CountryWinWarEvent
+import it.unibo.warverse.domain.model.fight.SimulationEvent.CountryWonWar
 import it.unibo.warverse.domain.model.world.Relations.{
   InterstateRelations,
   RelationStatus
@@ -82,7 +82,7 @@ class WarSimulationComponent extends SimulationComponent:
                 else citizensPerWinner
               )
           emitEvent(
-            CountryWinWarEvent(winnerId, countryDefeated.id, environment.day)
+            CountryWonWar(winnerId, countryDefeated.id, environment.day)
           )
 
           // TODO: Add Game Stats COntroller with listener
