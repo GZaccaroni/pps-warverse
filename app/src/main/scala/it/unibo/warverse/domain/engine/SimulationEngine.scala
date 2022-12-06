@@ -17,6 +17,7 @@ import scala.annotation.tailrec
 
 trait SimulationEngine extends Listenable[SimulationEvent]:
   def simulationConfig: SimulationConfig
+  def currentEnvironment: Environment
   def start(): Unit
   def resume(): Unit
   def pause(): Unit
@@ -30,6 +31,7 @@ object SimulationEngine:
       extends SimpleListenable[SimulationEvent]
       with SimulationEngine:
 
+    override def currentEnvironment: Environment = environment
     private var exit: Boolean = true
     private var paused: Boolean = false
     private var gameThread: Thread = _
@@ -46,12 +48,10 @@ object SimulationEngine:
       simulationConfig.countries,
       simulationConfig.interstateRelations
     )
-
     private val cancellables: Seq[Disposable] =
       simulationComponents.map { component =>
         onReceiveEvent[SimulationEvent] from component run handleEvent
       }
-    emitEvent(SimulationLoaded(environment))
     override def start(): Unit =
       gameThread = Thread(() => gameLoop())
       gameThread.start()

@@ -41,6 +41,7 @@ object GameStateController:
     def simulationConfig_=(newValue: Option[SimulationConfig]): Unit =
       if (simulationEngine.isDefined) then onStopClicked()
       simulationEngine = newValue.map(SimulationEngine(_))
+      gameMap.environment = simulationEngine.map(_.currentEnvironment)
 
     override def setPanel(): Unit =
       hud.setController(this)
@@ -54,7 +55,6 @@ object GameStateController:
         onReceiveEvent[SimulationEvent] from simulationEngine run onEvent
 
     override def onPauseClicked(): Unit =
-      print("Pause clicked")
       simulationEngine foreach (_.pause())
 
     override def onResumeClicked(): Unit =
@@ -66,8 +66,6 @@ object GameStateController:
 
     private def onEvent(event: SimulationEvent): Unit =
       event match
-        case SimulationEvent.SimulationLoaded(environment) =>
-          gameMap.environment = Some(environment)
         case SimulationEvent.IterationCompleted(environment) =>
           gameMap.environment = Some(environment)
         case SimulationEvent.SimulationCompleted =>
