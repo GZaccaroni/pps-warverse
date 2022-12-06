@@ -141,8 +141,8 @@ class Hud extends JPanel:
     console.setText("")
     simulationConfig.countries.foreach(country =>
       console.append(
-        country.name + " start with " + country.citizens + " Citizen, " + country.armyUnits.length + " Army units and " + String
-          .format("%.02f", country.resources) + " Resources\n\n"
+        country.name + " starts with " + country.citizens + " citizen, " + country.armyUnits.length + " army units and " + String
+          .format("%.02f", country.resources) + " resources.\n\n"
       )
     )
 
