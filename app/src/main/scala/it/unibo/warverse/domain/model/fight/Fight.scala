@@ -2,8 +2,6 @@ package it.unibo.warverse.domain.model.fight
 
 import it.unibo.warverse.domain.model.common.Movement.Locatable
 import it.unibo.warverse.domain.model.common.{Geometry, Life}
-import it.unibo.warverse.domain.model.fight.SimulationEvent.AttackEvent
-import it.unibo.warverse.domain.model.fight.TargetFinderStrategy
 import it.unibo.warverse.domain.model.fight.TargetFinderStrategy.TargetFinderStrategy
 
 object Fight:
@@ -23,13 +21,30 @@ object Fight:
       */
     def attack()(using
       strategy: TargetFinderStrategy[Position]
-    ): Seq[AttackEvent]
+    ): Seq[AttackAction]
 
-  trait Attackable
-  trait AttackableUnit extends Attackable, Locatable:
-    override type Position = Geometry.Point2D
-  trait AttackableArea extends Attackable, Locatable:
-    override type Position = Geometry.Polygon2D
+  /** Represents an attack action
+    */
+  sealed trait AttackAction
+  object AttackAction:
+
+    /** Case class that represent an AttackAction on a specified area
+      *
+      * @param target
+      *   the position of the attack
+      * @param areaOfImpact
+      *   the area involved in the attack
+      */
+    case class AreaAttackAction(target: Geometry.Point2D, areaOfImpact: Double)
+        extends AttackAction
+
+    /** Case class that represent an AttackAction on a target unit
+      *
+      * @param target
+      *   the position of the attack
+      */
+    case class PrecisionAttackAction(target: Geometry.Point2D)
+        extends AttackAction
 
   /** Describe different type of attack
     */

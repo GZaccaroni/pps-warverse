@@ -6,6 +6,7 @@ import it.unibo.warverse.domain.model.common.Geometry.Point2D
 import it.unibo.warverse.domain.model.common.Math.Percentage
 import it.unibo.warverse.domain.model.common.Movement.Movable
 import it.unibo.warverse.domain.model.fight.Fight
+import it.unibo.warverse.domain.model.fight.Fight.AttackAction
 import it.unibo.warverse.domain.model.fight.TargetFinderStrategy.TargetFinderStrategy
 import it.unibo.warverse.domain.model.world.World
 
@@ -110,7 +111,7 @@ object Army:
     override def copied(position: Point2D): ArmyUnit = copy(position = position)
     override def attack()(using
       strategy: TargetFinderStrategy[Position]
-    ): Seq[SimulationEvent.AttackEvent] =
+    ): Seq[AttackAction] =
       val availableTargets = strategy
         .findTargets(countryId, attackType)
         .filter(target => position.distanceFrom(target) < rangeOfHit)
@@ -119,7 +120,7 @@ object Army:
         target <- availableTargets.take(availableHits)
         probabilityOfSuccess <- Seq.fill(availableHits)(Random.nextInt(100))
         if probabilityOfSuccess < chanceOfHit
-      yield SimulationEvent.PrecisionAttackEvent(target)
+      yield AttackAction.PrecisionAttackAction(target)
 
   case class AreaArmyUnit(
     override val countryId: World.CountryId,
@@ -136,7 +137,7 @@ object Army:
     override def copied(position: Point2D): ArmyUnit = copy(position = position)
     override def attack()(using
       strategy: TargetFinderStrategy[Position]
-    ): Seq[SimulationEvent.AttackEvent] =
+    ): Seq[AttackAction] =
       val availableTargets = strategy
         .findTargets(countryId, attackType)
         .filter(target => position.distanceFrom(target) < rangeOfHit)
@@ -145,4 +146,4 @@ object Army:
         (target, _) <- availableTargets.zip(0 until availableHits)
         probabilityOfSuccess <- Seq.fill(availableHits)(Random.nextInt(100))
         if probabilityOfSuccess < chanceOfHit
-      yield SimulationEvent.AreaAttackEvent(target, areaOfImpact)
+      yield AttackAction.AreaAttackAction(target, areaOfImpact)
