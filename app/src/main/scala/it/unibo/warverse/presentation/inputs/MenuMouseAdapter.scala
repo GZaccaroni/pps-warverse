@@ -52,7 +52,6 @@ object MenuMouseAdapter:
           itemName match
             case MainMenuItem.StartGame =>
               GameStateController(mainFrame).setPanel()
-            case MainMenuItem.Options => mainFrame.setPanel(MenuOptions())
             case MainMenuItem.Help    => mainFrame.setPanel(MenuHelp(mainFrame))
             case MainMenuItem.Exit    => System.exit(0)
             case _                    =>
