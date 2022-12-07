@@ -74,7 +74,7 @@ object World:
       *   a new instance of {@link Country} with the citizens added
       */
     override def addingCitizens(newCitizens: Int): Country =
-      if citizens + newCitizen < 0 then this.copy(citizens = 0)
+      if citizens + newCitizens < 0 then this.copy(citizens = 0)
       this.copy(citizens = citizens + newCitizens)
 
     /** * It returns a new {@link Country} with the given army units added
@@ -84,4 +84,4 @@ object World:
       *   a new instance of {@link Country} with the army units added
       */
     override def addingArmyUnits(newArmyUnits: Seq[ArmyUnit]): Country =
-      this.copy(armyUnits = newArmyUnits.concat(newArmy))
+      this.copy(armyUnits = newArmyUnits.concat(newArmyUnits))
