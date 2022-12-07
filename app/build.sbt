@@ -15,6 +15,12 @@ lazy val root = project
     // Output paths
     assembly / mainClass := Some("it.unibo.warverse.Launcher"),
     assembly / assemblyOutputPath := file("target/warverse.jar"),
+    assembly / assemblyMergeStrategy := {
+      case "module-info.class" => MergeStrategy.discard
+      case x =>
+        val oldStrategy = (assembly / assemblyMergeStrategy).value
+        oldStrategy(x)
+    },
     Compile / doc / target := file("target/docs"),
     // Coverage settings
     jacocoReportSettings := JacocoReportSettings()
