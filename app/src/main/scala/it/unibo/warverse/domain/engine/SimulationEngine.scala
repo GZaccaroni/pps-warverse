@@ -12,8 +12,15 @@ import it.unibo.warverse.domain.model.world.GameStats
 import it.unibo.warverse.domain.model.world.Relations.InterstateRelations
 import it.unibo.warverse.domain.model.world.World.Country
 import it.unibo.warverse.domain.engine.components.*
+import monix.eval.Task
+import monix.execution.Cancelable
+
+import concurrent.duration.DurationInt
+import monix.execution.Scheduler.Implicits.global
+import monix.execution.Scheduler.global as scheduler
 
 import scala.annotation.tailrec
+import scala.concurrent.Await
 
 trait SimulationEngine extends Listenable[SimulationEvent]:
   def simulationConfig: SimulationConfig
@@ -32,9 +39,6 @@ object SimulationEngine:
       with SimulationEngine:
 
     override def currentEnvironment: Environment = environment
-    private var exit: Boolean = true
-    private var paused: Boolean = false
-    private var gameThread: Thread = _
     private val simulationComponents: Seq[SimulationComponent] = List(
       AttackSimulationComponent(),
       MovementSimulationComponent(),
@@ -42,51 +46,46 @@ object SimulationEngine:
       ResourcesSimulationComponent(),
       WarSimulationComponent()
     )
-    private var nextLoopTime: Long = 0
-    private val timeFrame = 1000
+    private var taskCancelable: Option[Cancelable] = None
     private var environment = Environment(
       simulationConfig.countries,
       simulationConfig.interstateRelations
     )
-    private val cancellables: Seq[Disposable] =
+    private val disposables: Seq[Disposable] =
       simulationComponents.map { component =>
         onReceiveEvent[SimulationEvent] from component run handleEvent
       }
     override def start(): Unit =
-      gameThread = Thread(() => gameLoop())
-      gameThread.start()
+      runLoop()
 
     override def resume(): Unit =
-      paused = false
-      start()
+      runLoop()
 
     override def pause(): Unit =
-      paused = true
+      taskCancelable foreach (_.cancel())
 
     override def terminate(): Unit =
-      exit = false
+      taskCancelable foreach (_.cancel())
       emitEvent(SimulationCompleted)
-      cancellables foreach (_.dispose)
+      disposables foreach (_.dispose)
 
-    @tailrec
-    private def gameLoop(): Unit =
-      waitForNextLoop()
-      environment = simulationComponents.foldLeft(environment) {
-        (environment, simulationComponent) =>
-          environment after simulationComponent.run
-      }
-      emitEvent(IterationCompleted(environment))
+    private def runLoop(): Unit =
+      if taskCancelable.isEmpty then
+        taskCancelable = Some(
+          scheduler.scheduleAtFixedRate(0.seconds, 1.seconds) {
+            simulationComponents
+              .foldLeft(Task(environment)) { (task, simulationComponent) =>
+                task.flatMap(simulationComponent.run)
+              }
+            this.environment = environment
+            emitEvent(IterationCompleted(environment))
 
-      checkEnd()
-      if continue() then gameLoop()
+            checkEnd()
+          }
+        )
 
     private def handleEvent(event: SimulationEvent): Unit =
       emitEvent(event)
-
-    private def waitForNextLoop(): Unit =
-      try Thread.sleep(Math.max(0, nextLoopTime - System.currentTimeMillis()))
-      catch case ex: InterruptedException => ()
-      nextLoopTime = System.currentTimeMillis() + timeFrame
 
     private def checkEnd(): Unit =
       if noWars(environment)
@@ -98,12 +97,3 @@ object SimulationEngine:
       environment.countries.forall(country =>
         environment.interstateRelations.countryEnemies(country.id).isEmpty
       )
-
-    private def continue(): Boolean =
-      exit && !paused
-
-    extension (environment: Environment)
-      private def after(
-        closure: Environment => Environment
-      ): Environment =
-        closure(environment)
