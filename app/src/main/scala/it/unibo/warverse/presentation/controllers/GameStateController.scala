@@ -17,6 +17,7 @@ trait GameStateController:
   def onPauseClicked(): Unit
   def onResumeClicked(): Unit
   def onStopClicked(): Unit
+  def changeSpeed(newSpeed: Int): Unit
 
 object GameStateController:
   def apply(mainFrame: MainFrame): GameStateController =
@@ -64,6 +65,9 @@ object GameStateController:
       simulationEngine foreach (_.terminate())
       simulationEngine = None
 
+    override def changeSpeed(newSpeed: Int): Unit =
+      simulationEngine foreach (_.changeSpeed(newSpeed))
+
     private def onEvent(event: SimulationEvent): Unit =
       event match
         case SimulationEvent.IterationCompleted(environment) =>
@@ -71,6 +75,9 @@ object GameStateController:
         case SimulationEvent.SimulationCompleted =>
           mainFrame.setPanel(EndPanel())
         case SimulationEvent.CountryWonWar(winnerId, loserId, day) =>
+          this.hud.writeToConsole(loserId + " has been defeated by " + winnerId)
+          this.hud.highlightCountryId(winnerId)
+          this.hud.highlightCountryId(loserId)
           this.gameStats.updateEventList(
             winnerId,
             loserId,
