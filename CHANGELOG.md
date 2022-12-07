@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.1](https://github.com/GZaccaroni/pps-warverse/compare/v1.1.0...v1.1.1) (2022-12-07)
+
+
+### Bug Fixes
+
+* Changing speed during simulation wasn't working ([ad68fb7](https://github.com/GZaccaroni/pps-warverse/commit/ad68fb7917d709a8cf33dacd94eea9646edcf7a3))
+* Simulation termination ([fdebd63](https://github.com/GZaccaroni/pps-warverse/commit/fdebd63057f5819379ebbe98adcfefdbc2ffd7d7))
+
+
+### Performance Improvements
+
+* integrated changes ([fab6867](https://github.com/GZaccaroni/pps-warverse/commit/fab6867866ad099516a9425004e05f55b9fc4597))
+
 ## [1.1.0](https://github.com/GZaccaroni/pps-warverse/compare/v1.0.0...v1.1.0) (2022-12-07)
 
 
