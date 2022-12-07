@@ -40,9 +40,9 @@ trait Environment:
     *   a copy of environment
     */
   def copiedWith(
-                  countries: Seq[Country] = countries,
-                  interstateRelations: InterCountryRelations = interstateRelations,
-                  day: Int = day
+    countries: Seq[Country] = countries,
+    interstateRelations: InterCountryRelations = interstateRelations,
+    day: Int = day
   ): Environment =
     Environment(countries, interstateRelations, day)
 
@@ -59,14 +59,14 @@ trait Environment:
 
 object Environment:
   def apply(
-             countries: Seq[Country],
-             interstateRelations: InterCountryRelations,
-             day: Int = 0
+    countries: Seq[Country],
+    interstateRelations: InterCountryRelations,
+    day: Int = 0
   ): Environment =
     EnvironmentImpl(countries, interstateRelations, day)
 
   private case class EnvironmentImpl(
-                                      override val countries: Seq[Country],
-                                      override val interstateRelations: InterCountryRelations,
-                                      override val day: Int
+    override val countries: Seq[Country],
+    override val interstateRelations: InterCountryRelations,
+    override val day: Int
   ) extends Environment
