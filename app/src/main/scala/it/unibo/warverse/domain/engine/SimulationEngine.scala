@@ -15,7 +15,7 @@ import it.unibo.warverse.domain.engine.components.*
 import monix.eval.Task
 import monix.execution.Cancelable
 
-import concurrent.duration.DurationInt
+import concurrent.duration.{DurationInt, DurationDouble, FiniteDuration}
 import monix.execution.Scheduler.Implicits.global
 import monix.execution.Scheduler.global as scheduler
 import monix.reactive.Observable
@@ -77,6 +77,7 @@ object SimulationEngine:
       ResourcesSimulationComponent(),
       WarSimulationComponent()
     )
+    private val simulationDayDuration: FiniteDuration = 1.5.seconds
     private var speed = 1
     private var taskCancelable: Option[Cancelable] = None
     private var environment = Environment(
@@ -96,9 +97,15 @@ object SimulationEngine:
     override def pause(): Unit =
       taskCancelable foreach (_.cancel())
       taskCancelable = None
+    private def isRunning: Boolean = taskCancelable.nonEmpty
 
     override def changeSpeed(newSpeed: Int): Unit =
-      speed = newSpeed
+      if speed != newSpeed then
+        if isRunning then
+          pause()
+          speed = newSpeed
+          resume()
+        else speed = newSpeed
 
     override def terminate(): Unit =
       taskCancelable foreach (_.cancel())
@@ -109,7 +116,7 @@ object SimulationEngine:
     private def runLoop(): Unit =
       if taskCancelable.isEmpty then
         val task = Observable
-          .intervalAtFixedRate((1 / speed).asInstanceOf[Int].seconds)
+          .intervalAtFixedRate(simulationDayDuration / speed)
           .scanEval(Task(environment)) { (previous, _) =>
             simulationComponents
               .foldLeft(Task(previous)) { (task, simulationComponent) =>
