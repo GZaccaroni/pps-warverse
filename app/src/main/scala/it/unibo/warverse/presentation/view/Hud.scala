@@ -91,19 +91,20 @@ class Hud extends JPanel:
         )
   )
   stopButton.addActionListener(_ => controller.onStopClicked())
-
+  
+  speed1Button.setEnabled(false)
   speed1Button.addActionListener(_ =>
-    writeToConsole("Speed set to X1 \n\n")
+    writeToConsole("Speed set to X1")
     controller.changeSpeed(1)
     enableSpeed(false, true, true)
   )
   speed2Button.addActionListener(_ =>
-    writeToConsole("Speed set to X2 \n\n")
+    writeToConsole("Speed set to X2")
     controller.changeSpeed(2)
     enableSpeed(true, false, true)
   )
   speed3Button.addActionListener(_ =>
-    writeToConsole("Speed set to X3 \n\n")
+    writeToConsole("Speed set to X3")
     controller.changeSpeed(3)
     enableSpeed(true, true, false)
   )
@@ -152,9 +153,9 @@ class Hud extends JPanel:
   ): Unit =
     console.setText("")
     simulationConfig.countries.foreach(country =>
-      console.append(
+      writeToConsole(
         country.name + " starts with " + country.citizens + " citizen, " + country.armyUnits.length + " army units and " + String
-          .format("%.02f", country.resources) + " resources.\n\n"
+          .format("%.02f", country.resources) + " resources."
       )
     )
 
@@ -163,14 +164,14 @@ class Hud extends JPanel:
         .countryAllies(country.id)
         .foreach(allyId =>
           val ally = simulationConfig.countries.find(_.id == allyId).get;
-          console.append(country.name + " is allied with " + ally.name + "\n\n")
+          writeToConsole(country.name + " is allied with " + ally.name)
         )
       simulationConfig.interstateRelations
         .countryEnemies(country.id)
         .foreach(enemyId =>
           val enemy = simulationConfig.countries.find(_.id == enemyId).get;
-          console.append(
-            country.name + " is in war with " + enemy.name + "\n\n"
+          writeToConsole(
+            country.name + " is in war with " + enemy.name
           )
         )
     )
@@ -183,14 +184,15 @@ class Hud extends JPanel:
     )
     highlightText(console.getText, "allied", Color(0, 153, 0))
     highlightText(console.getText, "war", Color.RED)
+    writeToConsole("Default speed is set to X1")
 
   private def highlightText(text: String, name: String, color: Color): Unit =
-    var c: Integer = 0
+    var c: Int = 0
     val painter: HighlightPainter =
       DefaultHighlighter.DefaultHighlightPainter(color)
     while text.indexOf(name, c) != -1 do
-      val p0: Integer = text.indexOf(name, c)
-      val p1: Integer = p0 + name.length()
+      val p0: Int = text.indexOf(name, c)
+      val p1: Int = p0 + name.length()
       highlighter.addHighlight(p0, p1, painter)
       c = p1
   override def paintComponent(g: Graphics): Unit =
@@ -206,7 +208,7 @@ class Hud extends JPanel:
     Color(r, g, b)
 
   def writeToConsole(text: String): Unit =
-    this.console.append(text)
+    this.console.append(text + "\n\n")
 
   def enableSpeed(x1: Boolean, x2: Boolean, x3: Boolean): Unit =
     this.speed1Button.setEnabled(x1)

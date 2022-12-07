@@ -5,24 +5,24 @@ import javax.swing.AbstractAction
 import java.awt.event.ActionEvent
 
 trait MenuKeyAction extends AbstractAction:
-  def setIndex(delta: Integer): Unit
-  def moveValue: Integer
+  def setIndex(delta: Int): Unit
+  def moveValue: Int
 
 object MenuKeyAction:
   def apply(
     panel: MenuActions,
-    moveValue: Integer
+    moveValue: Int
   ): MenuKeyAction =
     MenuKeyActionImpl(panel, moveValue)
 
   class MenuKeyActionImpl(
     private val panel: MenuActions,
-    override val moveValue: Integer
+    override val moveValue: Int
   ) extends MenuKeyAction:
 
-    var index: Integer = 0
+    var index: Int = 0
 
-    def setIndex(delta: Integer): Unit =
+    def setIndex(delta: Int): Unit =
       index = panel.menuItems.indexOf(panel.selectedItem) + delta
       if index < 0 then index = panel.menuItems.length - 1
       else if index >= panel.menuItems.length then index = 0
