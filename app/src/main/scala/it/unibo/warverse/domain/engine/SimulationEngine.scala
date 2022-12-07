@@ -109,7 +109,7 @@ object SimulationEngine:
     private def runLoop(): Unit =
       if taskCancelable.isEmpty then
         val task = Observable
-          .intervalAtFixedRate(1.seconds/speed)
+          .intervalAtFixedRate((1 / speed).asInstanceOf[Int].seconds)
           .scanEval(Task(environment)) { (previous, _) =>
             simulationComponents
               .foldLeft(Task(previous)) { (task, simulationComponent) =>
