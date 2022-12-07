@@ -111,7 +111,7 @@ object SimulationEngine:
                 task.flatMap(simulationComponent.run)
               }
           }
-          .takeWhile(warsExists)
+          .takeWhileInclusive(warsExists)
           .foreachL(newEnvironment =>
             this.environment = newEnvironment
             emitEvent(IterationCompleted(newEnvironment))
