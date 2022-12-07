@@ -8,8 +8,8 @@ import it.unibo.warverse.domain.model.common.{Disposable, Geometry}
 import it.unibo.warverse.domain.model.fight.Army.*
 import it.unibo.warverse.domain.model.fight.{Army, SimulationEvent}
 import it.unibo.warverse.domain.model.fight.SimulationEvent.*
-import it.unibo.warverse.domain.model.world.GameStats
-import it.unibo.warverse.domain.model.world.Relations.InterstateRelations
+import it.unibo.warverse.domain.model.world.SimulationStats
+import it.unibo.warverse.domain.model.world.Relations.InterCountryRelations
 import it.unibo.warverse.domain.model.world.World.Country
 import it.unibo.warverse.domain.engine.components.*
 import monix.eval.Task
@@ -18,19 +18,49 @@ import monix.execution.Cancelable
 import concurrent.duration.DurationInt
 import monix.execution.Scheduler.Implicits.global
 import monix.execution.Scheduler.global as scheduler
+import monix.reactive.Observable
+import monix.reactive.ObservableLike.fromTask
 
 import scala.annotation.tailrec
 import scala.concurrent.Await
 
+/** Handles the simulation of the war, it can emit {@link SimulationEvent}.
+  */
 trait SimulationEngine extends Listenable[SimulationEvent]:
+  /** The initial simulation config
+    * @return
+    *   The initial simulation config
+    */
   def simulationConfig: SimulationConfig
+
+  /** The current environment of the simulation
+    *
+    * @return
+    *   The current environment
+    */
   def currentEnvironment: Environment
+
+  /** Starts the simulation
+    */
   def start(): Unit
+
+  /** Resumes the simulation
+    */
   def resume(): Unit
+
+  /** Pauses the simulation */
   def pause(): Unit
+
+  /** Terminates the simulation */
   def terminate(): Unit
 
 object SimulationEngine:
+  /** Creates an instance of {@link SimulationEngine}
+    * @param simulationConfig
+    *   The initial config of the simulation
+    * @return
+    *   A SimulationEngine
+    */
   def apply(simulationConfig: SimulationConfig): SimulationEngine =
     SimulationEngineImpl(simulationConfig)
 
@@ -63,37 +93,37 @@ object SimulationEngine:
 
     override def pause(): Unit =
       taskCancelable foreach (_.cancel())
+      taskCancelable = None
 
     override def terminate(): Unit =
       taskCancelable foreach (_.cancel())
+      taskCancelable = None
       emitEvent(SimulationCompleted)
       disposables foreach (_.dispose)
 
     private def runLoop(): Unit =
       if taskCancelable.isEmpty then
-        taskCancelable = Some(
-          scheduler.scheduleAtFixedRate(0.seconds, 1.seconds) {
+        val task = Observable
+          .intervalAtFixedRate(1.seconds)
+          .scanEval(Task(environment)) { (previous, _) =>
             simulationComponents
-              .foldLeft(Task(environment)) { (task, simulationComponent) =>
+              .foldLeft(Task(previous)) { (task, simulationComponent) =>
                 task.flatMap(simulationComponent.run)
               }
-            this.environment = environment
-            emitEvent(IterationCompleted(environment))
-
-            checkEnd()
           }
-        )
-
+          .takeWhile(warsExists)
+          .foreachL(newEnvironment =>
+            this.environment = newEnvironment
+            emitEvent(IterationCompleted(newEnvironment))
+            if !warsExists(newEnvironment) then terminate()
+          )
+        taskCancelable = Some(task.runAsync(_ => ()))
     private def handleEvent(event: SimulationEvent): Unit =
       emitEvent(event)
 
-    private def checkEnd(): Unit =
-      if noWars(environment)
-      then terminate()
-
-    private def noWars(
+    private def warsExists(
       environment: Environment
     ): Boolean =
       environment.countries.forall(country =>
-        environment.interstateRelations.countryEnemies(country.id).isEmpty
+        environment.interstateRelations.countryEnemies(country.id).nonEmpty
       )
