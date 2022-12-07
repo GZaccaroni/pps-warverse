@@ -186,8 +186,9 @@ object Geometry:
       override val polygons: Seq[Polygon2D]
     ) extends MultiPolygon2D:
 
-      override def area: Double = ???
+      override def area: Double = polygons.map(_.area).sum
 
-      override def contains(point: Point2D): Boolean = ???
+      override def contains(point: Point2D): Boolean =
+        polygons.exists(_.contains(point))
 
       override def split(splitsNumber: Int): Seq[MultiPolygon[Point2D]] = ???
