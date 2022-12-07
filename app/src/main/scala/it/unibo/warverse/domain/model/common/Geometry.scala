@@ -8,9 +8,23 @@ object Geometry:
     * @tparam PointType
     *   the actual type of the Point
     */
-  trait Point[PointType <: Point[PointType]]:
-    def distanceFrom(point: PointType): Double
+  trait Point[PointType <: Point[PointType]](val coordinates: Seq[Double]):
 
+    def distanceFrom(point: PointType): Double =
+      math.sqrt(
+        coordinates
+          .zip(point.coordinates)
+          .map((thisCoord, pointCoord) => math.pow(thisCoord - pointCoord, 2))
+          .sum
+      )
+
+    override def equals(obj: Any): Boolean =
+      given Math.Precision(0.1)
+      obj match
+        case point: Point[?] =>
+          coordinates
+            .zip(point.coordinates)
+            .forall((thisCoord, pointCoord) => thisCoord ~= pointCoord)
   /** Represents an n-dimensional Point that can be moved
     *
     * @tparam PointType
@@ -35,14 +49,8 @@ object Geometry:
     *   the y coordinate of point
     */
   case class Point2D(x: Double, y: Double)
-      extends Point[Point2D],
+      extends Point[Point2D](Seq(x,y)),
         MovablePoint[Point2D]:
-    override def distanceFrom(point: Point2D): Double =
-      math.sqrt(math.pow(point.x - x, 2) + math.pow(point.y - y, 2))
-    override def equals(point: Any): Boolean =
-      given Math.Precision(0.1)
-      point match
-        case point: Point2D => (point.x ~= x) && (point.y ~= y)
 
     override def moved(toward: Point2D, of: Double): Point2D =
       (toward.x - x, toward.y - y) match
