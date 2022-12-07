@@ -52,10 +52,9 @@ object MenuMouseAdapter:
           itemName match
             case MainMenuItem.StartGame =>
               GameStateController(mainFrame).setPanel()
-            case MainMenuItem.Options => mainFrame.setPanel(MenuOptions())
-            case MainMenuItem.Help    => mainFrame.setPanel(MenuHelp(mainFrame))
-            case MainMenuItem.Exit    => System.exit(0)
-            case _                    =>
+            case MainMenuItem.Help => mainFrame.setPanel(MenuHelp(mainFrame))
+            case MainMenuItem.Exit => System.exit(0)
+            case _                 =>
         case _ =>
 
     override def mouseMoved(e: MouseEvent): Unit =
