@@ -46,3 +46,12 @@ object UIConstants:
   val unit =
     """ {  "id": "soldier","name": "Soldier","attack_type": "precision","hit_chance": 50,"hit_range": 200.0,"maximum_hits": 5,"daily_resources_usage": 2.0,"speed": 15.0}"""
   val boundaries = """{ "x": 550, "y": 150}"""
+
+  val description =
+    "<html>" +
+      "<p style=\"line-height: 2; color:white;\">Welcome to WarVerse ⚔️ your custom war Simulator💻! " +
+      "<br/>Create a world🌍 with your custom countries with their citizen👤, resources💰 and armies🚀 and set all relationship between them and check how the war evolve! " +
+      "<br/>In order to do that, this simulator need a valid JSON file to configure the simulation environment." +
+      "<br/>To do it, you can check and use the tool on the right and see how it look's like." +
+      "<br/>Once you have created your JSON file, you can have fun! " +
+      "<b style=\"margin-left: 5px;font-size:10px; color:white;\">The WarVerse Team 🤟🌍</b></p></html>"
