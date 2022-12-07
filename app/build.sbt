@@ -7,12 +7,20 @@ lazy val root = project
     version := IO.read(file("../version.txt")).trim,
     scalaVersion := scala3Version,
     libraryDependencies ++= Seq(
+      "org.json4s" %% "json4s-jackson" % "4.0.6",
+      "io.monix" %% "monix" % "3.4.1",
       "org.scalatest" %% "scalatest" % "3.2.14" % Test,
-      "org.json4s" %% "json4s-jackson" % "4.0.6"
+      "io.monix" %% "monix-testing-scalatest" % "0.4.0" % Test
     ),
     // Output paths
     assembly / mainClass := Some("it.unibo.warverse.Launcher"),
     assembly / assemblyOutputPath := file("target/warverse.jar"),
+    assembly / assemblyMergeStrategy := {
+      case "module-info.class" => MergeStrategy.discard
+      case x =>
+        val oldStrategy = (assembly / assemblyMergeStrategy).value
+        oldStrategy(x)
+    },
     Compile / doc / target := file("target/docs"),
     // Coverage settings
     jacocoReportSettings := JacocoReportSettings()

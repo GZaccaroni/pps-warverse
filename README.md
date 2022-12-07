@@ -1,7 +1,6 @@
 <h1 align="center" style="border-bottom: none;">⚔️ warverse</h1>
 <h3 align="center">Battle simulator</h3>
 
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GZaccaroni_pps-warverse&metric=coverage)](https://sonarcloud.io/summary/new_code?id=GZaccaroni_pps-warverse)
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=GZaccaroni_pps-warverse&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=GZaccaroni_pps-warverse)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=GZaccaroni_pps-warverse&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=GZaccaroni_pps-warverse)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=GZaccaroni_pps-warverse&metric=bugs)](https://sonarcloud.io/summary/new_code?id=GZaccaroni_pps-warverse) \

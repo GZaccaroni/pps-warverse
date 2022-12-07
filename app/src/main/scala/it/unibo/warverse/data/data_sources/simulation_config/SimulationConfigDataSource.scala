@@ -15,6 +15,7 @@ import it.unibo.warverse.data.models.{ArmyDtos, GeometryDtos}
 import it.unibo.warverse.data.models.WorldDtos.CountryDto
 import it.unibo.warverse.domain.model.SimulationConfig
 import it.unibo.warverse.domain.model.world.Relations.*
+import monix.eval.Task
 import org.json4s.*
 import org.json4s.jackson.JsonMethods.*
 
@@ -24,7 +25,7 @@ import java.io.File
 import java.text.ParseException
 
 trait SimulationConfigDataSource:
-  def simulationConfig: SimulationConfig
+  def readSimulationConfig(): Task[SimulationConfig]
 
 object SimulationConfigDataSource:
 
@@ -38,23 +39,23 @@ object SimulationConfigDataSource:
   private class JsonSimulationConfigDataSource(file: File)
       extends SimulationConfigDataSource:
 
-    override def simulationConfig: SimulationConfig =
-      implicit val formats: Formats =
-        DefaultFormats + ArmyUnitKindSerializer() + UnitAttackTypeSerializer()
-      val jsonValue = parse(file)
-
-      val simulationConfigDto =
+    override def readSimulationConfig(): Task[SimulationConfig] =
+      Task {
+        parse(file)
+      }.map(jsonValue =>
+        implicit val formats: Formats =
+          DefaultFormats + ArmyUnitKindSerializer() + UnitAttackTypeSerializer()
         jsonValue.camelizeKeys.extract[SimulationConfigDto]
-      val result = mapSimulationConfigDto(simulationConfigDto)
-      simulationConfigDto.validate()
-      result
-
+      ).map(result =>
+        result.validate()
+        mapSimulationConfigDto(result)
+      )
     private def mapSimulationConfigDto(
       dto: SimulationConfigDto
     ): SimulationConfig =
       SimulationConfig(
         countries = dto.countries.map(mapCountryDto),
-        interstateRelations = mapDtoToInterstateRelations(dto)
+        interCountryRelations = mapDtoToInterCountryRelations(dto)
       )
 
     private def mapCountryDto(dto: CountryDto): World.Country =
@@ -67,9 +68,9 @@ object SimulationConfigDataSource:
         armyUnits = mapArmyDto(dto.id, dto.army)
       )
 
-    private def mapDtoToInterstateRelations(
+    private def mapDtoToInterCountryRelations(
       configDto: SimulationConfigDto
-    ): InterstateRelations =
+    ): InterCountryRelations =
       val relations = configDto.countries
         .flatMap(country =>
           country.relations.allies.map(ally =>
@@ -79,7 +80,7 @@ object SimulationConfigDataSource:
               ((country.id, enemy), RelationStatus.WAR)
             )
         )
-      InterstateRelations(relations)
+      InterCountryRelations(relations.toSet)
 
     private def mapArmyDto(
       countryId: World.CountryId,
