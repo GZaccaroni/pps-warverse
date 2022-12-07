@@ -25,7 +25,7 @@ object ArmyTest:
     test("An attack of a units with 100% chance of hit should be successful") {
       successfulUnit.attack() mustBe Seq(
         AreaAttackAction(
-          countryB.boundaries.center,
+          countryB.boundaries.polygons.head.center,
           successfulUnit.areaOfImpact
         )
       )

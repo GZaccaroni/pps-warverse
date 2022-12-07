@@ -2,11 +2,15 @@ package it.unibo.warverse.presentation.common
 
 import java.net.URL
 import java.awt.BasicStroke
-import it.unibo.warverse.domain.model.common.Geometry.Point2D
-import it.unibo.warverse.domain.model.common.Geometry.Polygon2D
+import it.unibo.warverse.domain.model.common.Geometry.{
+  MultiPolygon2D,
+  Point2D,
+  Polygon2D
+}
 import it.unibo.warverse.domain.model.world.World.Country
 import it.unibo.warverse.domain.model.world.World.CountryId
 import it.unibo.warverse.domain.model.common.Geometry
+
 import java.awt.Dimension
 import it.unibo.warverse.domain.model.fight.Army.*
 
@@ -81,15 +85,17 @@ object UIConstants:
         )
       ),
       0.0,
-      Polygon2D(
-        List(
-          Point2D(150, 150),
-          Point2D(250, 100),
-          Point2D(325, 125),
-          Point2D(375, 225),
-          Point2D(450, 250),
-          Point2D(275, 375),
-          Point2D(100, 300)
+      MultiPolygon2D(
+        Polygon2D(
+          List(
+            Point2D(150, 150),
+            Point2D(250, 100),
+            Point2D(325, 125),
+            Point2D(375, 225),
+            Point2D(450, 250),
+            Point2D(275, 375),
+            Point2D(100, 300)
+          )
         )
       )
     ),
@@ -99,11 +105,13 @@ object UIConstants:
       1,
       List.empty,
       0.0,
-      Polygon2D(
-        List(
-          Point2D(550, 550),
-          Point2D(650, 500),
-          Point2D(925, 600)
+      MultiPolygon2D(
+        Polygon2D(
+          List(
+            Point2D(550, 550),
+            Point2D(650, 500),
+            Point2D(925, 600)
+          )
         )
       )
     ),
@@ -113,12 +121,14 @@ object UIConstants:
       1,
       List.empty,
       0.0,
-      Polygon2D(
-        List(
-          Point2D(1050, 150),
-          Point2D(1000, 50),
-          Point2D(1000, 150),
-          Point2D(1050, 250)
+      MultiPolygon2D(
+        Polygon2D(
+          List(
+            Point2D(1050, 150),
+            Point2D(1000, 50),
+            Point2D(1000, 150),
+            Point2D(1050, 250)
+          )
         )
       )
     )

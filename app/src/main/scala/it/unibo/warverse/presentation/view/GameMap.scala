@@ -45,14 +45,18 @@ class GameMap extends GameMouseMotion:
     for environment <- this.environment do
       environment.countries
         .foreach(country =>
-          val polygon = Polygon(
-            country.boundaries.vertexes.map(_.x.toInt).toArray,
-            country.boundaries.vertexes.map(_.y.toInt).toArray,
-            country.boundaries.vertexes.length
-          )
           val g2d: Graphics2D = g.asInstanceOf[Graphics2D]
-          g2d.setColor(countryColor(country.id))
-          g2d.fillPolygon(polygon)
+          for countryRegionPolygon <- country.boundaries.polygons do
+            val polygon = Polygon(
+              countryRegionPolygon.vertexes.map(_.x.toInt).toArray,
+              countryRegionPolygon.vertexes.map(_.y.toInt).toArray,
+              countryRegionPolygon.vertexes.length
+            )
+            g2d.setColor(countryColor(country.id))
+            g2d.fillPolygon(polygon)
+            g2d.setColor(Color.RED)
+            g2d.setStroke(UIConstants.borderRegion)
+            g2d.drawPolygon(polygon)
           g2d.setColor(Color.WHITE)
           country.armyUnits.foreach(soldier =>
             soldier match
@@ -80,7 +84,4 @@ class GameMap extends GameMouseMotion:
                   )
                 )
           )
-          g2d.setColor(Color.RED)
-          g2d.setStroke(UIConstants.borderRegion)
-          g2d.drawPolygon(polygon)
         )

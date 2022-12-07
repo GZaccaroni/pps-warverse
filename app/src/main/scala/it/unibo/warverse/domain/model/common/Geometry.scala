@@ -165,7 +165,7 @@ object Geometry:
   /** Factory for [[MultiPolygon2D]] instance in a two dimensional space.
     */
   object MultiPolygon2D:
-    /** Create a MultiPolygon2D from the given Polygon
+    /** Create a MultiPolygon2D from the given sequence of Polygon
       * @param polygons
       *   the polygons that compose the MultiPolygon
       * @return
@@ -173,6 +173,15 @@ object Geometry:
       */
     def apply(polygons: Seq[Polygon2D]): MultiPolygon2D =
       MultiPolygon2DImpl(polygons)
+
+    /** Create a MultiPolygon2D from the given Polygon
+      * @param polygon
+      *   the polygon that compose the MultiPolygon
+      * @return
+      *   a new MultiPolygon2D instance composed by a single polygon
+      */
+    def apply(polygon: Polygon2D): MultiPolygon2D =
+      MultiPolygon2DImpl(Seq(polygon))
     private case class MultiPolygon2DImpl(
       override val polygons: Seq[Polygon2D]
     ) extends MultiPolygon2D:

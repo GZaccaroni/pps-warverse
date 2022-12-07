@@ -19,7 +19,7 @@ object World:
     citizens: Int,
     armyUnits: Seq[ArmyUnit],
     resources: Life.Resources,
-    boundaries: Geometry.Polygon2D
+    boundaries: Geometry.MultiPolygon2D
   ) extends UpdateResources:
     override def addingResources(newResources: Life.Resources): Country =
       if resources + newResources < 0 then this.copy(resources = 0)

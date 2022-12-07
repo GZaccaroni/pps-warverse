@@ -4,8 +4,8 @@ import it.unibo.warverse.data.models.ArmyDtos.{ArmyUnitKind, UnitAttackType}
 import it.unibo.warverse.data.models.SimulationConfigDtos.SimulationConfigDto
 import it.unibo.warverse.domain.model.common.Geometry
 import it.unibo.warverse.domain.model.common.Geometry.{
+  MultiPolygon2D,
   Point2D,
-  Polygon,
   Polygon2D
 }
 import it.unibo.warverse.domain.model.fight.Army
@@ -63,7 +63,8 @@ object SimulationConfigDataSource:
         name = dto.id,
         resources = dto.resources,
         citizens = dto.citizens,
-        boundaries = Polygon2D(dto.boundaries.map(mapPoint2DDto)),
+        boundaries =
+          MultiPolygon2D(Polygon2D(dto.boundaries.map(mapPoint2DDto))),
         armyUnits = mapArmyDto(dto.id, dto.army)
       )
 
