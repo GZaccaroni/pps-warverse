@@ -9,22 +9,25 @@ import it.unibo.warverse.domain.model.fight.{
 import it.unibo.warverse.domain.model.world.World.Country
 import it.unibo.warverse.domain.model.common.Listen.*
 import scala.annotation.tailrec
+import monix.eval.Task
 
 class ResourcesSimulationComponent
     extends SimpleListenable[SimulationEvent]
     with SimulationComponent:
-  override def run(using environment: Environment): Environment =
-    environment.copiedWith(
-      countries = environment.countries
-        .map(country =>
-          country.addingResources(
-            if isInWar(country) then
-              country.citizens -
-                country.armyUnits.map(_.dailyConsume).sum
-            else country.citizens
+  override def run(using environment: Environment): Task[Environment] =
+    Task {
+      environment.copiedWith(
+        countries = environment.countries
+          .map(country =>
+            country.addingResources(
+              if isInWar(country) then
+                country.citizens -
+                  country.armyUnits.map(_.dailyConsume).sum
+              else country.citizens
+            )
           )
-        )
-    )
+      )
+    }
 
   private def isInWar(country: Country)(using
     environment: Environment

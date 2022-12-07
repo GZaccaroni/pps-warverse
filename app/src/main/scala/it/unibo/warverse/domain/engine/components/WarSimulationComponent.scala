@@ -10,22 +10,25 @@ import it.unibo.warverse.domain.model.world.Relations.{
 }
 import it.unibo.warverse.domain.model.world.World.{Country, CountryId}
 import it.unibo.warverse.domain.model.fight.SimulationEvent
+import monix.eval.Task
 
 class WarSimulationComponent
     extends SimpleListenable[SimulationEvent]
     with SimulationComponent:
-  override def run(using environment: Environment): Environment =
-    getFightingCountries()
-      .foldLeft(environment) { (environment, countryInWarId) =>
-        environment.countries
-          .find(_.id == countryInWarId)
-          .filter { countryInWar =>
-            countryInWar.armyUnits.size <= 0 || countryInWar.citizens <= 0 || countryInWar.resources <= 0
-          }
-          .map(assignLostResources)
-          .getOrElse(environment)
-      }
-      .copiedWith(day = environment.day + 1)
+  override def run(using environment: Environment): Task[Environment] =
+    Task {
+      getFightingCountries()
+        .foldLeft(environment) { (environment, countryInWarId) =>
+          environment.countries
+            .find(_.id == countryInWarId)
+            .filter { countryInWar =>
+              countryInWar.armyUnits.size <= 0 || countryInWar.citizens <= 0 || countryInWar.resources <= 0
+            }
+            .map(assignLostResources)
+            .getOrElse(environment)
+        }
+        .copiedWith(day = environment.day + 1)
+    }
 
   private def getFightingCountries()(using
     environment: Environment
