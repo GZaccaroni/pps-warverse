@@ -55,7 +55,7 @@ object SimulationConfigDataSource:
     ): SimulationConfig =
       SimulationConfig(
         countries = dto.countries.map(mapCountryDto),
-        interstateRelations = mapDtoToInterstateRelations(dto)
+        interCountryRelations = mapDtoToInterCountryRelations(dto)
       )
 
     private def mapCountryDto(dto: CountryDto): World.Country =
@@ -68,7 +68,7 @@ object SimulationConfigDataSource:
         armyUnits = mapArmyDto(dto.id, dto.army)
       )
 
-    private def mapDtoToInterstateRelations(
+    private def mapDtoToInterCountryRelations(
       configDto: SimulationConfigDto
     ): InterCountryRelations =
       val relations = configDto.countries

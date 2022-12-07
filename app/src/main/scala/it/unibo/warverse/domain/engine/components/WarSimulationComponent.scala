@@ -37,7 +37,7 @@ class WarSimulationComponent
   ): Seq[CountryId] =
     environment.countries
       .filter(country =>
-        environment.interstateRelations.countryEnemies(country.id).nonEmpty
+        environment.interCountryRelations.countryEnemies(country.id).nonEmpty
       )
       .map(_.id)
 
@@ -45,7 +45,7 @@ class WarSimulationComponent
     countryDefeated: Country
   )(using environment: Environment): Environment =
     val winnersId =
-      environment.interstateRelations.countryEnemies(countryDefeated.id).toSeq
+      environment.interCountryRelations.countryEnemies(countryDefeated.id).toSeq
     val loserResources = countryDefeated.resources
     val loserCitizens = countryDefeated.citizens
     val loserArmy = countryDefeated.armyUnits
@@ -56,9 +56,9 @@ class WarSimulationComponent
       environment
         .copiedWith(
           countries = environment.countries.filterNot(_ == countryDefeated),
-          interstateRelations = removeLostStateRelation(
+          interCountryRelations = removeLostStateRelation(
             countryDefeated,
-            environment.interstateRelations
+            environment.interCountryRelations
           )
         )
     winnersId.zipWithIndex

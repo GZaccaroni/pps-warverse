@@ -20,7 +20,7 @@ trait Environment:
     * @return
     *   relations between countries
     */
-  def interstateRelations: InterCountryRelations
+  def interCountryRelations: InterCountryRelations
 
   /** Returns the current day in the environment
     *
@@ -32,7 +32,7 @@ trait Environment:
   /** Creates a copy of environment with the passed parameters updated
     * @param countries
     *   new countries
-    * @param interstateRelations
+    * @param interCountryRelations
     *   new interstate releations
     * @param day
     *   new day
@@ -41,10 +41,10 @@ trait Environment:
     */
   def copiedWith(
     countries: Seq[Country] = countries,
-    interstateRelations: InterCountryRelations = interstateRelations,
+    interCountryRelations: InterCountryRelations = interCountryRelations,
     day: Int = day
   ): Environment =
-    Environment(countries, interstateRelations, day)
+    Environment(countries, interCountryRelations, day)
 
   /** A new environment with `newCountry` replaced
     * @param newCountry
@@ -60,13 +60,13 @@ trait Environment:
 object Environment:
   def apply(
     countries: Seq[Country],
-    interstateRelations: InterCountryRelations,
+    interCountryRelations: InterCountryRelations,
     day: Int = 0
   ): Environment =
-    EnvironmentImpl(countries, interstateRelations, day)
+    EnvironmentImpl(countries, interCountryRelations, day)
 
   private case class EnvironmentImpl(
     override val countries: Seq[Country],
-    override val interstateRelations: InterCountryRelations,
+    override val interCountryRelations: InterCountryRelations,
     override val day: Int
   ) extends Environment

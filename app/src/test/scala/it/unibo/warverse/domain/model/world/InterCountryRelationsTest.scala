@@ -16,14 +16,14 @@ import org.scalatest.matchers.must.Matchers
 class InterCountryRelationsTest extends AnyFunSuite with Matchers:
 
   test("When a relation is added it must compare in the new object") {
-    val interstateRelations: InterCountryRelations =
+    val interCountryRelations: InterCountryRelations =
       InterCountryRelations(Set.empty)
     val AWarB = ((countryA.id, countryB.id), RelationStatus.WAR)
     val BAlliedC = ((countryB.id, countryC.id), RelationStatus.ALLIANCE)
 
-    interstateRelations.relations mustBe Set.empty
-    interstateRelations.withRelation(AWarB).relations mustBe Set(AWarB)
-    interstateRelations
+    interCountryRelations.relations mustBe Set.empty
+    interCountryRelations.withRelation(AWarB).relations mustBe Set(AWarB)
+    interCountryRelations
       .withRelation(AWarB)
       .withRelation(BAlliedC)
       .relations mustBe Set(AWarB, BAlliedC)
@@ -34,12 +34,12 @@ class InterCountryRelationsTest extends AnyFunSuite with Matchers:
     val ANeutralB = ((countryA.id, countryB.id), RelationStatus.NEUTRAL)
     val BAlliedA = ((countryB.id, countryA.id), RelationStatus.ALLIANCE)
 
-    val interstateRelations: InterCountryRelations =
+    val interCountryRelations: InterCountryRelations =
       InterCountryRelations(Set(AWarB))
 
-    an[IllegalStateException] should be thrownBy interstateRelations
+    an[IllegalStateException] should be thrownBy interCountryRelations
       .withRelation(ANeutralB)
-    an[IllegalStateException] should be thrownBy interstateRelations
+    an[IllegalStateException] should be thrownBy interCountryRelations
       .withRelation(BAlliedA)
     an[IllegalStateException] should be thrownBy InterCountryRelations(
       Set(AWarB, BAlliedA)
@@ -51,15 +51,15 @@ class InterCountryRelationsTest extends AnyFunSuite with Matchers:
     val AWarB = ((countryA.id, countryB.id), RelationStatus.WAR)
     val BAlliedC = ((countryB.id, countryC.id), RelationStatus.ALLIANCE)
     val ANeutralC = ((countryA.id, countryC.id), RelationStatus.NEUTRAL)
-    val interstateRelations: InterCountryRelations =
+    val interCountryRelations: InterCountryRelations =
       InterCountryRelations(Set(AWarB, BAlliedC, ANeutralC))
 
-    interstateRelations.relations mustBe Set(AWarB, BAlliedC, ANeutralC)
-    interstateRelations.withoutRelation(AWarB).relations mustBe Set(
+    interCountryRelations.relations mustBe Set(AWarB, BAlliedC, ANeutralC)
+    interCountryRelations.withoutRelation(AWarB).relations mustBe Set(
       BAlliedC,
       ANeutralC
     )
-    interstateRelations
+    interCountryRelations
       .withoutRelation(AWarB)
       .withoutRelation(BAlliedC)
       .withoutRelation(ANeutralC)
@@ -70,12 +70,12 @@ class InterCountryRelationsTest extends AnyFunSuite with Matchers:
     val AWarB = ((countryA.id, countryB.id), RelationStatus.WAR)
     val BAlliedC = ((countryB.id, countryC.id), RelationStatus.ALLIANCE)
     val CAlliedA = ((countryC.id, countryA.id), RelationStatus.ALLIANCE)
-    val interstateRelations: InterCountryRelations =
+    val interCountryRelations: InterCountryRelations =
       InterCountryRelations(Set(AWarB, BAlliedC, CAlliedA))
 
-    interstateRelations countryAllies countryC.id must contain only (countryA.id, countryB.id)
-    interstateRelations countryAllies countryB.id must contain only countryC.id
-    interstateRelations.withoutRelation(
+    interCountryRelations countryAllies countryC.id must contain only (countryA.id, countryB.id)
+    interCountryRelations countryAllies countryB.id must contain only countryC.id
+    interCountryRelations.withoutRelation(
       BAlliedC
     ) countryAllies countryB.id mustBe empty
   }
@@ -84,10 +84,10 @@ class InterCountryRelationsTest extends AnyFunSuite with Matchers:
     val AWarB = ((countryA.id, countryB.id), RelationStatus.WAR)
     val BAlliedC = ((countryB.id, countryC.id), RelationStatus.ALLIANCE)
     val ANeutralC = ((countryC.id, countryA.id), RelationStatus.ALLIANCE)
-    val interstateRelations: InterCountryRelations =
+    val interCountryRelations: InterCountryRelations =
       InterCountryRelations(Set(AWarB, BAlliedC, ANeutralC))
 
-    interstateRelations countryEnemies countryC.id mustBe empty
-    interstateRelations countryEnemies countryA.id must contain only countryB.id
-    interstateRelations countryEnemies countryB.id must contain only countryA.id
+    interCountryRelations countryEnemies countryC.id mustBe empty
+    interCountryRelations countryEnemies countryA.id must contain only countryB.id
+    interCountryRelations countryEnemies countryB.id must contain only countryA.id
   }

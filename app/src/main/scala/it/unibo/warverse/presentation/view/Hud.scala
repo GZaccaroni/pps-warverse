@@ -148,13 +148,13 @@ class Hud extends JPanel:
     )
 
     simulationConfig.countries.foreach(country =>
-      simulationConfig.interstateRelations
+      simulationConfig.interCountryRelations
         .countryAllies(country.id)
         .foreach(allyId =>
           val ally = simulationConfig.countries.find(_.id == allyId).get;
           console.append(country.name + " is allied with " + ally.name + "\n\n")
         )
-      simulationConfig.interstateRelations
+      simulationConfig.interCountryRelations
         .countryEnemies(country.id)
         .foreach(enemyId =>
           val enemy = simulationConfig.countries.find(_.id == enemyId).get;

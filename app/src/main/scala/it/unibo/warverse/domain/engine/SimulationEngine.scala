@@ -79,7 +79,7 @@ object SimulationEngine:
     private var taskCancelable: Option[Cancelable] = None
     private var environment = Environment(
       simulationConfig.countries,
-      simulationConfig.interstateRelations
+      simulationConfig.interCountryRelations
     )
     private val disposables: Seq[Disposable] =
       simulationComponents.map { component =>
@@ -125,5 +125,5 @@ object SimulationEngine:
       environment: Environment
     ): Boolean =
       environment.countries.forall(country =>
-        environment.interstateRelations.countryEnemies(country.id).nonEmpty
+        environment.interCountryRelations.countryEnemies(country.id).nonEmpty
       )

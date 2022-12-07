@@ -34,4 +34,4 @@ class ResourcesSimulationComponent
   private def isInWar(country: Country)(using
     environment: Environment
   ): Boolean =
-    environment.interstateRelations.countryEnemies(country.id).nonEmpty
+    environment.interCountryRelations.countryEnemies(country.id).nonEmpty

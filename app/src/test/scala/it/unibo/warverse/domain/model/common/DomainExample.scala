@@ -125,7 +125,7 @@ object DomainExample:
       Polygon2D(Seq(Point2D(6, 0), Point2D(6, 3), Point2D(9, 3), Point2D(9, 0)))
     )
 
-  val interstateRelations: InterCountryRelations = InterCountryRelations(
+  val interCountryRelations: InterCountryRelations = InterCountryRelations(
     Set(
       ((countryA.id, countryB.id), RelationStatus.WAR),
       ((countryB.id, countryC.id), RelationStatus.ALLIANCE)
@@ -134,6 +134,6 @@ object DomainExample:
 
   val environment: Environment = Environment(
     Seq(countryA, countryB, countryC),
-    interstateRelations,
+    interCountryRelations,
     0
   )
