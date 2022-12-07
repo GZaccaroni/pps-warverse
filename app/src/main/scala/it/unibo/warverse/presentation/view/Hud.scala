@@ -36,7 +36,7 @@ import it.unibo.warverse.domain.model.{Environment, SimulationConfig}
 
 import scala.io.Source
 import it.unibo.warverse.domain.model.world.Relations
-import it.unibo.warverse.domain.model.world.Relations.InterstateRelations
+import it.unibo.warverse.domain.model.world.Relations.InterCountryRelations
 
 class Hud extends JPanel:
   this.setPreferredSize(Dimension(350, 20))

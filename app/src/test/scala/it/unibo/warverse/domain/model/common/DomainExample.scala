@@ -7,12 +7,10 @@ import it.unibo.warverse.domain.model.fight.Army.{
   PrecisionArmyUnit
 }
 import it.unibo.warverse.domain.model.world.Relations.{
-  InterstateRelations,
+  InterCountryRelations,
   RelationStatus
 }
 import it.unibo.warverse.domain.model.world.World.Country
-
-import java.util.UUID
 
 object DomainExample:
 
@@ -127,8 +125,8 @@ object DomainExample:
       Polygon2D(Seq(Point2D(6, 0), Point2D(6, 3), Point2D(9, 3), Point2D(9, 0)))
     )
 
-  val interstateRelations: InterstateRelations = InterstateRelations(
-    Seq(
+  val interstateRelations: InterCountryRelations = InterCountryRelations(
+    Set(
       ((countryA.id, countryB.id), RelationStatus.WAR),
       ((countryB.id, countryC.id), RelationStatus.ALLIANCE)
     )
