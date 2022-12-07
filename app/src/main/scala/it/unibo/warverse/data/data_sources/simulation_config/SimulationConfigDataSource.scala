@@ -70,7 +70,7 @@ object SimulationConfigDataSource:
 
     private def mapDtoToInterstateRelations(
       configDto: SimulationConfigDto
-    ): InterstateRelations =
+    ): InterCountryRelations =
       val relations = configDto.countries
         .flatMap(country =>
           country.relations.allies.map(ally =>
@@ -80,7 +80,7 @@ object SimulationConfigDataSource:
               ((country.id, enemy), RelationStatus.WAR)
             )
         )
-      InterstateRelations(relations)
+      InterCountryRelations(relations.toSet)
 
     private def mapArmyDto(
       countryId: World.CountryId,

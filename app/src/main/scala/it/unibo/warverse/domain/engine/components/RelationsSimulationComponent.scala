@@ -7,6 +7,8 @@ import it.unibo.warverse.domain.model.common.Listen.*
 import it.unibo.warverse.domain.model.fight.SimulationEvent
 import monix.eval.Task
 
+/** Updates country enemies accordingly to ally enemies
+  */
 class RelationsSimulationComponent
     extends SimpleListenable[SimulationEvent]
     with SimulationComponent:

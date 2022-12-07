@@ -12,6 +12,8 @@ import monix.eval.Task
 import scala.annotation.tailrec
 import scala.collection.immutable.{AbstractSeq, LinearSeq}
 
+/** Simulates army units attacks and updates simulation environment accordingly
+  */
 class AttackSimulationComponent
     extends SimpleListenable[SimulationEvent]
     with SimulationComponent:
@@ -22,8 +24,8 @@ class AttackSimulationComponent
       val events = for
         country <- environment.countries
         unit <- country.armyUnits
-        event <- unit.attack()
-      yield event
+        action <- unit.attack()
+      yield action
       updateEnvironment(environment, events)
     }
 

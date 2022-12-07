@@ -11,6 +11,8 @@ import it.unibo.warverse.domain.model.common.Listen.*
 import scala.annotation.tailrec
 import monix.eval.Task
 
+/** Simulates resources usage by army units and production by citizens
+  */
 class ResourcesSimulationComponent
     extends SimpleListenable[SimulationEvent]
     with SimulationComponent:

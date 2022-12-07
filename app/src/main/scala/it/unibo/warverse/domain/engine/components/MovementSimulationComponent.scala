@@ -6,6 +6,8 @@ import it.unibo.warverse.domain.model.common.Listen.*
 import it.unibo.warverse.domain.model.fight.SimulationEvent
 import monix.eval.Task
 
+/** Simulates army units movement and updates simulation environment accordingly
+  */
 class MovementSimulationComponent
     extends SimpleListenable[SimulationEvent]
     with SimulationComponent:

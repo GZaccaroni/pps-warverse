@@ -5,13 +5,15 @@ import it.unibo.warverse.domain.model.common.Listen.*
 import it.unibo.warverse.domain.model.fight.SimulationEvent
 import it.unibo.warverse.domain.model.fight.SimulationEvent.CountryWonWar
 import it.unibo.warverse.domain.model.world.Relations.{
-  InterstateRelations,
+  InterCountryRelations,
   RelationStatus
 }
 import it.unibo.warverse.domain.model.world.World.{Country, CountryId}
 import it.unibo.warverse.domain.model.fight.SimulationEvent
 import monix.eval.Task
 
+/** Simulates war completion and division of assets between winning states
+  */
 class WarSimulationComponent
     extends SimpleListenable[SimulationEvent]
     with SimulationComponent:
@@ -102,9 +104,9 @@ class WarSimulationComponent
 
   private def removeLostStateRelation(
     country: Country,
-    relations: InterstateRelations
-  ): InterstateRelations =
-    var result: InterstateRelations = relations
+    relations: InterCountryRelations
+  ): InterCountryRelations =
+    var result: InterCountryRelations = relations
     val enemies = relations.countryEnemies(country.id)
     val allied = relations.countryAllies(country.id)
     allied.foreach(ally =>
