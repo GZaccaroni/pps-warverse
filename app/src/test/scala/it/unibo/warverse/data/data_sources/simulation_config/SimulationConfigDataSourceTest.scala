@@ -1,12 +1,16 @@
 package it.unibo.warverse.data.data_sources.simulation_config
 
 import it.unibo.warverse.domain.model.common.Validation.ValidationException
-import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.funsuite.{AnyFunSuite, AsyncFunSuite}
 import org.scalatest.matchers.must.Matchers
+import monix.testing.scalatest.MonixTaskTest
 
 import java.io.File
 
-class SimulationConfigDataSourceTest extends AnyFunSuite with Matchers:
+class SimulationConfigDataSourceTest
+    extends AsyncFunSuite
+    with MonixTaskTest
+    with Matchers:
   private val fileURI =
     ClassLoader.getSystemResource("simulation_config_test_sample.json").toURI
   private val file = File(fileURI)
@@ -18,16 +22,19 @@ class SimulationConfigDataSourceTest extends AnyFunSuite with Matchers:
     SimulationConfigDataSource(file, SimulationConfigDataSource.Format.Json)
 
   test("Parsing should succeed without exceptions") {
-    noException must be thrownBy jsonDataSource(file).simulationConfig
+    jsonDataSource(file).readSimulationConfig().assertNoException
   }
   test("Countries should be valid") {
-    val simulationConfig = jsonDataSource(file).simulationConfig
-    simulationConfig.countries.length mustBe 2
-    simulationConfig.countries.head.id mustBe "Test1"
-    simulationConfig.countries.last.id mustBe "Test2"
+    jsonDataSource(file)
+      .readSimulationConfig()
+      .asserting(simulationConfig =>
+        simulationConfig.countries.length mustBe 2
+        simulationConfig.countries.head.id mustBe "Test1"
+        simulationConfig.countries.last.id mustBe "Test2"
+      )
   }
   test("SimulationConfig should not be valid") {
-    an[ValidationException] mustBe thrownBy(
-      jsonDataSource(invalidFile).simulationConfig
-    )
+    jsonDataSource(invalidFile)
+      .readSimulationConfig()
+      .assertThrows[ValidationException]
   }

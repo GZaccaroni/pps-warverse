@@ -2,7 +2,7 @@ package it.unibo.warverse.presentation.controllers
 
 import it.unibo.warverse.domain.engine.SimulationEngine
 import it.unibo.warverse.presentation.view.*
-import it.unibo.warverse.domain.model.world.{GameStats, Relations}
+import it.unibo.warverse.domain.model.world.{SimulationStats, Relations}
 import it.unibo.warverse.domain.model.world.Relations.*
 import it.unibo.warverse.domain.model.world.World.Country
 import it.unibo.warverse.domain.model.{Environment, SimulationConfig}
@@ -33,7 +33,7 @@ object GameStateController:
 
     private val gamePanel = GamePanel()
 
-    private val gameStats = GameStats()
+    private val gameStats = SimulationStats()
 
     def simulationConfig: Option[SimulationConfig] =
       simulationEngine.map(_.simulationConfig)

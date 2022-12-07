@@ -1,6 +1,7 @@
 package it.unibo.warverse.presentation.view
 import it.unibo.warverse.domain.model.world.World
 import it.unibo.warverse.presentation.inputs.GameMouseMotion
+import monix.execution.Scheduler.Implicits.global
 
 import java.awt.Dimension
 import javax.swing.{
@@ -35,7 +36,7 @@ import it.unibo.warverse.domain.model.{Environment, SimulationConfig}
 
 import scala.io.Source
 import it.unibo.warverse.domain.model.world.Relations
-import it.unibo.warverse.domain.model.world.Relations.InterstateRelations
+import it.unibo.warverse.domain.model.world.Relations.InterCountryRelations
 
 class Hud extends JPanel:
   this.setPreferredSize(Dimension(350, 20))
@@ -122,17 +123,18 @@ class Hud extends JPanel:
 
       val jsonConfigParser =
         SimulationConfigDataSource(file, SimulationConfigDataSource.Format.Json)
-      try
-        val simulationConfig = jsonConfigParser.simulationConfig
-        displayInitialSimulationConfig(simulationConfig)
-        controller.simulationConfig = Some(simulationConfig)
-        JOptionPane.showMessageDialog(
-          null,
-          "Configuration uploaded successfully."
-        )
-      catch
-        case _: NullPointerException =>
-          println("Configuration File have some errors.")
+      val simulationConfigTask = jsonConfigParser.readSimulationConfig()
+      simulationConfigTask.runAsync {
+        case Right(simulationConfig) =>
+          displayInitialSimulationConfig(simulationConfig)
+          controller.simulationConfig = Some(simulationConfig)
+          JOptionPane.showMessageDialog(
+            null,
+            "Configuration uploaded successfully."
+          )
+        case Left(error) =>
+          println(s"Configuration File have some errors. ${error}")
+      }
 
   private def displayInitialSimulationConfig(
     simulationConfig: SimulationConfig
@@ -146,13 +148,13 @@ class Hud extends JPanel:
     )
 
     simulationConfig.countries.foreach(country =>
-      simulationConfig.interstateRelations
+      simulationConfig.interCountryRelations
         .countryAllies(country.id)
         .foreach(allyId =>
           val ally = simulationConfig.countries.find(_.id == allyId).get;
           console.append(country.name + " is allied with " + ally.name + "\n\n")
         )
-      simulationConfig.interstateRelations
+      simulationConfig.interCountryRelations
         .countryEnemies(country.id)
         .foreach(enemyId =>
           val enemy = simulationConfig.countries.find(_.id == enemyId).get;
