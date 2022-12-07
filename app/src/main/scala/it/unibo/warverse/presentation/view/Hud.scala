@@ -37,6 +37,7 @@ import it.unibo.warverse.domain.model.{Environment, SimulationConfig}
 import scala.io.Source
 import it.unibo.warverse.domain.model.world.Relations
 import it.unibo.warverse.domain.model.world.Relations.InterCountryRelations
+import javax.swing.text.DefaultCaret
 
 class Hud extends JPanel:
   this.setPreferredSize(Dimension(350, 20))
@@ -61,6 +62,8 @@ class Hud extends JPanel:
   private val firstButtonsRow = Box.createHorizontalBox()
   private val secondButtonsRow = Box.createHorizontalBox()
   private val console: JTextArea = JTextArea(25, 25)
+  private val caret: DefaultCaret = console.getCaret().asInstanceOf[DefaultCaret]
+  caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE)
   this.console.setMargin(Insets(10, 10, 10, 10))
   this.console.setEditable(false)
   this.console.setLineWrap(true)
