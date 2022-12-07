@@ -73,9 +73,6 @@ class Hud extends JPanel:
   console.setForeground(Color.WHITE)
   this.add(gameStatus)
 
-  speed1Button.addActionListener(_ => console.append("Speed X1\n"))
-  speed2Button.addActionListener(_ => console.append("Speed X2\n"))
-  speed3Button.addActionListener(_ => console.append("Speed X3\n"))
   toggleSimulationButton.addActionListener(_ =>
     (toggleSimulationButton.getText, controller.simulationConfig) match
       case ("Start", Some(_)) =>
@@ -94,6 +91,22 @@ class Hud extends JPanel:
         )
   )
   stopButton.addActionListener(_ => controller.onStopClicked())
+
+  speed1Button.addActionListener(_ =>
+    writeToConsole("Speed set to X1 \n\n")
+    controller.changeSpeed(1)
+    enableSpeed(false, true, true)
+  )
+  speed2Button.addActionListener(_ =>
+    writeToConsole("Speed set to X2 \n\n")
+    controller.changeSpeed(2)
+    enableSpeed(true, false, true)
+  )
+  speed3Button.addActionListener(_ =>
+    writeToConsole("Speed set to X3 \n\n")
+    controller.changeSpeed(3)
+    enableSpeed(true, true, false)
+  )
 
   addJComponents(firstButtonsRow, List(toggleSimulationButton, stopButton))
   addJComponents(
@@ -191,3 +204,11 @@ class Hud extends JPanel:
     val b: Int = hash & 0x0000ff
 
     Color(r, g, b)
+
+  def writeToConsole(text: String): Unit =
+    this.console.append(text)
+
+  def enableSpeed(x1: Boolean, x2: Boolean, x3: Boolean): Unit =
+    this.speed1Button.setEnabled(x1)
+    this.speed2Button.setEnabled(x2)
+    this.speed3Button.setEnabled(x3)

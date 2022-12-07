@@ -17,6 +17,7 @@ trait GameStateController:
   def onPauseClicked(): Unit
   def onResumeClicked(): Unit
   def onStopClicked(): Unit
+  def changeSpeed(newSpeed: Int): Unit
 
 object GameStateController:
   def apply(mainFrame: MainFrame): GameStateController =
@@ -63,6 +64,9 @@ object GameStateController:
     override def onStopClicked(): Unit =
       simulationEngine foreach (_.terminate())
       simulationEngine = None
+
+    override def changeSpeed(newSpeed: Int): Unit = 
+      simulationEngine foreach (_.changeSpeed(newSpeed))
 
     private def onEvent(event: SimulationEvent): Unit =
       event match

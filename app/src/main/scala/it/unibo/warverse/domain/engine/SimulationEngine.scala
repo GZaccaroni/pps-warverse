@@ -22,6 +22,7 @@ trait SimulationEngine extends Listenable[SimulationEvent]:
   def resume(): Unit
   def pause(): Unit
   def terminate(): Unit
+  def changeSpeed(newSpeed: Int): Unit
 
 object SimulationEngine:
   def apply(simulationConfig: SimulationConfig): SimulationEngine =
@@ -43,7 +44,8 @@ object SimulationEngine:
       WarSimulationComponent()
     )
     private var nextLoopTime: Long = 0
-    private val timeFrame = 1000
+    private val timeFrame = 1500
+    private var speed = 1
     private var environment = Environment(
       simulationConfig.countries,
       simulationConfig.interstateRelations
@@ -62,6 +64,9 @@ object SimulationEngine:
 
     override def pause(): Unit =
       paused = true
+
+    override def changeSpeed(newSpeed: Int): Unit = 
+      speed = newSpeed
 
     override def terminate(): Unit =
       exit = false
@@ -86,7 +91,7 @@ object SimulationEngine:
     private def waitForNextLoop(): Unit =
       try Thread.sleep(Math.max(0, nextLoopTime - System.currentTimeMillis()))
       catch case ex: InterruptedException => ()
-      nextLoopTime = System.currentTimeMillis() + timeFrame
+      nextLoopTime = System.currentTimeMillis() + timeFrame / speed
 
     private def checkEnd(): Unit =
       if noWars(environment)
