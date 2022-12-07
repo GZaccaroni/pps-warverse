@@ -9,6 +9,9 @@ import it.unibo.warverse.domain.model.world.World.CountryId
 import it.unibo.warverse.domain.model.common.Geometry
 import java.awt.Dimension
 import it.unibo.warverse.domain.model.fight.Army.*
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import org.json4s.jackson.Json
 
 object UIConstants:
   enum Resources(val name: String):
@@ -31,95 +34,15 @@ object UIConstants:
   private val idCountry1: CountryId = "Country_1"
   private val idCountry2: CountryId = "Country_2"
   private val idCountry3: CountryId = "Country_3"
-  val testCountries: List[Country] = List(
-    Country(
-      idCountry1,
-      "War",
-      1,
-      List(
-        PrecisionArmyUnit(
-          idCountry1,
-          "Soldier",
-          Point2D(250, 150),
-          0.5,
-          200,
-          5,
-          200,
-          15
-        ),
-        PrecisionArmyUnit(
-          idCountry1,
-          "Soldier",
-          Point2D(250, 250),
-          0.5,
-          200,
-          5,
-          200,
-          15
-        ),
-        AreaArmyUnit(
-          idCountry1,
-          "Mortar",
-          Point2D(250, 200),
-          0.5,
-          30,
-          500,
-          10,
-          20,
-          30
-        ),
-        AreaArmyUnit(
-          idCountry1,
-          "Mortar",
-          Point2D(250, 300),
-          0.5,
-          30,
-          500,
-          10,
-          20,
-          30
-        )
-      ),
-      0.0,
-      Polygon2D(
-        List(
-          Point2D(150, 150),
-          Point2D(250, 100),
-          Point2D(325, 125),
-          Point2D(375, 225),
-          Point2D(450, 250),
-          Point2D(275, 375),
-          Point2D(100, 300)
-        )
-      )
-    ),
-    Country(
-      idCountry2,
-      "Warverse",
-      1,
-      List.empty,
-      0.0,
-      Polygon2D(
-        List(
-          Point2D(550, 550),
-          Point2D(650, 500),
-          Point2D(925, 600)
-        )
-      )
-    ),
-    Country(
-      idCountry3,
-      "AnotherTest",
-      1,
-      List.empty,
-      0.0,
-      Polygon2D(
-        List(
-          Point2D(1050, 150),
-          Point2D(1000, 50),
-          Point2D(1000, 150),
-          Point2D(1050, 250)
-        )
-      )
-    )
-  )
+
+  val structure =
+    """{"countries": [{"id": "COUNTRY_NAME","citizens": 0,"army": {"unit_kinds": [],"units": []},"resources": 0.00,"boundaries": [],"relations": {"allies": [],"enemies": []}}]}"""
+  val country =
+    """{"id" : "COUNTRY_NAME","citizens" : 0,"army" : {"unit_kinds" : [ ],"units" : [ ]},"resources" : 0.0,"boundaries" : [ ],"relations" : {"allies" : [ ],"enemies" : [ ] }}"""
+  val relations =
+    """{"relations": {"allies": ["Ally1","Ally2","Ally3"],"enemies": ["Enemy1","Enemy2","Enemy3"]}}"""
+  val unit_kinds =
+    """ {"kind": "soldier","position": {"x": 550,"y": 150}}"""
+  val unit =
+    """ {  "id": "soldier","name": "Soldier","attack_type": "precision","hit_chance": 50,"hit_range": 200.0,"maximum_hits": 5,"daily_resources_usage": 2.0,"speed": 15.0}"""
+  val boundaries = """{ "x": 550, "y": 150}"""
