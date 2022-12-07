@@ -65,7 +65,7 @@ object SimulationEngine:
     override def pause(): Unit =
       paused = true
 
-    override def changeSpeed(newSpeed: Int): Unit = 
+    override def changeSpeed(newSpeed: Int): Unit =
       speed = newSpeed
 
     override def terminate(): Unit =

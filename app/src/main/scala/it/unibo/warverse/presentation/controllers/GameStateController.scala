@@ -65,7 +65,7 @@ object GameStateController:
       simulationEngine foreach (_.terminate())
       simulationEngine = None
 
-    override def changeSpeed(newSpeed: Int): Unit = 
+    override def changeSpeed(newSpeed: Int): Unit =
       simulationEngine foreach (_.changeSpeed(newSpeed))
 
     private def onEvent(event: SimulationEvent): Unit =
@@ -83,4 +83,3 @@ object GameStateController:
             loserId,
             day
           )
-        

@@ -91,7 +91,7 @@ class Hud extends JPanel:
         )
   )
   stopButton.addActionListener(_ => controller.onStopClicked())
-  
+
   speed1Button.setEnabled(false)
   speed1Button.addActionListener(_ =>
     writeToConsole("Speed set to X1")
@@ -185,7 +185,11 @@ class Hud extends JPanel:
     highlightText(name = "war", Color.RED)
     writeToConsole("Default speed is set to X1")
 
-  private def highlightText(text: String = console.getText, name: String, color: Color): Unit =
+  private def highlightText(
+    text: String = console.getText,
+    name: String,
+    color: Color
+  ): Unit =
     var c: Int = 0
     val painter: HighlightPainter =
       DefaultHighlighter.DefaultHighlightPainter(color)
@@ -214,5 +218,5 @@ class Hud extends JPanel:
     this.speed2Button.setEnabled(x2)
     this.speed3Button.setEnabled(x3)
 
-  def highlightCountryId(id: String): Unit = 
+  def highlightCountryId(id: String): Unit =
     highlightText(name = id, countryColor(id))
