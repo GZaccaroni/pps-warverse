@@ -1,6 +1,8 @@
 package it.unibo.warverse.domain.model.common
 
 import it.unibo.warverse.domain.model.common.Disposable
+import monix.eval.Task
+import monix.execution.Scheduler.Implicits.global
 
 object Listen:
   type ListenClosure[Event] = Event => Unit
@@ -21,7 +23,11 @@ object Listen:
       listeners = listeners.filter(_ == closure)
 
     protected def emitEvent(event: Event): Unit =
-      listeners.foreach(_(event))
+      listeners.foreach(listener =>
+        Task {
+          listener(event)
+        }.runToFuture
+      )
 
   case class OnEventPart[Event]():
     def from(listenable: Listenable[Event]): OnEventWithListener[Event] =
