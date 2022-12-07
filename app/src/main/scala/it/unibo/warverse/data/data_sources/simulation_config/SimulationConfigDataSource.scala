@@ -3,11 +3,7 @@ package it.unibo.warverse.data.data_sources.simulation_config
 import it.unibo.warverse.data.models.ArmyDtos.{ArmyUnitKind, UnitAttackType}
 import it.unibo.warverse.data.models.SimulationConfigDtos.SimulationConfigDto
 import it.unibo.warverse.domain.model.common.Geometry
-import it.unibo.warverse.domain.model.common.Geometry.{
-  Point2D,
-  Polygon,
-  Polygon2D
-}
+import it.unibo.warverse.domain.model.common.Geometry.{Point2D, Polygon}
 import it.unibo.warverse.domain.model.fight.Army
 import it.unibo.warverse.domain.model.world.World
 import it.unibo.warverse.data.data_sources.simulation_config.Serializers.*
@@ -64,7 +60,7 @@ object SimulationConfigDataSource:
         name = dto.id,
         resources = dto.resources,
         citizens = dto.citizens,
-        boundaries = Polygon2D(dto.boundaries.map(mapPoint2DDto)),
+        boundaries = Polygon(dto.boundaries.map(mapPoint2DDto)),
         armyUnits = mapArmyDto(dto.id, dto.army)
       )
 

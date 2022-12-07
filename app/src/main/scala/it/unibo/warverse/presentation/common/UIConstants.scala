@@ -3,7 +3,6 @@ package it.unibo.warverse.presentation.common
 import java.net.URL
 import java.awt.BasicStroke
 import it.unibo.warverse.domain.model.common.Geometry.Point2D
-import it.unibo.warverse.domain.model.common.Geometry.Polygon2D
 import it.unibo.warverse.domain.model.world.World.Country
 import it.unibo.warverse.domain.model.world.World.CountryId
 import it.unibo.warverse.domain.model.common.Geometry

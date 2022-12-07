@@ -1,6 +1,5 @@
 package it.unibo.warverse.domain.model.world
 
-import it.unibo.warverse.domain.model.common.Life
 import it.unibo.warverse.domain.model.common.{Geometry, Life, Movement}
 import it.unibo.warverse.domain.model.fight.Army.ArmyUnit
 import it.unibo.warverse.domain.model.fight.Fight
@@ -55,7 +54,7 @@ object World:
     citizens: Int,
     armyUnits: Seq[ArmyUnit],
     resources: Life.Resources,
-    boundaries: Geometry.Polygon2D
+    boundaries: Geometry.Polygon[Geometry.Point2D]
   ) extends UpdatableAssets[Country]:
     /** It returns a new {@link Country} with the given resources added
       * @param newResources

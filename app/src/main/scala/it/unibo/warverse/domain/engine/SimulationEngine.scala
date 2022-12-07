@@ -2,7 +2,7 @@ package it.unibo.warverse.domain.engine
 
 import it.unibo.warverse.domain.engine.components.SimulationComponent
 import it.unibo.warverse.domain.model.{Environment, SimulationConfig}
-import it.unibo.warverse.domain.model.common.Geometry.{Point2D, Polygon2D}
+import it.unibo.warverse.domain.model.common.Geometry.Point2D
 import it.unibo.warverse.domain.model.common.Listen.*
 import it.unibo.warverse.domain.model.common.{Disposable, Geometry}
 import it.unibo.warverse.domain.model.fight.Army.*

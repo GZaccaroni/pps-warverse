@@ -91,20 +91,19 @@ object Geometry:
       */
     def contains(point: Point): Boolean
 
-  /** A 2-Dimensional polygon
-    */
-  type Polygon2D = Polygon[Point2D]
-  object Polygon2D:
+  object Polygon:
     /** Builds a 2-Dimensional polygon
       * @param vertexes
       *   vertexes of the polygon
       * @return
       *   a {@link Polygon2D}
       */
-    def apply(vertexes: Seq[Point2D]): Polygon2D = JavaAwtPolygon2D(vertexes)
+    def apply(vertexes: Seq[Point2D]): Polygon[Point2D] = JavaAwtPolygon2D(
+      vertexes
+    )
 
     private case class JavaAwtPolygon2D(vertexes: Seq[Point2D])
-        extends Polygon2D:
+        extends Polygon[Point2D]:
       override def contains(point: Point2D): Boolean =
         awtPath2D.contains(point.x, point.y) || vertexes.contains(point);
 
