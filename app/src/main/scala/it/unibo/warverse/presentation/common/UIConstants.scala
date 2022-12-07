@@ -10,7 +10,7 @@ import it.unibo.warverse.domain.model.common.Geometry
 import java.awt.Dimension
 import it.unibo.warverse.domain.model.fight.Army.*
 
-object UIConstants:
+private[presentation] object UIConstants:
   enum Resources(val name: String):
     case MainMenuBackground extends Resources("menuBackground.png")
     case HelpMenuBackground extends Resources("menuHelp.png")
