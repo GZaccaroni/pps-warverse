@@ -11,6 +11,11 @@ import javax.swing.JTextArea
 import java.awt.Insets
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
+import java.net.URL
+import java.awt.Graphics
+import java.awt.Toolkit
+import javax.swing.JLabel
+import java.awt.Font
 
 trait MenuHelp extends JPanel:
   def addComponentsToPanel(components: Seq[JComponent]): Unit
@@ -26,17 +31,32 @@ object MenuHelp:
     override val mainFrame: MainFrame
   ) extends MenuHelp:
     this.requestFocus()
-    val startButton = JButton("Start")
-    val closeButton = JButton("Exit App")
-    val generateJsonButton = JButton("Generate Json")
-    val rdbStructure = new JRadioButton("A) Structure");
-    val rdbCountry = new JRadioButton("B) Country");
-    val rdbUnitKind = new JRadioButton("C) Unit Kind");
-    val rdbUnits = new JRadioButton("D) Units");
-    val rdbBoundaries = new JRadioButton("E) Boundaries");
-    val rdbRelations = new JRadioButton("F) Relations");
-    val buttonGroup = new ButtonGroup()
+    this.setLayout(null)
+    private val startButton = JButton("Start")
+    private val closeButton = JButton("Exit App")
+    private val generateJsonButton = JButton("Get Json Sample")
+    private val rdbStructure = JRadioButton("A) Structure");
+    private val rdbCountry = JRadioButton("B) Country");
+    private val rdbUnitKind = JRadioButton("C) Unit Kind");
+    private val rdbUnits = JRadioButton("D) Units");
+    private val rdbBoundaries = JRadioButton("E) Boundaries");
+    private val rdbRelations = JRadioButton("F) Relations");
+    private val buttonGroup = ButtonGroup()
     private val console: JTextArea = JTextArea(25, 25)
+    private val text: JLabel = JLabel(UIConstants.description)
+    text.setFont(Font("Serif", Font.PLAIN, 20));
+    text.setBounds(20, 120, 900, 200)
+    rdbStructure.setBounds(920, 60, 120, 20)
+    rdbCountry.setBounds(1020, 60, 120, 20)
+    rdbUnitKind.setBounds(1130, 60, 120, 20)
+    rdbUnits.setBounds(920, 80, 100, 20)
+    rdbBoundaries.setBounds(1020, 80, 120, 20)
+    rdbRelations.setBounds(1130, 80, 120, 20)
+    generateJsonButton.setBounds(1240, 55, 120, 50)
+    console.setBounds(920, 110, 400, 300)
+    startButton.setBounds(650, 300, 100, 50)
+    closeButton.setBounds(750, 300, 100, 50)
+
     this.console.setMargin(Insets(10, 10, 10, 10))
     this.console.setEditable(false)
     this.console.setLineWrap(true)
@@ -53,8 +73,7 @@ object MenuHelp:
     )
     this.addComponentsToPanel(
       Seq(
-        startButton,
-        closeButton,
+        text,
         rdbStructure,
         rdbCountry,
         rdbUnitKind,
@@ -62,7 +81,9 @@ object MenuHelp:
         rdbBoundaries,
         rdbRelations,
         generateJsonButton,
-        console
+        console,
+        startButton,
+        closeButton
       )
     )
     startButton.addActionListener(_ =>
@@ -99,3 +120,11 @@ object MenuHelp:
 
     override def addComponentsToPanel(components: Seq[JComponent]): Unit =
       for component <- components do this.add(component)
+
+    override def paintComponent(g: Graphics): Unit =
+      super.paintComponent(g)
+      val backgroundImage = Option(UIConstants.Resources.HelpMenuBackground.url)
+        .map(Toolkit.getDefaultToolkit.getImage(_))
+      backgroundImage.foreach(
+        g.drawImage(_, 0, 0, this.getSize().width, this.getSize().height, this)
+      )
