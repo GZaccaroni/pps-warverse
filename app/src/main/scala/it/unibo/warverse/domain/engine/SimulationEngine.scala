@@ -8,22 +8,60 @@ import it.unibo.warverse.domain.model.common.{Disposable, Geometry}
 import it.unibo.warverse.domain.model.fight.Army.*
 import it.unibo.warverse.domain.model.fight.{Army, SimulationEvent}
 import it.unibo.warverse.domain.model.fight.SimulationEvent.*
-import it.unibo.warverse.domain.model.world.GameStats
-import it.unibo.warverse.domain.model.world.Relations.InterstateRelations
+import it.unibo.warverse.domain.model.world.SimulationStats
+import it.unibo.warverse.domain.model.world.Relations.InterCountryRelations
 import it.unibo.warverse.domain.model.world.World.Country
 import it.unibo.warverse.domain.engine.components.*
+import monix.eval.Task
+import monix.execution.Cancelable
+
+import concurrent.duration.{DurationInt, DurationDouble, FiniteDuration}
+import monix.execution.Scheduler.Implicits.global
+import monix.execution.Scheduler.global as scheduler
+import monix.reactive.Observable
+import monix.reactive.ObservableLike.fromTask
 
 import scala.annotation.tailrec
+import scala.concurrent.Await
 
+/** Handles the simulation of the war, it can emit {@link SimulationEvent}.
+  */
 trait SimulationEngine extends Listenable[SimulationEvent]:
+  /** The initial simulation config
+    * @return
+    *   The initial simulation config
+    */
   def simulationConfig: SimulationConfig
+
+  /** The current environment of the simulation
+    *
+    * @return
+    *   The current environment
+    */
   def currentEnvironment: Environment
+
+  /** Starts the simulation
+    */
   def start(): Unit
+
+  /** Resumes the simulation
+    */
   def resume(): Unit
+
+  /** Pauses the simulation */
   def pause(): Unit
+
+  /** Terminates the simulation */
   def terminate(): Unit
+  def changeSpeed(newSpeed: Int): Unit
 
 object SimulationEngine:
+  /** Creates an instance of {@link SimulationEngine}
+    * @param simulationConfig
+    *   The initial config of the simulation
+    * @return
+    *   A SimulationEngine
+    */
   def apply(simulationConfig: SimulationConfig): SimulationEngine =
     SimulationEngineImpl(simulationConfig)
 
@@ -32,9 +70,6 @@ object SimulationEngine:
       with SimulationEngine:
 
     override def currentEnvironment: Environment = environment
-    private var exit: Boolean = true
-    private var paused: Boolean = false
-    private var gameThread: Thread = _
     private val simulationComponents: Seq[SimulationComponent] = List(
       AttackSimulationComponent(),
       MovementSimulationComponent(),
@@ -42,68 +77,65 @@ object SimulationEngine:
       ResourcesSimulationComponent(),
       WarSimulationComponent()
     )
-    private var nextLoopTime: Long = 0
-    private val timeFrame = 1000
+    private val simulationDayDuration: FiniteDuration = 1.5.seconds
+    private var speed = 1
+    private var taskCancelable: Option[Cancelable] = None
     private var environment = Environment(
       simulationConfig.countries,
-      simulationConfig.interstateRelations
+      simulationConfig.interCountryRelations
     )
-    private val cancellables: Seq[Disposable] =
+    private val disposables: Seq[Disposable] =
       simulationComponents.map { component =>
         onReceiveEvent[SimulationEvent] from component run handleEvent
       }
     override def start(): Unit =
-      gameThread = Thread(() => gameLoop())
-      gameThread.start()
+      runLoop()
 
     override def resume(): Unit =
-      paused = false
-      start()
+      runLoop()
 
     override def pause(): Unit =
-      paused = true
+      taskCancelable foreach (_.cancel())
+      taskCancelable = None
+    private def isRunning: Boolean = taskCancelable.nonEmpty
+
+    override def changeSpeed(newSpeed: Int): Unit =
+      if speed != newSpeed then
+        if isRunning then
+          pause()
+          speed = newSpeed
+          resume()
+        else speed = newSpeed
 
     override def terminate(): Unit =
-      exit = false
+      taskCancelable foreach (_.cancel())
+      taskCancelable = None
       emitEvent(SimulationCompleted)
-      cancellables foreach (_.dispose)
+      disposables foreach (_.dispose)
 
-    @tailrec
-    private def gameLoop(): Unit =
-      waitForNextLoop()
-      environment = simulationComponents.foldLeft(environment) {
-        (environment, simulationComponent) =>
-          environment after simulationComponent.run
-      }
-      emitEvent(IterationCompleted(environment))
-
-      checkEnd()
-      if continue() then gameLoop()
-
+    private def runLoop(): Unit =
+      if taskCancelable.isEmpty then
+        val task = Observable
+          .intervalAtFixedRate(simulationDayDuration / speed)
+          .scanEval(Task(environment)) { (previous, _) =>
+            simulationComponents
+              .foldLeft(Task(previous)) { (task, simulationComponent) =>
+                task.flatMap(simulationComponent.run)
+              }
+          }
+          .takeWhileInclusive(warsExists)
+          .foreachL(newEnvironment =>
+            this.environment = newEnvironment
+            emitEvent(IterationCompleted(newEnvironment))
+            if !warsExists(newEnvironment) then terminate()
+          )
+        taskCancelable = Some(task.runAsync(_ => ()))
     private def handleEvent(event: SimulationEvent): Unit =
       emitEvent(event)
 
-    private def waitForNextLoop(): Unit =
-      try Thread.sleep(Math.max(0, nextLoopTime - System.currentTimeMillis()))
-      catch case ex: InterruptedException => ()
-      nextLoopTime = System.currentTimeMillis() + timeFrame
-
-    private def checkEnd(): Unit =
-      if noWars(environment)
-      then terminate()
-
-    private def noWars(
+    private def warsExists(
       environment: Environment
     ): Boolean =
       environment.countries.forall(country =>
-        environment.interstateRelations.countryEnemies(country.id).isEmpty
+        environment.interCountryRelations.countryEnemies(country.id).nonEmpty
       )
-
-    private def continue(): Boolean =
-      exit && !paused
-
-    extension (environment: Environment)
-      private def after(
-        closure: Environment => Environment
-      ): Environment =
-        closure(environment)

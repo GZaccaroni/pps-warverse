@@ -5,7 +5,7 @@ import it.unibo.warverse.data.models.ArmyDtos
 import it.unibo.warverse.domain.model.world.World
 import it.unibo.warverse.domain.model.common.Validation.*
 
-object WorldDtos:
+private[data] object WorldDtos:
   case class CountryDto(
     id: World.CountryId,
     resources: Double,
@@ -15,7 +15,7 @@ object WorldDtos:
     army: ArmyDtos.CountryArmy
   ) extends Validatable:
     override def validate(): Unit =
-      given ValidatedEntity = ValidatedEntity(this.getClass.getTypeName)
+      given ValidatableEntity = ValidatableEntity(this.getClass.getTypeName)
       if resources < 0 then throw "resources" isNotGreaterOrEqualThan 0
       if boundaries.length < 3 then throw "boundaries" isNotGreaterOrEqualThan 3
       if citizens < 0 then throw "citizens" isNotGreaterOrEqualThan 0

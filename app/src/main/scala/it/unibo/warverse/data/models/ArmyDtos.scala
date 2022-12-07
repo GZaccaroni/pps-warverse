@@ -4,13 +4,13 @@ import it.unibo.warverse.data.models.GeometryDtos.Point2DDto
 import it.unibo.warverse.domain.model.common.Math
 import it.unibo.warverse.domain.model.common.Validation.*
 
-object ArmyDtos:
+private[data] object ArmyDtos:
   case class CountryArmy(
     unitKinds: Seq[ArmyUnitKind],
     units: Seq[ArmyUnit]
   ) extends Validatable:
     override def validate(): Unit =
-      given ValidatedEntity = ValidatedEntity(this.getClass.getTypeName)
+      given ValidatableEntity = ValidatableEntity(this.getClass.getTypeName)
       if units.exists(unit => !unitKinds.exists(unit.kind == _.id)) then
         throw ValidationException("Some units have an undefined kind")
       unitKinds.foreach(_.validate())
@@ -31,7 +31,7 @@ object ArmyDtos:
     def attackType: UnitAttackType
 
     override def validate(): Unit =
-      given ValidatedEntity = ValidatedEntity(this.getClass.getTypeName)
+      given ValidatableEntity = ValidatableEntity(this.getClass.getTypeName)
       if speed < 0 then throw "speed" isNotGreaterOrEqualThan 0
       val hitChanceRange = 0 to 100
       if !hitChanceRange.contains(hitChance) then
@@ -64,7 +64,7 @@ object ArmyDtos:
       override def attackType: UnitAttackType = UnitAttackType.Area
 
       override def validate(): Unit =
-        given ValidatedEntity = ValidatedEntity(this.getClass.getTypeName)
+        given ValidatableEntity = ValidatableEntity(this.getClass.getTypeName)
         super.validate()
         if damageArea < 0 then throw "damageArea" isNotGreaterOrEqualThan 0
 

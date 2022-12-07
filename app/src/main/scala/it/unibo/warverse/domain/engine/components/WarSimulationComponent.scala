@@ -5,34 +5,39 @@ import it.unibo.warverse.domain.model.common.Listen.*
 import it.unibo.warverse.domain.model.fight.SimulationEvent
 import it.unibo.warverse.domain.model.fight.SimulationEvent.CountryWonWar
 import it.unibo.warverse.domain.model.world.Relations.{
-  InterstateRelations,
+  InterCountryRelations,
   RelationStatus
 }
 import it.unibo.warverse.domain.model.world.World.{Country, CountryId}
 import it.unibo.warverse.domain.model.fight.SimulationEvent
+import monix.eval.Task
 
+/** Simulates war completion and division of assets between winning states
+  */
 class WarSimulationComponent
     extends SimpleListenable[SimulationEvent]
     with SimulationComponent:
-  override def run(using environment: Environment): Environment =
-    getFightingCountries()
-      .foldLeft(environment) { (environment, countryInWarId) =>
-        environment.countries
-          .find(_.id == countryInWarId)
-          .filter { countryInWar =>
-            countryInWar.armyUnits.size <= 0 || countryInWar.citizens <= 0 || countryInWar.resources <= 0
-          }
-          .map(assignLostResources)
-          .getOrElse(environment)
-      }
-      .copiedWith(day = environment.day + 1)
+  override def run(using environment: Environment): Task[Environment] =
+    Task {
+      getFightingCountries()
+        .foldLeft(environment) { (environment, countryInWarId) =>
+          environment.countries
+            .find(_.id == countryInWarId)
+            .filter { countryInWar =>
+              countryInWar.armyUnits.size <= 0 || countryInWar.citizens <= 0 || countryInWar.resources <= 0
+            }
+            .map(assignLostResources)
+            .getOrElse(environment)
+        }
+        .copiedWith(day = environment.day + 1)
+    }
 
   private def getFightingCountries()(using
     environment: Environment
   ): Seq[CountryId] =
     environment.countries
       .filter(country =>
-        environment.interstateRelations.countryEnemies(country.id).nonEmpty
+        environment.interCountryRelations.countryEnemies(country.id).nonEmpty
       )
       .map(_.id)
 
@@ -40,7 +45,7 @@ class WarSimulationComponent
     countryDefeated: Country
   )(using environment: Environment): Environment =
     val winnersId =
-      environment.interstateRelations.countryEnemies(countryDefeated.id).toSeq
+      environment.interCountryRelations.countryEnemies(countryDefeated.id).toSeq
     val loserResources = countryDefeated.resources
     val loserCitizens = countryDefeated.citizens
     val loserArmy = countryDefeated.armyUnits
@@ -51,9 +56,9 @@ class WarSimulationComponent
       environment
         .copiedWith(
           countries = environment.countries.filterNot(_ == countryDefeated),
-          interstateRelations = removeLostStateRelation(
+          interCountryRelations = removeLostStateRelation(
             countryDefeated,
-            environment.interstateRelations
+            environment.interCountryRelations
           )
         )
     winnersId.zipWithIndex
@@ -99,9 +104,9 @@ class WarSimulationComponent
 
   private def removeLostStateRelation(
     country: Country,
-    relations: InterstateRelations
-  ): InterstateRelations =
-    var result: InterstateRelations = relations
+    relations: InterCountryRelations
+  ): InterCountryRelations =
+    var result: InterCountryRelations = relations
     val enemies = relations.countryEnemies(country.id)
     val allied = relations.countryAllies(country.id)
     allied.foreach(ally =>

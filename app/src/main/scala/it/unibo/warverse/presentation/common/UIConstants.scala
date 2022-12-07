@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import org.json4s.jackson.Json
 
-object UIConstants:
+private[presentation] object UIConstants:
   enum Resources(val name: String):
     case MainMenuBackground extends Resources("menuBackground.png")
     case HelpMenuBackground extends Resources("menuHelp.png")
@@ -31,9 +31,6 @@ object UIConstants:
     Array(1.0f),
     0.1f
   )
-  private val idCountry1: CountryId = "Country_1"
-  private val idCountry2: CountryId = "Country_2"
-  private val idCountry3: CountryId = "Country_3"
 
   val structure =
     """{"countries": [{"id": "COUNTRY_NAME","citizens": 0,"army": {"unit_kinds": [],"units": []},"resources": 0.00,"boundaries": [],"relations": {"allies": [],"enemies": []}}]}"""

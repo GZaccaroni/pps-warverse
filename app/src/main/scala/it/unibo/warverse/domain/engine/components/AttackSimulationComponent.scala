@@ -7,21 +7,27 @@ import it.unibo.warverse.domain.model.fight.Fight.AttackAction
 import it.unibo.warverse.domain.model.fight.SimulationEvent
 import it.unibo.warverse.domain.model.fight.TargetFinderStrategy.TargetFinderStrategy2D
 import it.unibo.warverse.domain.model.world.World.Country
+import monix.eval.Task
 
 import scala.annotation.tailrec
 import scala.collection.immutable.{AbstractSeq, LinearSeq}
 
+/** Simulates army units attacks and updates simulation environment accordingly
+  */
 class AttackSimulationComponent
     extends SimpleListenable[SimulationEvent]
     with SimulationComponent:
-  override def run(using environment: Environment): Environment =
-    given TargetFinderStrategy2D = TargetFinderStrategy2D()
-    val events = for
-      country <- environment.countries
-      unit <- country.armyUnits
-      event <- unit.attack()
-    yield event
-    updateEnvironment(environment, events)
+  override def run(using environment: Environment): Task[Environment] =
+    Task {
+      given TargetFinderStrategy2D = TargetFinderStrategy2D()
+
+      val events = for
+        country <- environment.countries
+        unit <- country.armyUnits
+        action <- unit.attack()
+      yield action
+      updateEnvironment(environment, events)
+    }
 
   @tailrec
   private def updateEnvironment(

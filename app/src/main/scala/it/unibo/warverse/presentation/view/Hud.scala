@@ -1,6 +1,7 @@
 package it.unibo.warverse.presentation.view
 import it.unibo.warverse.domain.model.world.World
 import it.unibo.warverse.presentation.inputs.GameMouseMotion
+import monix.execution.Scheduler.Implicits.global
 
 import java.awt.Dimension
 import javax.swing.{
@@ -35,7 +36,7 @@ import it.unibo.warverse.domain.model.{Environment, SimulationConfig}
 
 import scala.io.Source
 import it.unibo.warverse.domain.model.world.Relations
-import it.unibo.warverse.domain.model.world.Relations.InterstateRelations
+import it.unibo.warverse.domain.model.world.Relations.InterCountryRelations
 
 class Hud extends JPanel:
   this.setPreferredSize(Dimension(350, 20))
@@ -73,9 +74,6 @@ class Hud extends JPanel:
   console.setForeground(Color.WHITE)
   this.add(gameStatus)
 
-  speed1Button.addActionListener(_ => console.append("Speed X1\n"))
-  speed2Button.addActionListener(_ => console.append("Speed X2\n"))
-  speed3Button.addActionListener(_ => console.append("Speed X3\n"))
   toggleSimulationButton.addActionListener(_ =>
     (toggleSimulationButton.getText, controller.simulationConfig) match
       case ("Start", Some(_)) =>
@@ -94,6 +92,23 @@ class Hud extends JPanel:
         )
   )
   stopButton.addActionListener(_ => controller.onStopClicked())
+
+  speed1Button.setEnabled(false)
+  speed1Button.addActionListener(_ =>
+    writeToConsole("Speed set to X1")
+    controller.changeSpeed(1)
+    enableSpeed(false, true, true)
+  )
+  speed2Button.addActionListener(_ =>
+    writeToConsole("Speed set to X2")
+    controller.changeSpeed(2)
+    enableSpeed(true, false, true)
+  )
+  speed3Button.addActionListener(_ =>
+    writeToConsole("Speed set to X3")
+    controller.changeSpeed(3)
+    enableSpeed(true, true, false)
+  )
 
   addJComponents(firstButtonsRow, List(toggleSimulationButton, stopButton))
   addJComponents(
@@ -122,62 +137,67 @@ class Hud extends JPanel:
 
       val jsonConfigParser =
         SimulationConfigDataSource(file, SimulationConfigDataSource.Format.Json)
-      try
-        val simulationConfig = jsonConfigParser.simulationConfig
-        displayInitialSimulationConfig(simulationConfig)
-        controller.simulationConfig = Some(simulationConfig)
-        JOptionPane.showMessageDialog(
-          null,
-          "Configuration uploaded successfully."
-        )
-      catch
-        case _: NullPointerException =>
-          println("Configuration File have some errors.")
+      val simulationConfigTask = jsonConfigParser.readSimulationConfig()
+      simulationConfigTask.runAsync {
+        case Right(simulationConfig) =>
+          displayInitialSimulationConfig(simulationConfig)
+          controller.simulationConfig = Some(simulationConfig)
+          JOptionPane.showMessageDialog(
+            null,
+            "Configuration uploaded successfully."
+          )
+        case Left(error) =>
+          println(s"Configuration File have some errors. ${error}")
+      }
 
   private def displayInitialSimulationConfig(
     simulationConfig: SimulationConfig
   ): Unit =
     console.setText("")
     simulationConfig.countries.foreach(country =>
-      console.append(
+      writeToConsole(
         country.name + " starts with " + country.citizens + " citizen, " + country.armyUnits.length + " army units and " + String
-          .format("%.02f", country.resources) + " resources.\n\n"
+          .format("%.02f", country.resources) + " resources."
       )
     )
 
     simulationConfig.countries.foreach(country =>
-      simulationConfig.interstateRelations
+      simulationConfig.interCountryRelations
         .countryAllies(country.id)
         .foreach(allyId =>
           val ally = simulationConfig.countries.find(_.id == allyId).get;
-          console.append(country.name + " is allied with " + ally.name + "\n\n")
+          writeToConsole(country.name + " is allied with " + ally.name)
         )
-      simulationConfig.interstateRelations
+      simulationConfig.interCountryRelations
         .countryEnemies(country.id)
         .foreach(enemyId =>
           val enemy = simulationConfig.countries.find(_.id == enemyId).get;
-          console.append(
-            country.name + " is in war with " + enemy.name + "\n\n"
+          writeToConsole(
+            country.name + " is in war with " + enemy.name
           )
         )
     )
     simulationConfig.countries.foreach(country =>
       highlightText(
-        console.getText,
-        country.name,
+        name = country.name,
         countryColor(country.id)
       )
     )
-    highlightText(console.getText, "allied", Color(0, 153, 0))
-    highlightText(console.getText, "war", Color.RED)
+    highlightText(name = "allied", Color(0, 153, 0))
+    highlightText(name = "war", Color.RED)
+    writeToConsole("Default speed is set to X1")
 
-  private def highlightText(text: String, name: String, color: Color): Unit =
-    var c: Integer = 0
+  private def highlightText(
+    text: String = console.getText,
+    name: String,
+    color: Color
+  ): Unit =
+    var c: Int = 0
     val painter: HighlightPainter =
       DefaultHighlighter.DefaultHighlightPainter(color)
     while text.indexOf(name, c) != -1 do
-      val p0: Integer = text.indexOf(name, c)
-      val p1: Integer = p0 + name.length()
+      val p0: Int = text.indexOf(name, c)
+      val p1: Int = p0 + name.length()
       highlighter.addHighlight(p0, p1, painter)
       c = p1
   override def paintComponent(g: Graphics): Unit =
@@ -191,3 +211,14 @@ class Hud extends JPanel:
     val b: Int = hash & 0x0000ff
 
     Color(r, g, b)
+
+  def writeToConsole(text: String): Unit =
+    this.console.append(text + "\n\n")
+
+  def enableSpeed(x1: Boolean, x2: Boolean, x3: Boolean): Unit =
+    this.speed1Button.setEnabled(x1)
+    this.speed2Button.setEnabled(x2)
+    this.speed3Button.setEnabled(x3)
+
+  def highlightCountryId(id: String): Unit =
+    highlightText(name = id, countryColor(id))
