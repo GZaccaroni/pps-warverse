@@ -9,7 +9,6 @@ import it.unibo.warverse.domain.model.world.Relations.{
   RelationStatus
 }
 import it.unibo.warverse.domain.model.world.World.{Country, CountryId}
-import it.unibo.warverse.domain.model.fight.SimulationEvent
 import monix.eval.Task
 
 /** Simulates war completion and division of assets between winning states
