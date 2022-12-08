@@ -15,7 +15,8 @@ object SimulationEvent:
 
   /** This event is fired when the simulation completes
     */
-  object SimulationCompleted extends SimulationEvent
+  case class SimulationCompleted(environment: Environment)
+      extends SimulationEvent
 
   /** This event is fired when a country wins a war
     */

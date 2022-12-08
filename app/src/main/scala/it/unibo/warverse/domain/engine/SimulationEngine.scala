@@ -110,7 +110,7 @@ object SimulationEngine:
     override def terminate(): Unit =
       taskCancelable foreach (_.cancel())
       taskCancelable = None
-      emitEvent(SimulationCompleted)
+      emitEvent(SimulationCompleted(this.environment))
       disposables foreach (_.dispose)
 
     private def runLoop(): Unit =
@@ -123,7 +123,6 @@ object SimulationEngine:
                 task.flatMap(simulationComponent.run)
               }
           }
-          .takeWhileInclusive(warsExists)
           .foreachL(newEnvironment =>
             this.environment = newEnvironment
             emitEvent(IterationCompleted(newEnvironment))
@@ -136,6 +135,8 @@ object SimulationEngine:
     private def warsExists(
       environment: Environment
     ): Boolean =
-      environment.countries.forall(country =>
-        environment.interCountryRelations.countryEnemies(country.id).nonEmpty
-      )
+      if environment.countries.size > 0 then
+        environment.countries.forall(country =>
+          environment.interCountryRelations.countryEnemies(country.id).nonEmpty
+        )
+      else false

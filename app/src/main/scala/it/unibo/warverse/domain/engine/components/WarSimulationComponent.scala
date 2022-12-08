@@ -9,7 +9,6 @@ import it.unibo.warverse.domain.model.world.Relations.{
   RelationStatus
 }
 import it.unibo.warverse.domain.model.world.World.{Country, CountryId}
-import it.unibo.warverse.domain.model.fight.SimulationEvent
 import monix.eval.Task
 
 /** Simulates war completion and division of assets between winning states
@@ -17,10 +16,11 @@ import monix.eval.Task
 class WarSimulationComponent
     extends SimpleListenable[SimulationEvent]
     with SimulationComponent:
-  override def run(using environment: Environment): Task[Environment] =
+  override def run(environment: Environment): Task[Environment] =
     Task {
-      getFightingCountries()
+      getFightingCountries(environment)
         .foldLeft(environment) { (environment, countryInWarId) =>
+          given Environment = environment
           environment.countries
             .find(_.id == countryInWarId)
             .filter { countryInWar =>
@@ -32,14 +32,15 @@ class WarSimulationComponent
         .copiedWith(day = environment.day + 1)
     }
 
-  private def getFightingCountries()(using
+  private def getFightingCountries(
     environment: Environment
-  ): Seq[CountryId] =
+  ): Set[CountryId] =
     environment.countries
       .filter(country =>
         environment.interCountryRelations.countryEnemies(country.id).nonEmpty
       )
       .map(_.id)
+      .toSet
 
   private def assignLostResources(
     countryDefeated: Country
@@ -49,58 +50,68 @@ class WarSimulationComponent
     val loserResources = countryDefeated.resources
     val loserCitizens = countryDefeated.citizens
     val loserArmy = countryDefeated.armyUnits
-    val armyUnitsPerWinner = loserArmy.size / winnersId.size
-    val citizensPerWinner = loserCitizens / winnersId.size
-    val resourcesPerWinner = loserResources / winnersId.size
+    val armyUnitsPerWinner =
+      loserArmy.size / math.max(winnersId.size, 1)
+    val citizensPerWinner =
+      loserCitizens / math.max(winnersId.size, 1)
+    val resourcesPerWinner =
+      loserResources / math.max(winnersId.size, 1)
     val envWithoutDefeatedCountry =
       environment
         .copiedWith(
-          countries = environment.countries.filterNot(_ == countryDefeated),
-          interCountryRelations = removeLostStateRelation(
+          environment.countries.filterNot(_ == countryDefeated),
+          removeLostStateRelation(
             countryDefeated,
             environment.interCountryRelations
           )
         )
-    winnersId.zipWithIndex
-      .foldLeft(envWithoutDefeatedCountry) {
-        case (environment, (winnerId, winnerIndex)) =>
-          val currentCountries = environment.countries
-          val idToCountry = currentCountries
-            .find(country => country.id == winnerId)
-            .get
-          val index = currentCountries.indexOf(
-            idToCountry
-          )
-          val winnerCountry: Country =
-            idToCountry
-              .addingResources(
-                if loserResources - resourcesPerWinner * (winnerIndex + 1) < resourcesPerWinner
-                then loserResources - resourcesPerWinner * winnerIndex
-                else resourcesPerWinner
-              )
-              .addingArmyUnits(
-                loserArmy
-                  .slice(
-                    armyUnitsPerWinner * winnerIndex,
-                    armyUnitsPerWinner * (winnerIndex + 1)
-                  )
-              )
-              .addingCitizens(
-                if loserCitizens - citizensPerWinner * (winnerIndex + 1) < citizensPerWinner
-                then loserCitizens - citizensPerWinner * winnerIndex
-                else citizensPerWinner
-              )
-          emitEvent(
-            CountryWonWar(winnerId, countryDefeated.id, environment.day)
-          )
-          envWithoutDefeatedCountry
-            .copiedWith(
-              currentCountries.updated(
-                index,
-                winnerCountry
+    if winnersId.size > 0 then
+      winnersId.zipWithIndex
+        .foldLeft(envWithoutDefeatedCountry) {
+          case (envWithoutDefeatedCountry, (winnerId, winnerIndex)) =>
+            val currentCountries = envWithoutDefeatedCountry.countries
+            val idToCountry = currentCountries
+              .find(country => country.id == winnerId)
+              .get
+            val index = currentCountries.indexOf(
+              idToCountry
+            )
+            val winnerCountry: Country =
+              idToCountry
+                .addingResources(
+                  if loserResources - resourcesPerWinner * (winnerIndex + 1) < resourcesPerWinner
+                  then loserResources - resourcesPerWinner * winnerIndex
+                  else resourcesPerWinner
+                )
+                .addingArmyUnits(
+                  loserArmy
+                    .slice(
+                      armyUnitsPerWinner * winnerIndex,
+                      (if winnerIndex == winnersId.size - 1 then loserArmy.size
+                       else armyUnitsPerWinner * (winnerIndex + 1))
+                    )
+                )
+                .addingCitizens(
+                  if loserCitizens - citizensPerWinner * (winnerIndex + 1) < citizensPerWinner
+                  then loserCitizens - citizensPerWinner * winnerIndex
+                  else citizensPerWinner
+                )
+            emitEvent(
+              CountryWonWar(
+                winnerId,
+                countryDefeated.id,
+                envWithoutDefeatedCountry.day
               )
             )
-      }
+            envWithoutDefeatedCountry
+              .copiedWith(
+                currentCountries.updated(
+                  index,
+                  winnerCountry
+                )
+              )
+        }
+    else envWithoutDefeatedCountry
 
   private def removeLostStateRelation(
     country: Country,
