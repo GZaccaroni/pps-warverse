@@ -18,37 +18,39 @@ object EndPanel:
     private val stats: JTextPane = JTextPane()
     private val countries = environment.countries
     private val gameStats: JScrollPane = JScrollPane(stats)
+    private val warsExists: Boolean = warsExists(environment)
     this.setLayout(BoxLayout(this, BoxLayout.Y_AXIS))
 
-    if warsExists(environment) then
+    if warsExists then
       title.setText(
         "Simulation interrupted while wars were active, there are no winners"
       )
-    else if countries.size > 0 then
+    if countries.size > 0 && !warsExists then
       title.setText("Winners are: ")
       countries.foreach(c =>
         title.setText(title.getText + c.id)
         if countries.size - 1 != countries.indexOf(c) then
           title.setText(title.getText() + ", ")
+        stats.setText(
+          stats
+            .getText() + "Country: " + c.id + "\nRemaining Army Units: " + c.armyUnits.size + "\nCitizen Remaining: " + c.citizens + "\nResources Remaining: " + c.resources + "\n\n"
+        )
       )
     else title.setText("Nobody Win in War")
+
+    title.setText(title.getText() + "\nDay passed: " + environment.day)
 
     title.setFont(Font("TimesRoman", Font.PLAIN, 32))
     setPaneAttributes(title)
     this.add(title)
-
-    countries.foreach(c =>
-      stats.setText(
-        stats
-          .getText() + "Country: " + c.id + "\nRemaining Army Units: " + c.armyUnits.size + "\nCitizen Remaining: " + c.citizens + "\nResources Remaining: " + c.resources + "\n\n"
-      )
-    )
-
     stats.setFont(Font("TimesRoman", Font.PLAIN, 20))
     setPaneAttributes(stats)
+    gameStats.setBorder(null)
+    gameStats.setAlignmentY(StyleConstants.ALIGN_CENTER)
     this.add(gameStats)
 
     private def setPaneAttributes(textPane: JTextPane): Unit =
+      textPane.setEditable(false)
       textPane.setBackground(Color.BLACK)
       textPane.setForeground(Color.WHITE)
       val documentStyle: StyledDocument = textPane.getStyledDocument()
