@@ -72,8 +72,8 @@ object GameStateController:
       event match
         case SimulationEvent.IterationCompleted(environment) =>
           gameMap.environment = Some(environment)
-        case SimulationEvent.SimulationCompleted =>
-          mainFrame.setPanel(EndPanel())
+        case SimulationEvent.SimulationCompleted(environment) =>
+          mainFrame.setPanel(EndPanel(environment))
         case SimulationEvent.CountryWonWar(winnerId, loserId, day) =>
           this.hud.writeToConsole(loserId + " has been defeated by " + winnerId)
           this.hud.highlightCountryId(winnerId)
