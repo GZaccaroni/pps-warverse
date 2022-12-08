@@ -62,7 +62,8 @@ class Hud extends JPanel:
   private val firstButtonsRow = Box.createHorizontalBox()
   private val secondButtonsRow = Box.createHorizontalBox()
   private val console: JTextArea = JTextArea(25, 25)
-  private val caret: DefaultCaret = console.getCaret().asInstanceOf[DefaultCaret]
+  private val caret: DefaultCaret =
+    console.getCaret().asInstanceOf[DefaultCaret]
   caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE)
   this.console.setMargin(Insets(10, 10, 10, 10))
   this.console.setEditable(false)
