@@ -10,15 +10,14 @@ private[data] object ArmyDtos:
     unitKinds: Seq[ArmyUnitKind],
     units: Seq[ArmyUnit]
   ) extends Validatable:
-    override def validate(): Unit =
-      if units.exists(unit => !unitKinds.exists(unit.kind == _.id)) then
-        throw ValidationException("Some units have an undefined kind")
-      unitKinds.foreach(_.validate())
-      units.foreach(_.validate())
-      if unitKinds.map(_.id).toSet.size != unitKinds.size then
-        throw ValidationException(
-          s"Some unit kinds have the same id"
-        )
+    override def validationErrors: List[ValidationError] =
+      val unitKindsIdentifiers = unitKinds.map(_.id)
+      (units.forall(unit =>
+        unitKindsIdentifiers.contains(unit.kind)
+      ) orElse "Some units have an undefined kind") :::
+        (unitKindsIdentifiers must ContainNoDuplicates()) :::
+        unitKinds.validationErrors :::
+        units.validationErrors
 
   sealed trait ArmyUnitKind extends Validatable:
     def id: String
@@ -30,11 +29,11 @@ private[data] object ArmyDtos:
     def dailyResourcesUsage: Double
     def attackType: UnitAttackType
 
-    override def validate(): Unit =
-      speed mustBe GreaterThanOrEqualTo(0.0)
-      hitChance mustBe IncludedInRange(0.0, 100.0)
-      maximumHits mustBe GreaterThanOrEqualTo(0)
-      dailyResourcesUsage mustBe GreaterThanOrEqualTo(0.0)
+    override def validationErrors: List[ValidationError] =
+      (speed must BeGreaterThanOrEqualTo(0.0)) :::
+        (hitChance must BeIncludedInRange(0.0, 100.0)) :::
+        (maximumHits must BeGreaterThanOrEqualTo(0)) :::
+        (dailyResourcesUsage must BeGreaterThanOrEqualTo(0.0))
 
   object ArmyUnitKind:
     case class PrecisionArmyUnitKind(
@@ -59,13 +58,13 @@ private[data] object ArmyDtos:
     ) extends ArmyUnitKind:
       override def attackType: UnitAttackType = UnitAttackType.Area
 
-      override def validate(): Unit =
-        super.validate()
-        damageArea mustBe GreaterThanOrEqualTo(0.0)
+      override def validationErrors: List[ValidationError] =
+        super.validationErrors :::
+          (damageArea must BeGreaterThanOrEqualTo(0.0))
 
   case class ArmyUnit(kind: String, position: Point2DDto) extends Validatable:
-    override def validate(): Unit =
-      position.validate()
+    override def validationErrors: List[ValidationError] =
+      position.validationErrors
 
   enum UnitAttackType(val rawValue: String):
     case Precision extends UnitAttackType("precision")
