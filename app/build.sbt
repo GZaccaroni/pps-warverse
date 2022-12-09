@@ -9,6 +9,7 @@ lazy val root = project
     libraryDependencies ++= Seq(
       "org.json4s" %% "json4s-jackson" % "4.0.6",
       "io.monix" %% "monix" % "3.4.1",
+      "com.github.dwickern" %% "scala-nameof" % "4.0.0" % "provided",
       "org.scalatest" %% "scalatest" % "3.2.14" % Test,
       "io.monix" %% "monix-testing-scalatest" % "0.4.0" % Test
     ),
