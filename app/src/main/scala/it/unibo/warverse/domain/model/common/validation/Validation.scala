@@ -45,9 +45,9 @@ object Validation:
       else List.empty
 
   extension [Value](field: Value)
-    transparent inline def mustBe(validator: Validator[Value])(using
+    transparent inline def must(validator: Validator[Value])(using
       entity: ValidatableEntity
-    ): Unit =
+    ): List[ValidationError] =
       val part =
         ValidationPart[Value](unCamelCaseString(nameOf(field)), field, entity)
       validator.validate(part)
