@@ -32,7 +32,7 @@ object EndPanel:
           s"${text}Country: ${c.id}\nRemaining Army Units: ${c.armyUnits.size}\nRemaining citizens: ${c.citizens}\nResources Remaining: ${c.resources}\n\n"
         }
       )
-    else title.setText("Nobody Win in War")
+    else title.setText("Nobody Win War")
 
     title.setText(s"${title.getText()}\nDay passed: ${environment.day}")
 

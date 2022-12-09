@@ -5,22 +5,25 @@ import it.unibo.warverse.data.data_sources.simulation_config.SimulationConfigDat
 import it.unibo.warverse.domain.model.{Environment, SimulationConfig}
 import it.unibo.warverse.domain.model.world.Relations
 import it.unibo.warverse.domain.model.world.Relations.InterCountryRelations
+
 import java.io.File
-import java.awt.{Color, Insets, Dimension}
-import javax.swing.text.{Highlighter, DefaultHighlighter, DefaultCaret}
+import java.awt.{Color, Dimension, Insets}
+import javax.swing.text.{DefaultCaret, DefaultHighlighter, Highlighter}
 import javax.swing.text.Highlighter.HighlightPainter
 import java.awt.Graphics
 import javax.swing.{
-  JPanel,
-  JButton,
-  JFileChooser,
   Box,
-  JTextArea,
-  JScrollPane,
+  JButton,
+  JComponent,
+  JFileChooser,
   JOptionPane,
-  JComponent
+  JPanel,
+  JScrollPane,
+  JTextArea
 }
 import monix.execution.Scheduler.Implicits.global
+
+import javax.swing.filechooser.FileNameExtensionFilter
 
 class Hud extends JPanel:
   this.setPreferredSize(Dimension(350, 20))
@@ -45,8 +48,10 @@ class Hud extends JPanel:
   this.add(uploadConfig)
   this.add(gameStatus)
 
+  toggleSimulationButton.setEnabled(false)
   toggleSimulationButton.setForeground(Color.BLUE)
   stopButton.setForeground(Color.RED)
+  stopButton.setEnabled(false)
   caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE)
   console.setBackground(Color.BLACK)
   console.setForeground(Color.WHITE)
@@ -55,6 +60,10 @@ class Hud extends JPanel:
   console.setLineWrap(true)
   console.setWrapStyleWord(true)
 
+  fileChooser.setAcceptAllFileFilterUsed(false)
+  fileChooser.addChoosableFileFilter(
+    FileNameExtensionFilter("Json Document", "json")
+  )
   fileChooser.setCurrentDirectory(
     File(
       s"${System.getProperty("user.home")}${System.getProperty("file.separator")}Desktop"
@@ -66,6 +75,7 @@ class Hud extends JPanel:
     (toggleSimulationButton.getText, controller.simulationConfig) match
       case ("Start", Some(_)) =>
         controller.onStartClicked()
+        stopButton.setEnabled(true)
         toggleSimulationButton.setText("Pause")
       case ("Pause", _) =>
         controller.onPauseClicked()
@@ -115,16 +125,15 @@ class Hud extends JPanel:
   private def addJComponents(box: Box, list: Seq[JComponent]): Unit =
     list.foreach(component => box.add(component))
 
-  private def getExtensionByStringHandling(filename: String): Boolean =
-    filename.split("\\.").last == "json"
-
   private def uploadJson(): Unit =
     fileChooser.showOpenDialog(this)
-    val file = fileChooser.getSelectedFile
-    if getExtensionByStringHandling(file.getName) then
-
+    val fileOption = Option(fileChooser.getSelectedFile)
+    for file <- fileOption do
       val jsonConfigParser =
-        SimulationConfigDataSource(file, SimulationConfigDataSource.Format.Json)
+        SimulationConfigDataSource(
+          file,
+          SimulationConfigDataSource.Format.Json
+        )
       val simulationConfigTask = jsonConfigParser.readSimulationConfig()
       simulationConfigTask.runAsync {
         case Right(Right(simulationConfig)) =>
@@ -134,6 +143,7 @@ class Hud extends JPanel:
             null,
             "Configuration uploaded successfully."
           )
+          toggleSimulationButton.setEnabled(true)
         case Right(Left(errors)) =>
           JOptionPane.showMessageDialog(
             null,
