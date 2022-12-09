@@ -35,4 +35,16 @@ object CommonValidators:
           )
         )
       else List.empty
+  case class NotContainItem[Item](item: Item) extends Validator[Seq[Item]]:
+    override def validate(
+      field: ValidationPart[Seq[Item]]
+    ): List[ValidationError] =
+      if field.value.contains(item) then
+        List(
+          new ValidationError(
+            field.entity,
+            s"${field.varName} must not contain $item"
+          )
+        )
+      else List.empty
         )
