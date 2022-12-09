@@ -1,9 +1,13 @@
-package it.unibo.warverse.domain.model.common
+package it.unibo.warverse.domain.model.common.validation
+
+import com.github.dwickern.macros.NameOf.*
+import com.github.dwickern.macros.NameOfImpl
 
 object Validation:
 
   /** An entity that can be validated */
   trait Validatable:
+    given ValidatableEntity = ValidatableEntity(this.getClass.getSimpleName)
     @throws(classOf[ValidationException])
     def validate(): Unit
 
@@ -35,26 +39,35 @@ object Validation:
       entity: ValidatableEntity
     ): ValidationException = new ValidationException(entity, message)
 
-  extension (field: String)
+  extension [Value](field: Value)
+    transparent inline def mustBe(validator: Validator[Value])(using
+      entity: ValidatableEntity
+    ): Unit =
+      val part =
+        ValidationPart[Value](unCamelCaseString(nameOf(field)), field, entity)
+      validator.validate(part)
+  private def unCamelCaseString(str: String) =
+    str.replaceAll(
+      String.format(
+        "%s|%s|%s",
+        "(?<=[A-Z])(?=[A-Z][a-z])",
+        "(?<=[^A-Z])(?=[A-Z])",
+        "(?<=[A-Za-z])(?=[^A-Za-z])"
+      ),
+      " "
+    )
 
-    /** A utility method for throwing exceptions when a number is not greater or
-      * equal than another in a more idiomatic way
-      */
-    def isNotGreaterOrEqualThan(
-      number: Int
-    )(using entity: ValidatableEntity): ValidationException =
-      new ValidationException(
-        entity,
-        s"$field must be greater or equal than $number"
-      )
+  case class ValidationPart[Value](
+    varName: String,
+    value: Value,
+    entity: ValidatableEntity
+  )
 
-    /** A utility method for throwing exceptions when a number is not in a given
-      * range in a more idiomatic way
+  trait Validator[ValueType]:
+    /** @param value
+      * @throws {@link
+      *   ValidationException} throws a validation exception
       */
-    def isNotInRange(
-      range: Range
-    )(using entity: ValidatableEntity): ValidationException =
-      new ValidationException(
-        entity,
-        s"$field must be in range $range"
-      )
+    def validate(
+      value: ValidationPart[ValueType]
+    ): Unit
