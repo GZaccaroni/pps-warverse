@@ -21,6 +21,7 @@ import javax.swing.{
   JComponent
 }
 import monix.execution.Scheduler.Implicits.global
+import javax.swing.JRadioButton
 
 class Hud extends JPanel:
   this.setPreferredSize(Dimension(350, 20))
@@ -28,9 +29,9 @@ class Hud extends JPanel:
   private val fileChooser = JFileChooser()
   private val toggleSimulationButton = JButton("Start")
   private val stopButton = JButton("Stop")
-  private val speed1Button = JButton("X1")
-  private val speed2Button = JButton("X2")
-  private val speed3Button = JButton("X3")
+  private val speed1Button = JRadioButton("X1")
+  private val speed2Button = JRadioButton("X2")
+  private val speed3Button = JRadioButton("X3")
   private val verticalContainer = Box.createVerticalBox()
   private val firstButtonsRow = Box.createHorizontalBox()
   private val secondButtonsRow = Box.createHorizontalBox()
@@ -83,21 +84,21 @@ class Hud extends JPanel:
   )
   stopButton.addActionListener(_ => controller.onStopClicked())
 
-  speed1Button.setEnabled(false)
+  enableSpeed(true, false, false)
   speed1Button.addActionListener(_ =>
     writeToConsole("Speed set to X1")
     controller.changeSpeed(1)
-    enableSpeed(false, true, true)
+    enableSpeed(true, false, false)
   )
   speed2Button.addActionListener(_ =>
     writeToConsole("Speed set to X2")
     controller.changeSpeed(2)
-    enableSpeed(true, false, true)
+    enableSpeed(false, true, false)
   )
   speed3Button.addActionListener(_ =>
     writeToConsole("Speed set to X3")
     controller.changeSpeed(3)
-    enableSpeed(true, true, false)
+    enableSpeed(false, false, true)
   )
 
   addJComponents(firstButtonsRow, List(toggleSimulationButton, stopButton))
@@ -136,6 +137,7 @@ class Hud extends JPanel:
               null,
               "Configuration uploaded successfully."
             )
+            enableSpeed(true, false, false)
           case Left(error) =>
             println(s"Configuration File have some errors. ${error}")
         }
@@ -206,9 +208,9 @@ class Hud extends JPanel:
     this.console.append(text + "\n\n")
 
   private def enableSpeed(x1: Boolean, x2: Boolean, x3: Boolean): Unit =
-    this.speed1Button.setEnabled(x1)
-    this.speed2Button.setEnabled(x2)
-    this.speed3Button.setEnabled(x3)
+    this.speed1Button.setSelected(x1)
+    this.speed2Button.setSelected(x2)
+    this.speed3Button.setSelected(x3)
 
   def highlightCountryId(id: String): Unit =
     highlightText(name = id, countryColor(id))
