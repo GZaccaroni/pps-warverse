@@ -37,6 +37,12 @@ object Validation:
     def apply(message: String)(using
       entity: ValidatableEntity
     ): ValidationException = new ValidationException(entity, message)
+  extension (field: Boolean)
+    transparent inline def orElse(errorMessage: String)(using
+      entity: ValidatableEntity
+    ): List[ValidationError] =
+      if !field then List(new ValidationError(entity, errorMessage))
+      else List.empty
 
   extension [Value](field: Value)
     transparent inline def mustBe(validator: Validator[Value])(using
