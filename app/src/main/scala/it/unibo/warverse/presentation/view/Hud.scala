@@ -57,9 +57,7 @@ class Hud extends JPanel:
 
   fileChooser.setCurrentDirectory(
     File(
-      System.getProperty("user.home") + System.getProperty(
-        "file.separator"
-      ) + "Desktop"
+      s"${System.getProperty("user.home")}${System.getProperty("file.separator")}Desktop"
     )
   )
   uploadConfig.addActionListener(_ => uploadJson())
@@ -211,7 +209,7 @@ class Hud extends JPanel:
     Color(r, g, b)
 
   def writeToConsole(text: String): Unit =
-    this.console.append(text + "\n\n")
+    this.console.append(s"$text\n\n")
 
   private def enableSpeed(x1: Boolean, x2: Boolean, x3: Boolean): Unit =
     this.speed1Button.setEnabled(x1)
