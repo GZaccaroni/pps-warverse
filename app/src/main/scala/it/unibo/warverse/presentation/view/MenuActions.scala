@@ -108,8 +108,8 @@ object MenuActions:
       var boxHeight: Int = 0
       if menuBounds.isEmpty then
         menuItems.foreach(menuItem =>
-          val dim: Dimension = painter.preferredSize(g2d, menuItem.label);
-          boxWidth = Math.max(boxWidth, dim.width);
+          val dim: Dimension = painter.preferredSize(g2d, menuItem.label)
+          boxWidth = Math.max(boxWidth, dim.width)
           boxHeight = Math.max(boxHeight, dim.height);
         )
         val x = (getWidth - (boxWidth + 100)) / 2
