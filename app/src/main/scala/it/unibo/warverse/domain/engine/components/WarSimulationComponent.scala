@@ -97,6 +97,7 @@ class WarSimulationComponent
                             loserArmy.size
                           else armyUnitsPerWinner * (winnerIndex + 1)
                         )
+                        .map(_.copiedWith(countryId = winnerId))
                     )
                     .addingCitizens(
                       if loserCitizens - citizensPerWinner * (winnerIndex + 1) < citizensPerWinner
