@@ -127,7 +127,10 @@ class Hud extends JPanel:
     if file != null then
       if getExtensionByStringHandling(file.getName) then
         val jsonConfigParser =
-          SimulationConfigDataSource(file, SimulationConfigDataSource.Format.Json)
+          SimulationConfigDataSource(
+            file,
+            SimulationConfigDataSource.Format.Json
+          )
         val simulationConfigTask = jsonConfigParser.readSimulationConfig()
         simulationConfigTask.runAsync {
           case Right(simulationConfig) =>
