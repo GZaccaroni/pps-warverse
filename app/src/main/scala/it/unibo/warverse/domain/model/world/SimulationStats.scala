@@ -11,7 +11,7 @@ trait SimulationStats:
     */
   def eventList: List[SingleEvent]
 
-  /** Adds an event to events list and returns an updated [[ SimulationStats]]
+  /** Adds an event to events list and returns an updated [[SimulationStats]]
     *
     * @param country1
     *   First country affected by event
