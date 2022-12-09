@@ -4,6 +4,8 @@ import it.unibo.warverse.domain.model.common.Math.DoubleWithAlmostEquals
 
 import java.awt.geom as AwtGeom
 import java.util
+import scala.math.{min, *}
+import scala.annotation.tailrec
 
 object Geometry:
 
@@ -191,4 +193,67 @@ object Geometry:
       override def contains(point: Point2D): Boolean =
         polygons.exists(_.contains(point))
 
-      override def split(splitsNumber: Int): Seq[MultiPolygon[Point2D]] = ???
+      override def split(splitsNumber: Int): Seq[MultiPolygon[Point2D]] =
+        @tailrec
+        def splitPolygon(
+          polygons: Seq[Polygon2D],
+          splits: Int
+        ): Seq[MultiPolygon[Point2D]] =
+          if polygons.length >= splits then
+            polygons
+              .grouped((polygons.length.toDouble / splits).ceil.toInt)
+              .map(MultiPolygon2D(_))
+              .toSeq
+          else splitPolygon(splitLargest(polygons), splits)
+
+        def splitLargest(polygons: Seq[Polygon2D]): Seq[Polygon2D] =
+          val (polygon, polygonIndex) = polygons.zipWithIndex.maxBy(_._1.area)
+          val cutLine = (polygon.vertexes.head, polygon.center)
+          var subPolygon1, subPolygon2 = Seq(polygon.vertexes.head)
+          var i = 1
+          subPolygon1 = subPolygon1.appended(polygon.vertexes(i))
+          var ab = (polygon.vertexes(i), polygon.vertexes(i + 1))
+          var intersectionPoint = intersection(ab, cutLine)
+          println((ab, cutLine))
+          println(intersectionPoint)
+          while intersectionPoint.isEmpty do
+            i = i + 1
+            subPolygon1 = subPolygon1.appended(polygon.vertexes(i))
+            ab = (polygon.vertexes(i), polygon.vertexes(i + 1))
+            intersectionPoint = intersection(ab, cutLine)
+          subPolygon1 = subPolygon1.appended(intersectionPoint.get)
+          if intersectionPoint.get != polygon.vertexes(i + 1) then
+            subPolygon2 = subPolygon2.appended(intersectionPoint.get)
+          subPolygon2 = subPolygon2 ++ polygon.vertexes.drop(i + 1)
+          polygons.patch(
+            polygonIndex,
+            Seq(Polygon2D(subPolygon1), Polygon2D(subPolygon2)),
+            1
+          )
+
+        def intersection(
+          AB: (Point2D, Point2D),
+          CD: (Point2D, Point2D)
+        ): Option[Point2D] =
+          val a1 = AB._2.y - AB._1.y
+          val b1 = AB._1.x - AB._2.x
+          val c1 = a1 * AB._1.x + b1 * AB._1.y
+          val a2 = CD._2.y - CD._1.y
+          val b2 = CD._1.x - CD._2.x
+          val c2 = a2 * CD._1.x + b2 * CD._1.y
+          val determinant = a1 * b2 - a2 * b1
+          if determinant != 0 then
+            val x = (b2 * c1 - b1 * c2) / determinant
+            val y = (a1 * c2 - a2 * c1) / determinant
+            val (minX, maxX) = (min(AB._1.x, AB._2.x), max(AB._1.x, AB._2.x))
+            val (minY, maxY) = (min(AB._1.y, AB._2.y), max(AB._1.y, AB._2.y))
+            given Math.Precision(0.001)
+            if (x > minX || (x ~= minX)) &&
+              (x < maxX || (x ~= maxX)) &&
+              (y > minY || (y ~= minY)) &&
+              (y <= maxY || (y ~= minY))
+            then Option(Point2D(x, y))
+            else Option.empty
+          else Option.empty
+
+        splitPolygon(polygons, splitsNumber)
