@@ -12,15 +12,15 @@ object Listen:
     *   the type of the events
     */
   trait Listenable[Event]:
-    /** Adds a listener to the {@link Listenable}
+    /** Adds a listener to the [[Listenable]]
       * @param closure
       *   the closure that gets executed on each event
       * @return
-      *   a {@link Disposable} to stop listening for new events
+      *   a [[Disposable]] to stop listening for new events
       */
     def addListener(closure: ListenClosure[Event]): Disposable
 
-    /** Removes a listener from the {@link Listenable}
+    /** Removes a listener from the [[Listenable]]
       *
       * @param closure
       *   the closure that was getting executed on each event
@@ -28,25 +28,25 @@ object Listen:
     def removeListener(closure: ListenClosure[Event]): Unit
     protected def emitEvent(event: Event): Unit
 
-  /** An abstract class to make the implementation of {@link Listenable} easier
+  /** An abstract class to make the implementation of [[Listenable]] easier
     * @tparam Event
     *   the type of the events
     */
   abstract class SimpleListenable[Event] extends Listenable[Event]:
     private var listeners: List[ListenClosure[Event]] = List.empty
 
-    /** Adds a listener to the {@link Listenable}
+    /** Adds a listener to the [[Listenable]]
       *
       * @param closure
       *   the closure that gets executed on each event
       * @return
-      *   a {@link Disposable} to stop listening for new events
+      *   a [[Disposable]] to stop listening for new events
       */
     def addListener(closure: ListenClosure[Event]): Disposable =
       listeners = closure :: listeners
       Disposable(() => removeListener(closure))
 
-    /** Removes a listener from the {@link Listenable}
+    /** Removes a listener from the [[Listenable]]
       *
       * @param closure
       *   the closure that was getting executed on each event
@@ -63,7 +63,7 @@ object Listen:
 
   /** Utility class to create idiomatic listeners
     * @tparam Event
-    *   type of event emitted by {@link Listenable}
+    *   type of event emitted by [[Listenable]]
     */
   case class OnEventPart[Event]():
     def from(listenable: Listenable[Event]): OnEventWithListener[Event] =
@@ -73,7 +73,7 @@ object Listen:
     * @param listenable
     *   the object to listen to
     * @tparam Event
-    *   type of event emitted by {@link Listenable}
+    *   type of event emitted by [[Listenable]]
     */
   case class OnEventWithListener[Event](
     listenable: Listenable[Event]
@@ -82,16 +82,16 @@ object Listen:
       * @param closure
       *   the closure to invoke on each event
       * @return
-      *   a {@link Disposable} to stop listening for new events
+      *   a [[Disposable]] to stop listening for new events
       */
     def run(closure: ListenClosure[Event]): Disposable =
       listenable.addListener(closure)
 
   /** Utility method to listen to events in a more idiomatic way
     * @tparam Event
-    *   type of event emitted by {@link Listenable}
+    *   type of event emitted by [[Listenable]]
     * @return
-    *   a {@link Disposable} to stop listening for new events
+    *   a [[Disposable]] to stop listening for new events
     */
   def onReceiveEvent[Event]: OnEventPart[Event] =
     OnEventPart()

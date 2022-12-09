@@ -6,7 +6,7 @@ import it.unibo.warverse.domain.model.common.DomainExample.{
   countryC
 }
 import it.unibo.warverse.domain.model.common.Geometry
-import it.unibo.warverse.domain.model.common.Geometry.{Point2D, Polygon2D}
+import it.unibo.warverse.domain.model.common.Geometry.Point2D
 import it.unibo.warverse.domain.model.world.Relations.*
 import it.unibo.warverse.domain.model.world.World.Country
 import org.scalatest.BeforeAndAfter

@@ -6,7 +6,7 @@ import it.unibo.warverse.domain.model.fight.SimulationEvent
 import monix.eval.Task
 
 /** Represents a simulation component that handle a particular phase of it and
-  * can emit {@link SimulationEvent}.
+  * can emit [[SimulationEvent]].
   */
 trait SimulationComponent extends Listenable[SimulationEvent]:
 

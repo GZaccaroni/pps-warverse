@@ -5,23 +5,27 @@ import it.unibo.warverse.data.data_sources.simulation_config.SimulationConfigDat
 import it.unibo.warverse.domain.model.{Environment, SimulationConfig}
 import it.unibo.warverse.domain.model.world.Relations
 import it.unibo.warverse.domain.model.world.Relations.InterCountryRelations
+import it.unibo.warverse.domain.repositories.SimulationConfigRepository
+
 import java.io.File
-import java.awt.{Color, Insets, Dimension}
-import javax.swing.text.{Highlighter, DefaultHighlighter, DefaultCaret}
+import java.awt.{Color, Dimension, Insets}
+import javax.swing.text.{DefaultCaret, DefaultHighlighter, Highlighter}
 import javax.swing.text.Highlighter.HighlightPainter
 import java.awt.Graphics
 import javax.swing.{
-  JPanel,
-  JButton,
-  JFileChooser,
   Box,
-  JTextArea,
-  JScrollPane,
+  JButton,
+  JComponent,
+  JFileChooser,
   JOptionPane,
-  JComponent
+  JPanel,
+  JScrollPane,
+  JTextArea
 }
 import monix.execution.Scheduler.Implicits.global
 import javax.swing.JRadioButton
+
+import javax.swing.filechooser.FileNameExtensionFilter
 
 class Hud extends JPanel:
   this.setPreferredSize(Dimension(350, 20))
@@ -46,8 +50,10 @@ class Hud extends JPanel:
   this.add(uploadConfig)
   this.add(gameStatus)
 
+  toggleSimulationButton.setEnabled(false)
   toggleSimulationButton.setForeground(Color.BLUE)
   stopButton.setForeground(Color.RED)
+  stopButton.setEnabled(false)
   caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE)
   console.setBackground(Color.BLACK)
   console.setForeground(Color.WHITE)
@@ -56,11 +62,13 @@ class Hud extends JPanel:
   console.setLineWrap(true)
   console.setWrapStyleWord(true)
 
+  fileChooser.setAcceptAllFileFilterUsed(false)
+  fileChooser.addChoosableFileFilter(
+    FileNameExtensionFilter("Json Document", "json")
+  )
   fileChooser.setCurrentDirectory(
     File(
-      System.getProperty("user.home") + System.getProperty(
-        "file.separator"
-      ) + "Desktop"
+      s"${System.getProperty("user.home")}${System.getProperty("file.separator")}Desktop"
     )
   )
   uploadConfig.addActionListener(_ => uploadJson())
@@ -70,6 +78,7 @@ class Hud extends JPanel:
       case ("Start", Some(_)) =>
         uploadConfig.setEnabled(false)
         controller.onStartClicked()
+        stopButton.setEnabled(true)
         toggleSimulationButton.setText("Pause")
       case ("Pause", _) =>
         controller.onPauseClicked()
@@ -119,39 +128,33 @@ class Hud extends JPanel:
   private def addJComponents(box: Box, list: Seq[JComponent]): Unit =
     list.foreach(component => box.add(component))
 
-  private def getExtensionByStringHandling(filename: String): Boolean =
-    filename.split("\\.").last == "json"
-
   private def uploadJson(): Unit =
-    if fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION then
-      val file = fileChooser.getSelectedFile
-      if file != null && getExtensionByStringHandling(file.getName) then
-        val jsonConfigParser =
-          SimulationConfigDataSource(
-            file,
-            SimulationConfigDataSource.Format.Json
+    fileChooser.showOpenDialog(this)
+    val fileOption = Option(fileChooser.getSelectedFile)
+    for file <- fileOption do
+      val jsonConfigParser =
+        SimulationConfigRepository()
+      val simulationConfigTask = jsonConfigParser.readSimulationConfig(file)
+      simulationConfigTask.runAsync {
+        case Right(Right(simulationConfig)) =>
+          displayInitialSimulationConfig(simulationConfig)
+          controller.simulationConfig = Some(simulationConfig)
+          JOptionPane.showMessageDialog(
+            null,
+            "Configuration uploaded successfully."
           )
-        val simulationConfigTask = jsonConfigParser.readSimulationConfig()
-        simulationConfigTask.runAsync {
-          case Right(simulationConfig) =>
-            displayInitialSimulationConfig(simulationConfig)
-            controller.simulationConfig = Some(simulationConfig)
-            JOptionPane.showMessageDialog(
-              null,
-              "Configuration uploaded successfully."
-            )
-            enableSpeed(true, false, false)
-          case Left(error) =>
-            JOptionPane.showMessageDialog(
-              null,
-              (s"Configuration File have some errors. ${error}")
-            )
-        }
-      else
-        JOptionPane.showMessageDialog(
-          null,
-          "Error! No file selected or wrong format (json required)."
-        )
+          toggleSimulationButton.setEnabled(true)
+        case Right(Left(errors)) =>
+          JOptionPane.showMessageDialog(
+            null,
+            s"Validation failed: ${errors.map(_.toString).mkString(",")}."
+          )
+        case Left(error) =>
+          JOptionPane.showMessageDialog(
+            null,
+            s"Couldn't read configuration file: $error"
+          )
+      }
 
   private def displayInitialSimulationConfig(
     simulationConfig: SimulationConfig
@@ -159,8 +162,8 @@ class Hud extends JPanel:
     console.setText("")
     simulationConfig.countries.foreach(country =>
       writeToConsole(
-        country.name + " starts with " + country.citizens + " citizen, " + country.armyUnits.length + " army units and " + String
-          .format("%.02f", country.resources) + " resources."
+        s"${country.name} starts with ${country.citizens} citizen, ${country.armyUnits.length} army units and ${String
+            .format("%.02f", country.resources)} resources."
       )
     )
 
@@ -169,14 +172,14 @@ class Hud extends JPanel:
         .countryAllies(country.id)
         .foreach(allyId =>
           val ally = simulationConfig.countries.find(_.id == allyId).get;
-          writeToConsole(country.name + " is allied with " + ally.name)
+          writeToConsole(s"${country.name} is allied with ${ally.name}")
         )
       simulationConfig.interCountryRelations
         .countryEnemies(country.id)
         .foreach(enemyId =>
-          val enemy = simulationConfig.countries.find(_.id == enemyId).get;
+          val enemy = simulationConfig.countries.find(_.id == enemyId).get
           writeToConsole(
-            country.name + " is in war with " + enemy.name
+            s"${country.name} is in war with ${enemy.name}"
           )
         )
     )
@@ -216,7 +219,7 @@ class Hud extends JPanel:
     Color(r, g, b)
 
   def writeToConsole(text: String): Unit =
-    this.console.append(text + "\n\n")
+    this.console.append(s"$text\n\n")
 
   private def enableSpeed(x1: Boolean, x2: Boolean, x3: Boolean): Unit =
     this.speed1Button.setSelected(x1)

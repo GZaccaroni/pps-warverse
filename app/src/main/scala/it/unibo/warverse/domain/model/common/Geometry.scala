@@ -8,8 +8,23 @@ object Geometry:
     * @tparam PointType
     *   the actual type of the Point
     */
-  trait Point[PointType <: Point[PointType]]:
-    def distanceFrom(point: PointType): Double
+  trait Point[PointType <: Point[PointType]](val coordinates: Seq[Double]):
+
+    def distanceFrom(point: PointType): Double =
+      math.sqrt(
+        coordinates
+          .zip(point.coordinates)
+          .map((thisCoord, pointCoord) => math.pow(thisCoord - pointCoord, 2))
+          .sum
+      )
+
+    override def equals(obj: Any): Boolean =
+      given Math.Precision(0.1)
+      obj match
+        case point: Point[?] =>
+          coordinates
+            .zip(point.coordinates)
+            .forall((thisCoord, pointCoord) => thisCoord ~= pointCoord)
 
   /** Represents an n-dimensional Point that can be moved
     *
@@ -35,14 +50,8 @@ object Geometry:
     *   the y coordinate of point
     */
   case class Point2D(x: Double, y: Double)
-      extends Point[Point2D],
+      extends Point[Point2D](Seq(x, y)),
         MovablePoint[Point2D]:
-    override def distanceFrom(point: Point2D): Double =
-      math.sqrt(math.pow(point.x - x, 2) + math.pow(point.y - y, 2))
-    override def equals(point: Any): Boolean =
-      given Math.Precision(0.1)
-      point match
-        case point: Point2D => (point.x ~= x) && (point.y ~= y)
 
     override def moved(toward: Point2D, of: Double): Point2D =
       (toward.x - x, toward.y - y) match
@@ -87,24 +96,23 @@ object Geometry:
     /** It checks if the polygon contains a given point
       *
       * @return
-      *   true if the polygon contains the {@link Point} else false
+      *   true if the polygon contains the [[Point]] else false
       */
     def contains(point: Point): Boolean
 
-  /** A 2-Dimensional polygon
-    */
-  type Polygon2D = Polygon[Point2D]
-  object Polygon2D:
+  object Polygon:
     /** Builds a 2-Dimensional polygon
       * @param vertexes
       *   vertexes of the polygon
       * @return
-      *   a {@link Polygon2D}
+      *   a [[Polygon2D]]
       */
-    def apply(vertexes: Seq[Point2D]): Polygon2D = JavaAwtPolygon2D(vertexes)
+    def apply(vertexes: Seq[Point2D]): Polygon[Point2D] = JavaAwtPolygon2D(
+      vertexes
+    )
 
     private case class JavaAwtPolygon2D(vertexes: Seq[Point2D])
-        extends Polygon2D:
+        extends Polygon[Point2D]:
       override def contains(point: Point2D): Boolean =
         awtPath2D.contains(point.x, point.y) || vertexes.contains(point);
 

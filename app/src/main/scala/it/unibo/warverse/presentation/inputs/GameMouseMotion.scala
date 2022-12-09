@@ -36,11 +36,13 @@ trait GameMouseMotion extends JPanel with MouseMotionListener:
         then
           popUp.setVisible(false)
           popUp.removeAll()
-          popUp.add(JMenuItem("Country: " + country.name))
-          popUp.add(JMenuItem("Army Units: " + country.armyUnits.size))
-          popUp.add(JMenuItem("Citizens: " + country.citizens))
+          popUp.add(JMenuItem(s"Country: ${country.name}"))
+          popUp.add(JMenuItem(s"Army Units: ${country.armyUnits.size}"))
+          popUp.add(JMenuItem(s"Citizens: ${country.citizens}"))
           popUp.add(
-            JMenuItem("Resources: " + String.format("%.02f", country.resources))
+            JMenuItem(
+              s"Resources: ${String.format("%.02f", country.resources)}"
+            )
           )
           popUp.show(this, mouseX, mouseY)
           popUp.setVisible(true)

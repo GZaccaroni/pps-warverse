@@ -1,7 +1,7 @@
 package it.unibo.warverse.domain.model.common
 
 import it.unibo.warverse.domain.model.Environment
-import it.unibo.warverse.domain.model.common.Geometry.{Point2D, Polygon2D}
+import it.unibo.warverse.domain.model.common.Geometry.{Point2D, Polygon}
 import it.unibo.warverse.domain.model.fight.Army.{
   AreaArmyUnit,
   PrecisionArmyUnit
@@ -100,7 +100,7 @@ object DomainExample:
         Army.AreaArmyUnits.distantUnit
       ),
       0.0,
-      Polygon2D(Seq(Point2D(0, 0), Point2D(0, 3), Point2D(3, 3), Point2D(3, 0)))
+      Polygon(Seq(Point2D(0, 0), Point2D(0, 3), Point2D(3, 3), Point2D(3, 0)))
     )
   def countryB: Country =
     Country(
@@ -113,7 +113,7 @@ object DomainExample:
         Army.PrecisionArmyUnits.distantUnit
       ),
       0.0,
-      Polygon2D(Seq(Point2D(3, 0), Point2D(3, 3), Point2D(6, 3), Point2D(6, 0)))
+      Polygon(Seq(Point2D(3, 0), Point2D(3, 3), Point2D(6, 3), Point2D(6, 0)))
     )
   def countryC: Country =
     Country(
@@ -122,7 +122,7 @@ object DomainExample:
       20,
       Seq.empty,
       0.0,
-      Polygon2D(Seq(Point2D(6, 0), Point2D(6, 3), Point2D(9, 3), Point2D(9, 0)))
+      Polygon(Seq(Point2D(6, 0), Point2D(6, 3), Point2D(9, 3), Point2D(9, 0)))
     )
 
   val interCountryRelations: InterCountryRelations = InterCountryRelations(

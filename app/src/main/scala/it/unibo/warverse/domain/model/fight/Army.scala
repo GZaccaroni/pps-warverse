@@ -72,13 +72,16 @@ object Army:
       */
     def availableHits: Int
 
-    /** A copy of the army unit with given position
+    /** Creates a copy of the army unit with given position
       * @param position
       *   the new position of the unit
       * @return
       *   A new ArmyUnit which is the copy of this with given position
       */
-    protected def copied(position: Position): ArmyUnit
+    def copiedWith(
+      countryId: World.CountryId = this.countryId,
+      position: Position = this.position
+    ): ArmyUnit
 
     /** Moves the army unit according to a strategy in a given environment
       * @param environment
@@ -101,7 +104,7 @@ object Army:
           .getOrElse(position)
       )
 
-      copied(
+      copiedWith(
         position = position.moved(toward = targetPosition, of = speed)
       )
 
@@ -134,7 +137,11 @@ object Army:
     speed: Double
   ) extends ArmyUnit:
     override def attackType: Fight.AttackType = Fight.AttackType.Precision
-    override def copied(position: Point2D): ArmyUnit = copy(position = position)
+    override def copiedWith(
+      countryId: World.CountryId = this.countryId,
+      position: Point2D
+    ): ArmyUnit = copy(countryId = countryId, position = position)
+
     override def attack()(using
       strategy: TargetFinderStrategy[Position]
     ): Seq[AttackAction] =
@@ -180,7 +187,11 @@ object Army:
     areaOfImpact: Double
   ) extends ArmyUnit:
     override def attackType: Fight.AttackType = Fight.AttackType.Area
-    override def copied(position: Point2D): ArmyUnit = copy(position = position)
+
+    override def copiedWith(
+      countryId: World.CountryId = this.countryId,
+      position: Point2D
+    ): ArmyUnit = copy(countryId = countryId, position = position)
     override def attack()(using
       strategy: TargetFinderStrategy[Position]
     ): Seq[AttackAction] =

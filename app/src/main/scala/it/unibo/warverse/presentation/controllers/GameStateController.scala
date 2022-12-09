@@ -2,13 +2,15 @@ package it.unibo.warverse.presentation.controllers
 
 import it.unibo.warverse.domain.engine.SimulationEngine
 import it.unibo.warverse.presentation.view.*
-import it.unibo.warverse.domain.model.world.{SimulationStats, Relations}
+import it.unibo.warverse.domain.model.world.{Relations, SimulationStats}
 import it.unibo.warverse.domain.model.world.Relations.*
 import it.unibo.warverse.domain.model.world.World.Country
 import it.unibo.warverse.domain.model.{Environment, SimulationConfig}
 import it.unibo.warverse.presentation.common.UIConstants
 import it.unibo.warverse.domain.model.common.Listen.*
 import it.unibo.warverse.domain.model.fight.SimulationEvent
+
+import java.awt.EventQueue
 trait GameStateController:
   def mainFrame: MainFrame
   var simulationConfig: Option[SimulationConfig]
@@ -69,17 +71,19 @@ object GameStateController:
       simulationEngine foreach (_.changeSpeed(newSpeed))
 
     private def onEvent(event: SimulationEvent): Unit =
-      event match
-        case SimulationEvent.IterationCompleted(environment) =>
-          gameMap.environment = Some(environment)
-        case SimulationEvent.SimulationCompleted(environment) =>
-          mainFrame.setPanel(EndPanel(environment))
-        case SimulationEvent.CountryWonWar(winnerId, loserId, day) =>
-          this.hud.writeToConsole(loserId + " has been defeated by " + winnerId)
-          this.hud.highlightCountryId(winnerId)
-          this.hud.highlightCountryId(loserId)
-          this.gameStats.updateEventList(
-            winnerId,
-            loserId,
-            day
-          )
+      EventQueue.invokeLater(() =>
+        event match
+          case SimulationEvent.IterationCompleted(environment) =>
+            gameMap.environment = Some(environment)
+          case SimulationEvent.SimulationCompleted(environment) =>
+            mainFrame.setPanel(EndPanel(environment))
+          case SimulationEvent.CountryWonWar(winnerId, loserId, day) =>
+            this.hud.writeToConsole(s"$loserId has been defeated by $winnerId")
+            this.hud.highlightCountryId(winnerId)
+            this.hud.highlightCountryId(loserId)
+            this.gameStats.updateEventList(
+              winnerId,
+              loserId,
+              day
+            )
+      )

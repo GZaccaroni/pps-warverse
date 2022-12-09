@@ -21,25 +21,21 @@ object EndPanel:
     private val warsExists: Boolean = warsExists(environment)
     this.setLayout(BoxLayout(this, BoxLayout.Y_AXIS))
 
-    if countries.size > 0 && !warsExists then
-      title.setText("Winners are: ")
-      countries.foreach(country =>
-        title.setText(title.getText + country.id)
-        if countries.size - 1 != countries.indexOf(country) then
-          title.setText(title.getText() + ", ")
-        stats.setText(
-          stats
-            .getText() + "Country: " + country.id + "\nRemaining Army Units: " + country.armyUnits.size + "\nCitizen Remaining: " + country.citizens + "\nResources Remaining: " + String
-            .format("%.02f", country.resources) + "\n\n"
-        )
-      )
-    else if warsExists then
+    if warsExists then
       title.setText(
         "Simulation interrupted while wars were active, there are no winners"
       )
-    else title.setText("Nobody Win in War")
+    if countries.nonEmpty && !warsExists then
+      title.setText(s"Winners are: ${countries.map(_.id).mkString(", ")}")
+      stats.setText(
+        countries.foldLeft("") { (text, c) =>
+          s"${text}Country: ${c.id}\nRemaining Army Units: ${c.armyUnits.size}\nRemaining citizens: ${c.citizens}\nResources Remaining: ${String
+              .format("%.02f", c.resources)}\n\n"
+        }
+      )
+    else title.setText("Nobody Win War")
 
-    title.setText(title.getText() + "\nDay passed: " + environment.day)
+    title.setText(s"${title.getText()}\nDay passed: ${environment.day}")
 
     title.setFont(Font("Serif", Font.PLAIN, 32))
     setPaneAttributes(title)
@@ -54,12 +50,12 @@ object EndPanel:
       textPane.setEditable(false)
       textPane.setBackground(Color.BLACK)
       textPane.setForeground(Color.WHITE)
-      val documentStyle: StyledDocument = textPane.getStyledDocument()
+      val documentStyle: StyledDocument = textPane.getStyledDocument
       val centerAttribute: SimpleAttributeSet = SimpleAttributeSet()
       StyleConstants.setAlignment(centerAttribute, StyleConstants.ALIGN_CENTER)
       documentStyle.setParagraphAttributes(
         0,
-        documentStyle.getLength(),
+        documentStyle.getLength,
         centerAttribute,
         false
       )

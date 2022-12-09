@@ -23,6 +23,5 @@ object MainFrame:
 
     override def setPanel(panel: JPanel): Unit =
       this.getContentPane.removeAll()
-      Thread.sleep(1)
       this.add(panel, BorderLayout.CENTER)
       this.validate()

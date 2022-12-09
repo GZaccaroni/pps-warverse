@@ -2,23 +2,22 @@ package it.unibo.warverse.data.models
 
 import it.unibo.warverse.data.models.GeometryDtos.Point2DDto
 import it.unibo.warverse.domain.model.common.Math
-import it.unibo.warverse.domain.model.common.Validation.*
+import it.unibo.warverse.domain.model.common.validation.CommonValidators.*
+import it.unibo.warverse.domain.model.common.validation.Validation.*
 
 private[data] object ArmyDtos:
   case class CountryArmy(
     unitKinds: Seq[ArmyUnitKind],
     units: Seq[ArmyUnit]
   ) extends Validatable:
-    override def validate(): Unit =
-      given ValidatableEntity = ValidatableEntity(this.getClass.getTypeName)
-      if units.exists(unit => !unitKinds.exists(unit.kind == _.id)) then
-        throw ValidationException("Some units have an undefined kind")
-      unitKinds.foreach(_.validate())
-      units.foreach(_.validate())
-      if unitKinds.map(_.id).toSet.size != unitKinds.size then
-        throw ValidationException(
-          s"Some unit kinds have the same id"
-        )
+    override def validationErrors: List[ValidationError] =
+      val unitKindsIdentifiers = unitKinds.map(_.id)
+      (units.forall(unit =>
+        unitKindsIdentifiers.contains(unit.kind)
+      ) orElse "Some units have an undefined kind") :::
+        (unitKindsIdentifiers must ContainNoDuplicates()) :::
+        unitKinds.validationErrors :::
+        units.validationErrors
 
   sealed trait ArmyUnitKind extends Validatable:
     def id: String
@@ -30,15 +29,11 @@ private[data] object ArmyDtos:
     def dailyResourcesUsage: Double
     def attackType: UnitAttackType
 
-    override def validate(): Unit =
-      given ValidatableEntity = ValidatableEntity(this.getClass.getTypeName)
-      if speed < 0 then throw "speed" isNotGreaterOrEqualThan 0
-      val hitChanceRange = 0 to 100
-      if !hitChanceRange.contains(hitChance) then
-        throw "hitChanceRange" isNotInRange hitChanceRange
-      if maximumHits < 0 then throw "maximumHits" isNotGreaterOrEqualThan 0
-      if dailyResourcesUsage < 0 then
-        throw "dailyResourcesUsage" isNotGreaterOrEqualThan 0
+    override def validationErrors: List[ValidationError] =
+      (speed must BeGreaterThanOrEqualTo(0.0)) :::
+        (hitChance must BeIncludedInRange(0.0, 100.0)) :::
+        (maximumHits must BeGreaterThanOrEqualTo(0)) :::
+        (dailyResourcesUsage must BeGreaterThanOrEqualTo(0.0))
 
   object ArmyUnitKind:
     case class PrecisionArmyUnitKind(
@@ -63,14 +58,13 @@ private[data] object ArmyDtos:
     ) extends ArmyUnitKind:
       override def attackType: UnitAttackType = UnitAttackType.Area
 
-      override def validate(): Unit =
-        given ValidatableEntity = ValidatableEntity(this.getClass.getTypeName)
-        super.validate()
-        if damageArea < 0 then throw "damageArea" isNotGreaterOrEqualThan 0
+      override def validationErrors: List[ValidationError] =
+        super.validationErrors :::
+          (damageArea must BeGreaterThanOrEqualTo(0.0))
 
   case class ArmyUnit(kind: String, position: Point2DDto) extends Validatable:
-    override def validate(): Unit =
-      position.validate()
+    override def validationErrors: List[ValidationError] =
+      position.validationErrors
 
   enum UnitAttackType(val rawValue: String):
     case Precision extends UnitAttackType("precision")

@@ -1,6 +1,5 @@
 package it.unibo.warverse.domain.model.world
 
-import it.unibo.warverse.domain.model.common.Life
 import it.unibo.warverse.domain.model.common.{Geometry, Life, Movement}
 import it.unibo.warverse.domain.model.fight.Army.ArmyUnit
 import it.unibo.warverse.domain.model.fight.Fight
@@ -13,7 +12,7 @@ object World:
       * @param newResources
       *   the resources to be added
       * @return
-      *   a new instance of {@link UpdatableType} with the resources added
+      *   a new instance of [[UpdatableType]] with the resources added
       */
     def addingResources(newResources: Life.Resources): UpdatableType
 
@@ -22,7 +21,7 @@ object World:
       * @param newCitizens
       *   the citizens to be added
       * @return
-      *   a new instance of {@link UpdatableType} with the citizens added
+      *   a new instance of [[UpdatableType]] with the citizens added
       */
     def addingCitizens(newCitizens: Int): UpdatableType
 
@@ -31,7 +30,7 @@ object World:
       * @param newArmyUnits
       *   the army units to be added
       * @return
-      *   a new instance of {@link UpdatableType} with the army units added
+      *   a new instance of [[UpdatableType]] with the army units added
       */
     def addingArmyUnits(newArmyUnits: Seq[ArmyUnit]): UpdatableType
 
@@ -55,31 +54,31 @@ object World:
     citizens: Int,
     armyUnits: Seq[ArmyUnit],
     resources: Life.Resources,
-    boundaries: Geometry.Polygon2D
+    boundaries: Geometry.Polygon[Geometry.Point2D]
   ) extends UpdatableAssets[Country]:
-    /** It returns a new {@link Country} with the given resources added
+    /** It returns a new [[Country]] with the given resources added
       * @param newResources
       *   the resources to be added
       * @return
-      *   a new instance of {@link Country} with the resources added
+      *   a new instance of [[Country]] with the resources added
       */
     override def addingResources(newResources: Life.Resources): Country =
       this.copy(resources = math.max(resources + newResources, 0))
 
-    /** It returns a new {@link Country} with the given citizens added
+    /** It returns a new [[Country]] with the given citizens added
       * @param newCitizens
       *   the citizens to be added
       * @return
-      *   a new instance of {@link Country} with the citizens added
+      *   a new instance of [[Country]] with the citizens added
       */
     override def addingCitizens(newCitizens: Int): Country =
       this.copy(citizens = math.max(citizens + newCitizens, 0))
 
-    /** * It returns a new {@link Country} with the given army units added
+    /** * It returns a new [[Country]] with the given army units added
       * @param newArmyUnits
       *   the army units to be added
       * @return
-      *   a new instance of {@link Country} with the army units added
+      *   a new instance of [[Country]] with the army units added
       */
     override def addingArmyUnits(newArmyUnits: Seq[ArmyUnit]): Country =
       this.copy(armyUnits = armyUnits.concat(newArmyUnits))
