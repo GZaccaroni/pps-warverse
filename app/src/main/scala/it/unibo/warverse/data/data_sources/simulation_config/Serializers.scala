@@ -2,6 +2,7 @@ package it.unibo.warverse.data.data_sources.simulation_config
 
 import it.unibo.warverse.data.models.ArmyDtos.{ArmyUnitKind, UnitAttackType}
 import org.json4s.{MappingException, *}
+import com.github.dwickern.macros.NameOf.*
 
 private[data] object Serializers:
   class ArmyUnitKindSerializer extends Serializer[ArmyUnitKind]:
@@ -11,7 +12,8 @@ private[data] object Serializers:
       format: Formats
     ): PartialFunction[(TypeInfo, JValue), ArmyUnitKind] = {
       case (TypeInfo(MyClassClass, _), json: JObject) =>
-        val attackType = (json \ "attackType").extract[UnitAttackType]
+        val attackType =
+          (json \ nameOf[ArmyUnitKind](_.attackType)).extract[UnitAttackType]
         attackType match
           case UnitAttackType.Precision =>
             json.extract[ArmyUnitKind.PrecisionArmyUnitKind]
