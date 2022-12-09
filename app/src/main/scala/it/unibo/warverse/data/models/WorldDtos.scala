@@ -15,12 +15,14 @@ private[data] object WorldDtos:
     relations: CountryRelationsDto = CountryRelationsDto(),
     army: ArmyDtos.CountryArmy
   ) extends Validatable:
-    override def validate(): Unit =
-      resources mustBe GreaterThanOrEqualTo(0.0)
+    override def validationErrors: List[ValidationError] =
       val boundariesCount = boundaries.length
-      boundariesCount mustBe GreaterThanOrEqualTo(3)
-      citizens mustBe GreaterThanOrEqualTo(0)
-      army.validate()
+      val relationships = relations.allies ++ relations.enemies
+      (resources must BeGreaterThanOrEqualTo(0.0)) :::
+        (citizens must BeGreaterThanOrEqualTo(0)) :::
+        (boundariesCount must BeGreaterThanOrEqualTo(3)) :::
+        (relationships must NotContainItem(id)) :::
+        army.validationErrors
 
   case class CountryRelationsDto(
     allies: Seq[World.CountryId] = Seq.empty,
