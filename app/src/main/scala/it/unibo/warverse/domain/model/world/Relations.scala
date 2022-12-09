@@ -24,8 +24,8 @@ object Relations:
       */
     def relations: Set[InterCountryRelation]
 
-    /** It returns a new {@link InterCountryRelations} object with `relation`
-      * added to its relations
+    /** It returns a new [[InterCountryRelations]] object with `relation` added
+      * to its relations
       * @param relation
       *   the relation to add to the object
       * @return
@@ -33,7 +33,7 @@ object Relations:
       */
     def withRelation(relation: InterCountryRelation): InterCountryRelations
 
-    /** It returns a new {@link InterCountryRelations} object with `relation`
+    /** It returns a new [[InterCountryRelations]] object with `relation`
       * removed from its relations if it exists
       *
       * @param relation
@@ -75,12 +75,12 @@ object Relations:
     ): Set[RelationStatus]
 
   object InterCountryRelations:
-    /** Factory that builds an instance of {@link InterCountryRelations} with
-      * the given set of relations
+    /** Factory that builds an instance of [[InterCountryRelations]] with the
+      * given set of relations
       * @param relations
       *   the relations between countries
       * @return
-      *   a new instance of {@link InterCountryRelations}
+      *   a new instance of [[InterCountryRelations]]
       */
     def apply(relations: Set[InterCountryRelation]): InterCountryRelations =
       InterCountryRelationsImpl(relations.map(_.normalized))

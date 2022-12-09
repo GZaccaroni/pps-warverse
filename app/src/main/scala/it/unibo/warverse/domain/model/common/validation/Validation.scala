@@ -14,8 +14,7 @@ object Validation:
   /** An entity that is validated */
   case class ValidatableEntity(name: String)
 
-  /** An exception occurred during the validation of a {@link Validatable}
-    * entity
+  /** An exception occurred during the validation of a [[Validatable]] entity
     * @param entity
     *   the entity which is being validated
     * @param message
@@ -64,10 +63,12 @@ object Validation:
   )
 
   trait Validator[ValueType]:
-    /** @param value
-      * @throws {@link
-      *   ValidationException} throws a validation exception
+    /** Validate a value and returns a list of validation errors if there are
+      * @param value
+      *   the value to validate
+      * @return
+      *   a list of validation errors
       */
     def validate(
       value: ValidationPart[ValueType]
-    ): Unit
+    ): List[ValidationError]

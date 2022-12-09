@@ -24,7 +24,7 @@ import monix.reactive.ObservableLike.fromTask
 import scala.annotation.tailrec
 import scala.concurrent.Await
 
-/** Handles the simulation of the war, it can emit {@link SimulationEvent}.
+/** Handles the simulation of the war, it can emit [[SimulationEvent]].
   */
 trait SimulationEngine extends Listenable[SimulationEvent]:
   /** The initial simulation config
@@ -56,7 +56,7 @@ trait SimulationEngine extends Listenable[SimulationEvent]:
   def changeSpeed(newSpeed: Int): Unit
 
 object SimulationEngine:
-  /** Creates an instance of {@link SimulationEngine}
+  /** Creates an instance of [[SimulationEngine]]
     * @param simulationConfig
     *   The initial config of the simulation
     * @return

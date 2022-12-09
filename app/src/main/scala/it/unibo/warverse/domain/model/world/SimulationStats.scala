@@ -7,12 +7,11 @@ import it.unibo.warverse.domain.model.world.World.Country
 trait SimulationStats:
   /** Returns a list of all the events
     * @return
-    *   a list of {@link SingleEvent}
+    *   a list of [[SingleEvent]]
     */
   def eventList: List[SingleEvent]
 
-  /** Adds an event to events list and returns an updated {@link
-    * SimulationStats}
+  /** Adds an event to events list and returns an updated [[ SimulationStats]]
     *
     * @param country1
     *   First country affected by event
@@ -21,7 +20,7 @@ trait SimulationStats:
     * @param day
     *   Day of the event
     * @return
-    *   updated {@link SimulationStats}
+    *   updated [[SimulationStats]]
     */
   def updateEventList(
     country1: World.CountryId,
@@ -32,18 +31,18 @@ trait SimulationStats:
 type SingleEvent = (World.CountryId, World.CountryId, Int)
 
 object SimulationStats:
-  /** Factory that builds an instance of {@link SimulationStats} with no events
+  /** Factory that builds an instance of [[SimulationStats]] with no events
     * @return
-    *   an instance of {@link SimulationStats}
+    *   an instance of [[SimulationStats]]
     */
   def apply(): SimulationStats = SimulationStatsImpl(List())
 
-  /** Factory that builds an instance of {@link SimulationStats} with the given
-    * list events
+  /** Factory that builds an instance of [[SimulationStats]] with the given list
+    * events
     * @param eventList
-    *   a list of events to insert in the {@link SimulationStats}
+    *   a list of events to insert in the [[SimulationStats]]
     * @return
-    *   an instance of {@link SimulationStats}
+    *   an instance of [[SimulationStats]]
     */
   def apply(eventList: List[SingleEvent]): SimulationStats =
     SimulationStatsImpl(eventList)
