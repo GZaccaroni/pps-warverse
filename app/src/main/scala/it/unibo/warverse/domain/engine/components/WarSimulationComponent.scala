@@ -65,41 +65,36 @@ class WarSimulationComponent
       .foldLeft(envWithoutDefeatedCountry) {
         case (environment, (winnerId, winnerIndex)) =>
           val currentCountries = environment.countries
-          val idToCountry = currentCountries
-            .find(country => country.id == winnerId)
-            .get
-          val index = currentCountries.indexOf(
-            idToCountry
-          )
-          val winnerCountry: Country =
-            idToCountry
-              .addingResources(
-                if loserResources - resourcesPerWinner * (winnerIndex + 1) < resourcesPerWinner
-                then loserResources - resourcesPerWinner * winnerIndex
-                else resourcesPerWinner
-              )
-              .addingArmyUnits(
-                loserArmy
-                  .slice(
-                    armyUnitsPerWinner * winnerIndex,
-                    armyUnitsPerWinner * (winnerIndex + 1)
-                  )
-              )
-              .addingCitizens(
-                if loserCitizens - citizensPerWinner * (winnerIndex + 1) < citizensPerWinner
-                then loserCitizens - citizensPerWinner * winnerIndex
-                else citizensPerWinner
-              )
           emitEvent(
             CountryWonWar(winnerId, countryDefeated.id, environment.day)
           )
-          envWithoutDefeatedCountry
-            .copiedWith(
-              currentCountries.updated(
-                index,
-                winnerCountry
-              )
-            )
+          val idToCountryOption = currentCountries
+            .find(country => country.id == winnerId)
+          idToCountryOption match
+            case Some(idToCountry) =>
+              val winnerCountry: Country =
+                idToCountry
+                  .addingResources(
+                    if loserResources - resourcesPerWinner * (winnerIndex + 1) < resourcesPerWinner
+                    then loserResources - resourcesPerWinner * winnerIndex
+                    else resourcesPerWinner
+                  )
+                  .addingArmyUnits(
+                    loserArmy
+                      .slice(
+                        armyUnitsPerWinner * winnerIndex,
+                        armyUnitsPerWinner * (winnerIndex + 1)
+                      )
+                  )
+                  .addingCitizens(
+                    if loserCitizens - citizensPerWinner * (winnerIndex + 1) < citizensPerWinner
+                    then loserCitizens - citizensPerWinner * winnerIndex
+                    else citizensPerWinner
+                  )
+              envWithoutDefeatedCountry
+                .replacingCountry(winnerCountry)
+            case None =>
+              environment
       }
 
   private def removeLostStateRelation(

@@ -85,11 +85,10 @@ object SimulationConfigDataSource:
       dto: ArmyDtos.CountryArmy
     ): Seq[Army.ArmyUnit] =
       dto.units.map(unit =>
-        dto.unitKinds.find(_.id == unit.kind) match
-          case Some(kind) =>
-            mapArmyUnitDto(countryId, kind, unit)
-          case None =>
-            throw RuntimeException(s"Unit kind ${unit.kind} not found")
+        dto.unitKinds
+          .find(_.id == unit.kind)
+          .map(kind => mapArmyUnitDto(countryId, kind, unit))
+          .get
       )
     private def mapArmyUnitDto(
       countryId: World.CountryId,
