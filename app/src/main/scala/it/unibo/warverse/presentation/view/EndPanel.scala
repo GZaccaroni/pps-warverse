@@ -27,23 +27,24 @@ object EndPanel:
       )
     if countries.size > 0 && !warsExists then
       title.setText("Winners are: ")
-      countries.foreach(c =>
-        title.setText(title.getText + c.id)
-        if countries.size - 1 != countries.indexOf(c) then
+      countries.foreach(country =>
+        title.setText(title.getText + country.id)
+        if countries.size - 1 != countries.indexOf(country) then
           title.setText(title.getText() + ", ")
         stats.setText(
           stats
-            .getText() + "Country: " + c.id + "\nRemaining Army Units: " + c.armyUnits.size + "\nCitizen Remaining: " + c.citizens + "\nResources Remaining: " + c.resources + "\n\n"
+            .getText() + "Country: " + country.id + "\nRemaining Army Units: " + country.armyUnits.size + "\nCitizen Remaining: " + country.citizens + "\nResources Remaining: " + String
+            .format("%.02f", country.resources) + "\n\n"
         )
       )
     else title.setText("Nobody Win in War")
 
     title.setText(title.getText() + "\nDay passed: " + environment.day)
 
-    title.setFont(Font("TimesRoman", Font.PLAIN, 32))
+    title.setFont(Font("Serif", Font.PLAIN, 32))
     setPaneAttributes(title)
     this.add(title)
-    stats.setFont(Font("TimesRoman", Font.PLAIN, 20))
+    stats.setFont(Font("Serif", Font.PLAIN, 20))
     setPaneAttributes(stats)
     gameStats.setBorder(null)
     gameStats.setAlignmentY(StyleConstants.ALIGN_CENTER)
