@@ -139,15 +139,23 @@ class Hud extends JPanel:
         SimulationConfigDataSource(file, SimulationConfigDataSource.Format.Json)
       val simulationConfigTask = jsonConfigParser.readSimulationConfig()
       simulationConfigTask.runAsync {
-        case Right(simulationConfig) =>
+        case Right(Right(simulationConfig)) =>
           displayInitialSimulationConfig(simulationConfig)
           controller.simulationConfig = Some(simulationConfig)
           JOptionPane.showMessageDialog(
             null,
             "Configuration uploaded successfully."
           )
+        case Right(Left(errors)) =>
+          JOptionPane.showMessageDialog(
+            null,
+            s"Validation failed: ${errors.map(_.toString).mkString(",")}."
+          )
         case Left(error) =>
-          println(s"Configuration File have some errors. ${error}")
+          JOptionPane.showMessageDialog(
+            null,
+            s"Couldn't read configuration file: $error"
+          )
       }
 
   private def displayInitialSimulationConfig(
