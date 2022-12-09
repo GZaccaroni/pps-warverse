@@ -10,6 +10,7 @@ import it.unibo.warverse.data.data_sources.simulation_config.Serializers.*
 import it.unibo.warverse.data.models.{ArmyDtos, GeometryDtos}
 import it.unibo.warverse.data.models.WorldDtos.CountryDto
 import it.unibo.warverse.domain.model.SimulationConfig
+import it.unibo.warverse.domain.model.common.validation.Validation.ValidationError
 import it.unibo.warverse.domain.model.world.Relations.*
 import monix.eval.Task
 import org.json4s.*
@@ -21,7 +22,8 @@ import java.io.File
 import java.text.ParseException
 
 trait SimulationConfigDataSource:
-  def readSimulationConfig(): Task[SimulationConfig]
+  def readSimulationConfig()
+    : Task[Either[List[ValidationError], SimulationConfig]]
 
 object SimulationConfigDataSource:
 
@@ -35,7 +37,8 @@ object SimulationConfigDataSource:
   private class JsonSimulationConfigDataSource(file: File)
       extends SimulationConfigDataSource:
 
-    override def readSimulationConfig(): Task[SimulationConfig] =
+    override def readSimulationConfig()
+      : Task[Either[List[ValidationError], SimulationConfig]] =
       Task {
         parse(file)
       }.map(jsonValue =>
@@ -43,8 +46,7 @@ object SimulationConfigDataSource:
           DefaultFormats + ArmyUnitKindSerializer() + UnitAttackTypeSerializer()
         jsonValue.camelizeKeys.extract[SimulationConfigDto]
       ).map(result =>
-        result.validate()
-        mapSimulationConfigDto(result)
+        result.validate().map(_ => mapSimulationConfigDto(result))
       )
     private def mapSimulationConfigDto(
       dto: SimulationConfigDto

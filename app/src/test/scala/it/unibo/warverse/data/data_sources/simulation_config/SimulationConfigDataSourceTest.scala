@@ -1,9 +1,10 @@
 package it.unibo.warverse.data.data_sources.simulation_config
 
-import it.unibo.warverse.domain.model.common.validation.Validation.ValidationException
+import it.unibo.warverse.domain.model.common.validation.Validation.ValidationError
 import org.scalatest.funsuite.{AnyFunSuite, AsyncFunSuite}
 import org.scalatest.matchers.must.Matchers
 import monix.testing.scalatest.MonixTaskTest
+import org.scalatest.EitherValues.*
 
 import java.io.File
 
@@ -28,13 +29,15 @@ class SimulationConfigDataSourceTest
     jsonDataSource(file)
       .readSimulationConfig()
       .asserting(simulationConfig =>
-        simulationConfig.countries.length mustBe 2
-        simulationConfig.countries.head.id mustBe "Test1"
-        simulationConfig.countries.last.id mustBe "Test2"
+        simulationConfig.value.countries.length mustBe 2
+        simulationConfig.value.countries.head.id mustBe "Test1"
+        simulationConfig.value.countries.last.id mustBe "Test2"
       )
   }
   test("SimulationConfig should not be valid") {
     jsonDataSource(invalidFile)
       .readSimulationConfig()
-      .assertThrows[ValidationException]
+      .asserting(simulationConfig =>
+        simulationConfig.left.value mustBe a[List[ValidationError]]
+      )
   }
