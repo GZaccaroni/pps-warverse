@@ -6,14 +6,18 @@ import scala.math.Ordered.orderingToOrdered
 
 object CommonValidators:
 
-  case class GreaterThanOrEqualTo[Value: Ordering](
+  case class BeGreaterThanOrEqualTo[Value: Ordering](
     value: Value
   ) extends Validator[Value]:
-    override def validate(field: ValidationPart[Value]): Unit =
+    override def validate(
+      field: ValidationPart[Value]
+    ): List[ValidationError] =
       if field.value < value then
-        throw new ValidationException(
-          field.entity,
-          s"${field.varName} must be greater or equal than $value"
+        List(
+          new ValidationError(
+            field.entity,
+            s"${field.varName} must be greater or equal than $value"
+          )
         )
 
   case class IncludedInRange[Value: Ordering](
