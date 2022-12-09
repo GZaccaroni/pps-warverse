@@ -67,8 +67,11 @@ object EndPanel:
     private def warsExists(
       environment: Environment
     ): Boolean =
-      if environment.countries.size > 0 then
-        environment.countries.forall(country =>
-          environment.interCountryRelations.countryEnemies(country.id).nonEmpty
-        )
-      else false
+      environment.countries.size match
+        case 0 => false
+        case _ =>
+          environment.countries.forall(country =>
+            environment.interCountryRelations
+              .countryEnemies(country.id)
+              .nonEmpty
+          )

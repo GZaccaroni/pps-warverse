@@ -124,26 +124,25 @@ class Hud extends JPanel:
   private def uploadJson(): Unit =
     fileChooser.showOpenDialog(this)
     val file = fileChooser.getSelectedFile
-    if file != null then
-      if getExtensionByStringHandling(file.getName) then
-        val jsonConfigParser =
-          SimulationConfigDataSource(
-            file,
-            SimulationConfigDataSource.Format.Json
+    if file != null && getExtensionByStringHandling(file.getName) then
+      val jsonConfigParser =
+        SimulationConfigDataSource(
+          file,
+          SimulationConfigDataSource.Format.Json
+        )
+      val simulationConfigTask = jsonConfigParser.readSimulationConfig()
+      simulationConfigTask.runAsync {
+        case Right(simulationConfig) =>
+          displayInitialSimulationConfig(simulationConfig)
+          controller.simulationConfig = Some(simulationConfig)
+          JOptionPane.showMessageDialog(
+            null,
+            "Configuration uploaded successfully."
           )
-        val simulationConfigTask = jsonConfigParser.readSimulationConfig()
-        simulationConfigTask.runAsync {
-          case Right(simulationConfig) =>
-            displayInitialSimulationConfig(simulationConfig)
-            controller.simulationConfig = Some(simulationConfig)
-            JOptionPane.showMessageDialog(
-              null,
-              "Configuration uploaded successfully."
-            )
-            enableSpeed(true, false, false)
-          case Left(error) =>
-            println(s"Configuration File have some errors. ${error}")
-        }
+          enableSpeed(true, false, false)
+        case Left(error) =>
+          println(s"Configuration File have some errors. ${error}")
+      }
 
   private def displayInitialSimulationConfig(
     simulationConfig: SimulationConfig
