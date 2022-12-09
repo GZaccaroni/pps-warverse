@@ -40,7 +40,7 @@ private[data] object Serializers:
           case Some(value) => value
           case None =>
             throw MappingException(
-              "Can't convert " + rawValue + " to UnitAttackType"
+              s"Can't convert $rawValue to UnitAttackType"
             )
     }
 

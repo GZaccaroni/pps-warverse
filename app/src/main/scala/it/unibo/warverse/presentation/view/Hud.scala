@@ -164,8 +164,8 @@ class Hud extends JPanel:
     console.setText("")
     simulationConfig.countries.foreach(country =>
       writeToConsole(
-        country.name + " starts with " + country.citizens + " citizen, " + country.armyUnits.length + " army units and " + String
-          .format("%.02f", country.resources) + " resources."
+        s"${country.name} starts with ${country.citizens} citizen, ${country.armyUnits.length} army units and ${String
+            .format("%.02f", country.resources)} resources."
       )
     )
 
@@ -174,14 +174,14 @@ class Hud extends JPanel:
         .countryAllies(country.id)
         .foreach(allyId =>
           val ally = simulationConfig.countries.find(_.id == allyId).get;
-          writeToConsole(country.name + " is allied with " + ally.name)
+          writeToConsole(s"${country.name} is allied with ${ally.name}")
         )
       simulationConfig.interCountryRelations
         .countryEnemies(country.id)
         .foreach(enemyId =>
-          val enemy = simulationConfig.countries.find(_.id == enemyId).get;
+          val enemy = simulationConfig.countries.find(_.id == enemyId).get
           writeToConsole(
-            country.name + " is in war with " + enemy.name
+            s"${country.name} is in war with ${enemy.name}"
           )
         )
     )
