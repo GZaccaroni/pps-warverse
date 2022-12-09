@@ -29,17 +29,17 @@ object EndPanel:
       title.setText(s"Winners are: ${countries.map(_.id).mkString(", ")}")
       stats.setText(
         countries.foldLeft("") { (text, c) =>
-          s"${text}Country: ${c.id}\nRemaining Army Units: ${c.armyUnits.size}\nRemaining citizens: ${c.citizens}\nResources Remaining: ${c.resources}\n\n"
+          s"${text}Country: ${c.id}\nRemaining Army Units: ${c.armyUnits.size}\nRemaining citizens: ${c.citizens}\nResources Remaining: ${String.format("%.02f", c.resources)}\n\n"
         }
       )
     else title.setText("Nobody Win War")
 
     title.setText(s"${title.getText()}\nDay passed: ${environment.day}")
 
-    title.setFont(Font("TimesRoman", Font.PLAIN, 32))
+    title.setFont(Font("Serif", Font.PLAIN, 32))
     setPaneAttributes(title)
     this.add(title)
-    stats.setFont(Font("TimesRoman", Font.PLAIN, 20))
+    stats.setFont(Font("Serif", Font.PLAIN, 20))
     setPaneAttributes(stats)
     gameStats.setBorder(null)
     gameStats.setAlignmentY(StyleConstants.ALIGN_CENTER)
