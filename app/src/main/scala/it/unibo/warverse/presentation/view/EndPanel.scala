@@ -21,10 +21,6 @@ object EndPanel:
     private val warsExists: Boolean = warsExists(environment)
     this.setLayout(BoxLayout(this, BoxLayout.Y_AXIS))
 
-    if warsExists then
-      title.setText(
-        "Simulation interrupted while wars were active, there are no winners"
-      )
     if countries.size > 0 && !warsExists then
       title.setText("Winners are: ")
       countries.foreach(country =>
@@ -36,6 +32,10 @@ object EndPanel:
             .getText() + "Country: " + country.id + "\nRemaining Army Units: " + country.armyUnits.size + "\nCitizen Remaining: " + country.citizens + "\nResources Remaining: " + String
             .format("%.02f", country.resources) + "\n\n"
         )
+      )
+    else if warsExists then
+      title.setText(
+        "Simulation interrupted while wars were active, there are no winners"
       )
     else title.setText("Nobody Win in War")
 
