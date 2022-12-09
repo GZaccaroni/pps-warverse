@@ -19,25 +19,19 @@ class SimulationConfigDataSourceTest
     ClassLoader.getSystemResource("simulation_config_test_error.json").toURI
   private val invalidFile = File(invalidFileURI)
 
-  private def jsonDataSource(file: File) =
-    SimulationConfigDataSource(file, SimulationConfigDataSource.Format.Json)
+  private def jsonDataSource() =
+    SimulationConfigDataSource()
 
   test("Parsing should succeed without exceptions") {
-    jsonDataSource(file).readSimulationConfig().assertNoException
+    jsonDataSource().readSimulationConfig(file).assertNoException
+    jsonDataSource().readSimulationConfig(invalidFile).assertNoException
   }
   test("Countries should be valid") {
-    jsonDataSource(file)
-      .readSimulationConfig()
+    jsonDataSource()
+      .readSimulationConfig(file)
       .asserting(simulationConfig =>
-        simulationConfig.value.countries.length mustBe 2
-        simulationConfig.value.countries.head.id mustBe "Test1"
-        simulationConfig.value.countries.last.id mustBe "Test2"
-      )
-  }
-  test("SimulationConfig should not be valid") {
-    jsonDataSource(invalidFile)
-      .readSimulationConfig()
-      .asserting(simulationConfig =>
-        simulationConfig.left.value mustBe a[List[ValidationError]]
+        simulationConfig.countries.length mustBe 2
+        simulationConfig.countries.head.id mustBe "Test1"
+        simulationConfig.countries.last.id mustBe "Test2"
       )
   }

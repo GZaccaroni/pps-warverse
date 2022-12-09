@@ -5,6 +5,7 @@ import it.unibo.warverse.data.data_sources.simulation_config.SimulationConfigDat
 import it.unibo.warverse.domain.model.{Environment, SimulationConfig}
 import it.unibo.warverse.domain.model.world.Relations
 import it.unibo.warverse.domain.model.world.Relations.InterCountryRelations
+import it.unibo.warverse.domain.repositories.SimulationConfigRepository
 
 import java.io.File
 import java.awt.{Color, Dimension, Insets}
@@ -130,11 +131,8 @@ class Hud extends JPanel:
     val fileOption = Option(fileChooser.getSelectedFile)
     for file <- fileOption do
       val jsonConfigParser =
-        SimulationConfigDataSource(
-          file,
-          SimulationConfigDataSource.Format.Json
-        )
-      val simulationConfigTask = jsonConfigParser.readSimulationConfig()
+        SimulationConfigRepository()
+      val simulationConfigTask = jsonConfigParser.readSimulationConfig(file)
       simulationConfigTask.runAsync {
         case Right(Right(simulationConfig)) =>
           displayInitialSimulationConfig(simulationConfig)
