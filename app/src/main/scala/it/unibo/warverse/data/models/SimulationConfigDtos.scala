@@ -1,7 +1,7 @@
 package it.unibo.warverse.data.models
 
 import it.unibo.warverse.data.models.WorldDtos
-import it.unibo.warverse.domain.model.common.Validation.*
+import it.unibo.warverse.domain.model.common.validation.Validation.*
 import it.unibo.warverse.domain.model.world.World
 
 private[data] object SimulationConfigDtos:
@@ -9,7 +9,6 @@ private[data] object SimulationConfigDtos:
     countries: Seq[WorldDtos.CountryDto]
   ) extends Validatable:
     override def validate(): Unit =
-      given ValidatableEntity = ValidatableEntity(this.getClass.getTypeName)
       countries.foreach(country =>
         country.validate()
         val relationships =

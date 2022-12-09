@@ -1,6 +1,6 @@
 package it.unibo.warverse.data.data_sources.simulation_config
 
-import it.unibo.warverse.domain.model.common.Validation.ValidationException
+import it.unibo.warverse.domain.model.common.validation.Validation.ValidationException
 import org.scalatest.funsuite.{AnyFunSuite, AsyncFunSuite}
 import org.scalatest.matchers.must.Matchers
 import monix.testing.scalatest.MonixTaskTest

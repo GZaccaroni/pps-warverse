@@ -2,7 +2,8 @@ package it.unibo.warverse.data.models
 
 import it.unibo.warverse.data.models.GeometryDtos.Point2DDto
 import it.unibo.warverse.domain.model.common.Math
-import it.unibo.warverse.domain.model.common.Validation.*
+import it.unibo.warverse.domain.model.common.validation.CommonValidators.*
+import it.unibo.warverse.domain.model.common.validation.Validation.*
 
 private[data] object ArmyDtos:
   case class CountryArmy(
@@ -10,7 +11,6 @@ private[data] object ArmyDtos:
     units: Seq[ArmyUnit]
   ) extends Validatable:
     override def validate(): Unit =
-      given ValidatableEntity = ValidatableEntity(this.getClass.getTypeName)
       if units.exists(unit => !unitKinds.exists(unit.kind == _.id)) then
         throw ValidationException("Some units have an undefined kind")
       unitKinds.foreach(_.validate())
@@ -31,14 +31,10 @@ private[data] object ArmyDtos:
     def attackType: UnitAttackType
 
     override def validate(): Unit =
-      given ValidatableEntity = ValidatableEntity(this.getClass.getTypeName)
-      if speed < 0 then throw "speed" isNotGreaterOrEqualThan 0
-      val hitChanceRange = 0 to 100
-      if !hitChanceRange.contains(hitChance) then
-        throw "hitChanceRange" isNotInRange hitChanceRange
-      if maximumHits < 0 then throw "maximumHits" isNotGreaterOrEqualThan 0
-      if dailyResourcesUsage < 0 then
-        throw "dailyResourcesUsage" isNotGreaterOrEqualThan 0
+      speed mustBe GreaterThanOrEqualTo(0.0)
+      hitChance mustBe IncludedInRange(0.0, 100.0)
+      maximumHits mustBe GreaterThanOrEqualTo(0)
+      dailyResourcesUsage mustBe GreaterThanOrEqualTo(0.0)
 
   object ArmyUnitKind:
     case class PrecisionArmyUnitKind(
@@ -64,9 +60,8 @@ private[data] object ArmyDtos:
       override def attackType: UnitAttackType = UnitAttackType.Area
 
       override def validate(): Unit =
-        given ValidatableEntity = ValidatableEntity(this.getClass.getTypeName)
         super.validate()
-        if damageArea < 0 then throw "damageArea" isNotGreaterOrEqualThan 0
+        damageArea mustBe GreaterThanOrEqualTo(0.0)
 
   case class ArmyUnit(kind: String, position: Point2DDto) extends Validatable:
     override def validate(): Unit =
