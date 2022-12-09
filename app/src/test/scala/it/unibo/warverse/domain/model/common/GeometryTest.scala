@@ -137,6 +137,15 @@ object GeometryTest:
       multiPolygon.split(3).length mustBe 3
     }
 
+    test(
+      "MultiPolygon split generate polygons with consistent area"
+    ) {
+      for splitsNumber <- 1 until 10 do
+        multiPolygon
+          .split(splitsNumber)
+          .forall(_.polygons.forall(_.area > 0)) mustBe true
+    }
+
 class GeometryTest
     extends Suites(
       GeometryTest.Point2DTest(),
