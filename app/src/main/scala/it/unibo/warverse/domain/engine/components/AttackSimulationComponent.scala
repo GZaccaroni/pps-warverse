@@ -56,7 +56,8 @@ class AttackSimulationComponent
           environment.copiedWith(
             environment.countries.map(country =>
               country.copy(
-                armyUnits = country.armyUnits.filter(_.position == event.target)
+                armyUnits =
+                  country.armyUnits.filterNot(_.position == event.target)
               )
             )
           ),

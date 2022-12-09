@@ -21,29 +21,30 @@ object EndPanel:
     private val warsExists: Boolean = warsExists(environment)
     this.setLayout(BoxLayout(this, BoxLayout.Y_AXIS))
 
-    if warsExists then
-      title.setText(
-        "Simulation interrupted while wars were active, there are no winners"
-      )
     if countries.size > 0 && !warsExists then
       title.setText("Winners are: ")
-      countries.foreach(c =>
-        title.setText(title.getText + c.id)
-        if countries.size - 1 != countries.indexOf(c) then
+      countries.foreach(country =>
+        title.setText(title.getText + country.id)
+        if countries.size - 1 != countries.indexOf(country) then
           title.setText(title.getText() + ", ")
         stats.setText(
           stats
-            .getText() + "Country: " + c.id + "\nRemaining Army Units: " + c.armyUnits.size + "\nCitizen Remaining: " + c.citizens + "\nResources Remaining: " + c.resources + "\n\n"
+            .getText() + "Country: " + country.id + "\nRemaining Army Units: " + country.armyUnits.size + "\nCitizen Remaining: " + country.citizens + "\nResources Remaining: " + String
+            .format("%.02f", country.resources) + "\n\n"
         )
+      )
+    else if warsExists then
+      title.setText(
+        "Simulation interrupted while wars were active, there are no winners"
       )
     else title.setText("Nobody Win in War")
 
     title.setText(title.getText() + "\nDay passed: " + environment.day)
 
-    title.setFont(Font("TimesRoman", Font.PLAIN, 32))
+    title.setFont(Font("Serif", Font.PLAIN, 32))
     setPaneAttributes(title)
     this.add(title)
-    stats.setFont(Font("TimesRoman", Font.PLAIN, 20))
+    stats.setFont(Font("Serif", Font.PLAIN, 20))
     setPaneAttributes(stats)
     gameStats.setBorder(null)
     gameStats.setAlignmentY(StyleConstants.ALIGN_CENTER)
@@ -66,8 +67,11 @@ object EndPanel:
     private def warsExists(
       environment: Environment
     ): Boolean =
-      if environment.countries.size > 0 then
-        environment.countries.forall(country =>
-          environment.interCountryRelations.countryEnemies(country.id).nonEmpty
-        )
-      else false
+      environment.countries.size match
+        case 0 => false
+        case _ =>
+          environment.countries.forall(country =>
+            environment.interCountryRelations
+              .countryEnemies(country.id)
+              .nonEmpty
+          )
