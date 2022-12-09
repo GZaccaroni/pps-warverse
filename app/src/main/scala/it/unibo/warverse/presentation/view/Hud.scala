@@ -68,6 +68,7 @@ class Hud extends JPanel:
   toggleSimulationButton.addActionListener(_ =>
     (toggleSimulationButton.getText, controller.simulationConfig) match
       case ("Start", Some(_)) =>
+        uploadConfig.setEnabled(false)
         controller.onStartClicked()
         toggleSimulationButton.setText("Pause")
       case ("Pause", _) =>
@@ -122,27 +123,35 @@ class Hud extends JPanel:
     filename.split("\\.").last == "json"
 
   private def uploadJson(): Unit =
-    fileChooser.showOpenDialog(this)
-    val file = fileChooser.getSelectedFile
-    if file != null && getExtensionByStringHandling(file.getName) then
-      val jsonConfigParser =
-        SimulationConfigDataSource(
-          file,
-          SimulationConfigDataSource.Format.Json
-        )
-      val simulationConfigTask = jsonConfigParser.readSimulationConfig()
-      simulationConfigTask.runAsync {
-        case Right(simulationConfig) =>
-          displayInitialSimulationConfig(simulationConfig)
-          controller.simulationConfig = Some(simulationConfig)
-          JOptionPane.showMessageDialog(
-            null,
-            "Configuration uploaded successfully."
+    if fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION then
+      val file = fileChooser.getSelectedFile
+      if file != null && getExtensionByStringHandling(file.getName) then
+        val jsonConfigParser =
+          SimulationConfigDataSource(
+            file,
+            SimulationConfigDataSource.Format.Json
           )
-          enableSpeed(true, false, false)
-        case Left(error) =>
-          println(s"Configuration File have some errors. ${error}")
-      }
+        val simulationConfigTask = jsonConfigParser.readSimulationConfig()
+        simulationConfigTask.runAsync {
+          case Right(simulationConfig) =>
+            displayInitialSimulationConfig(simulationConfig)
+            controller.simulationConfig = Some(simulationConfig)
+            JOptionPane.showMessageDialog(
+              null,
+              "Configuration uploaded successfully."
+            )
+            enableSpeed(true, false, false)
+          case Left(error) =>
+            JOptionPane.showMessageDialog(
+              null,
+              (s"Configuration File have some errors. ${error}")
+            )
+        }
+      else
+        JOptionPane.showMessageDialog(
+          null,
+          "Error! No file selected or wrong format (json required)."
+        )
 
   private def displayInitialSimulationConfig(
     simulationConfig: SimulationConfig
