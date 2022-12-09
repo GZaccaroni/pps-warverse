@@ -19,14 +19,20 @@ object CommonValidators:
             s"${field.varName} must be greater or equal than $value"
           )
         )
-
-  case class IncludedInRange[Value: Ordering](
+      else List.empty
+  case class BeIncludedInRange[Value: Ordering](
     min: Value,
     max: Value
   ) extends Validator[Value]:
-    override def validate(field: ValidationPart[Value]): Unit =
+    override def validate(
+      field: ValidationPart[Value]
+    ): List[ValidationError] =
       if field.value < min || field.value > max then
-        throw new ValidationException(
-          field.entity,
-          s"${field.varName} must be between $min and $max"
+        List(
+          new ValidationError(
+            field.entity,
+            s"${field.varName} must be between $min and $max"
+          )
+        )
+      else List.empty
         )
