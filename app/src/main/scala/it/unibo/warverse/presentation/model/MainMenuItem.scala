@@ -5,6 +5,5 @@ object MenuItems:
     def label: String
   enum MainMenuItem(val label: String) extends MenuItem:
     case StartGame extends MainMenuItem(label = "Start Game")
-    case Options extends MainMenuItem(label = "Options")
     case Help extends MainMenuItem(label = "Help")
     case Exit extends MainMenuItem(label = "Exit")

@@ -1,47 +1,60 @@
 package it.unibo.warverse.presentation.view
-import it.unibo.warverse.domain.model.world.World
-import it.unibo.warverse.presentation.inputs.GameMouseMotion
-import monix.execution.Scheduler.Implicits.global
 
-import java.awt.Dimension
-import javax.swing.{
-  BorderFactory,
-  Box,
-  JButton,
-  JComponent,
-  JFileChooser,
-  JOptionPane,
-  JPanel,
-  JScrollPane,
-  JTextArea,
-  JTextPane
-}
-import java.io.File
-import java.awt.Color
-import java.awt.Insets
-import java.awt.Graphics
-import it.unibo.warverse.presentation.common.UIConstants
-
-import javax.swing.border.EmptyBorder
-import javax.swing.text.StyleContext
-import javax.swing.text.AttributeSet
-import javax.swing.text.SimpleAttributeSet
-import javax.swing.text.StyleConstants
-import javax.swing.text.Highlighter
-import javax.swing.text.Highlighter.HighlightPainter
-import javax.swing.text.DefaultHighlighter
 import it.unibo.warverse.presentation.controllers.GameStateController
 import it.unibo.warverse.data.data_sources.simulation_config.SimulationConfigDataSource
 import it.unibo.warverse.domain.model.{Environment, SimulationConfig}
-
-import scala.io.Source
 import it.unibo.warverse.domain.model.world.Relations
 import it.unibo.warverse.domain.model.world.Relations.InterCountryRelations
+import java.io.File
+import java.awt.{Color, Insets, Dimension}
+import javax.swing.text.{Highlighter, DefaultHighlighter, DefaultCaret}
+import javax.swing.text.Highlighter.HighlightPainter
+import java.awt.Graphics
+import javax.swing.{
+  JPanel,
+  JButton,
+  JFileChooser,
+  Box,
+  JTextArea,
+  JScrollPane,
+  JOptionPane,
+  JComponent
+}
+import monix.execution.Scheduler.Implicits.global
 
 class Hud extends JPanel:
   this.setPreferredSize(Dimension(350, 20))
   private val uploadConfig = JButton("Upload Configuration")
   private val fileChooser = JFileChooser()
+  private val toggleSimulationButton = JButton("Start")
+  private val stopButton = JButton("Stop")
+  private val speed1Button = JButton("X1")
+  private val speed2Button = JButton("X2")
+  private val speed3Button = JButton("X3")
+  private val verticalContainer = Box.createVerticalBox()
+  private val firstButtonsRow = Box.createHorizontalBox()
+  private val secondButtonsRow = Box.createHorizontalBox()
+  private val console: JTextArea = JTextArea(25, 25)
+  private val caret: DefaultCaret =
+    console.getCaret().asInstanceOf[DefaultCaret]
+  private val highlighter: Highlighter = console.getHighlighter
+  private var controller: GameStateController = _
+  private val gameStatus: JScrollPane = JScrollPane(console)
+
+  gameStatus.setVerticalScrollBarPolicy(22)
+  this.add(uploadConfig)
+  this.add(gameStatus)
+
+  toggleSimulationButton.setForeground(Color.BLUE)
+  stopButton.setForeground(Color.RED)
+  caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE)
+  console.setBackground(Color.BLACK)
+  console.setForeground(Color.WHITE)
+  console.setMargin(Insets(10, 10, 10, 10))
+  console.setEditable(false)
+  console.setLineWrap(true)
+  console.setWrapStyleWord(true)
+
   fileChooser.setCurrentDirectory(
     File(
       System.getProperty("user.home") + System.getProperty(
@@ -50,29 +63,6 @@ class Hud extends JPanel:
     )
   )
   uploadConfig.addActionListener(_ => uploadJson())
-  private val toggleSimulationButton = JButton("Start")
-  toggleSimulationButton.setForeground(Color.BLUE)
-  private val stopButton = JButton("Stop")
-  stopButton.setForeground(Color.RED)
-  private val speed1Button = JButton("X1")
-  private val speed2Button = JButton("X2")
-  private val speed3Button = JButton("X3")
-  private val verticalContainer = Box.createVerticalBox()
-  private val firstButtonsRow = Box.createHorizontalBox()
-  private val secondButtonsRow = Box.createHorizontalBox()
-  private val console: JTextArea = JTextArea(25, 25)
-  this.console.setMargin(Insets(10, 10, 10, 10))
-  this.console.setEditable(false)
-  this.console.setLineWrap(true)
-  this.console.setWrapStyleWord(true)
-  val highlighter: Highlighter = console.getHighlighter
-  var controller: GameStateController = _
-  private val gameStatus: JScrollPane = JScrollPane(console)
-  gameStatus.setVerticalScrollBarPolicy(22)
-  this.add(uploadConfig)
-  console.setBackground(Color.BLACK)
-  console.setForeground(Color.WHITE)
-  this.add(gameStatus)
 
   toggleSimulationButton.addActionListener(_ =>
     (toggleSimulationButton.getText, controller.simulationConfig) match
@@ -211,7 +201,7 @@ class Hud extends JPanel:
   override def paintComponent(g: Graphics): Unit =
     super.paintComponent(g)
 
-  def countryColor(name: String): Color =
+  private def countryColor(name: String): Color =
     val hash: Int = name.hashCode
 
     val r: Int = (hash & 0xff0000) >> 16
@@ -223,7 +213,7 @@ class Hud extends JPanel:
   def writeToConsole(text: String): Unit =
     this.console.append(text + "\n\n")
 
-  def enableSpeed(x1: Boolean, x2: Boolean, x3: Boolean): Unit =
+  private def enableSpeed(x1: Boolean, x2: Boolean, x3: Boolean): Unit =
     this.speed1Button.setEnabled(x1)
     this.speed2Button.setEnabled(x2)
     this.speed3Button.setEnabled(x3)
