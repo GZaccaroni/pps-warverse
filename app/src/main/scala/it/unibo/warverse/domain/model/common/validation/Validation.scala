@@ -8,8 +8,14 @@ object Validation:
   /** An entity that can be validated */
   trait Validatable:
     given ValidatableEntity = ValidatableEntity(this.getClass.getSimpleName)
-    @throws(classOf[ValidationException])
-    def validate(): Unit
+    def validate(): Either[List[ValidationError], Unit] =
+      if validationErrors.isEmpty then Right(())
+      else Left(validationErrors)
+    def validationErrors: List[ValidationError] = List.empty
+
+  extension (field: Iterable[Validatable])
+    def validationErrors: List[ValidationError] =
+      field.flatMap(_.validationErrors).toList
 
   /** An entity that is validated */
   case class ValidatableEntity(name: String)
@@ -20,23 +26,24 @@ object Validation:
     * @param message
     *   a user-friendly message containing more informations about the exception
     */
-  class ValidationException(entity: ValidatableEntity, message: String)
-      extends RuntimeException(
-        s"Failed validation of ${entity.name}: $message"
-      )
-  object ValidationException:
+  class ValidationError(entity: ValidatableEntity, message: String):
+    override def toString: String =
+      s"Failed validation of ${entity.name}: $message"
+  object ValidationError:
     /** Factory to create a new ValidationException
+      *
       * @param message
       *   the entity which is being validated
       * @param entity
       *   a user-friendly message containing more informations about the
       *   exception
       * @return
-      *   An instance of {@link ValidationException}
+      *   An instance of [[ValidationError]]
       */
     def apply(message: String)(using
       entity: ValidatableEntity
-    ): ValidationException = new ValidationException(entity, message)
+    ): ValidationError = new ValidationError(entity, message)
+
   extension (field: Boolean)
     transparent inline def orElse(errorMessage: String)(using
       entity: ValidatableEntity

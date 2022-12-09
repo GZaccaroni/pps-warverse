@@ -25,6 +25,7 @@ object Geometry:
           coordinates
             .zip(point.coordinates)
             .forall((thisCoord, pointCoord) => thisCoord ~= pointCoord)
+
   /** Represents an n-dimensional Point that can be moved
     *
     * @tparam PointType
@@ -49,7 +50,7 @@ object Geometry:
     *   the y coordinate of point
     */
   case class Point2D(x: Double, y: Double)
-      extends Point[Point2D](Seq(x,y)),
+      extends Point[Point2D](Seq(x, y)),
         MovablePoint[Point2D]:
 
     override def moved(toward: Point2D, of: Double): Point2D =
@@ -95,7 +96,7 @@ object Geometry:
     /** It checks if the polygon contains a given point
       *
       * @return
-      *   true if the polygon contains the {@link Point} else false
+      *   true if the polygon contains the [[Point]] else false
       */
     def contains(point: Point): Boolean
 
@@ -104,7 +105,7 @@ object Geometry:
       * @param vertexes
       *   vertexes of the polygon
       * @return
-      *   a {@link Polygon2D}
+      *   a [[Polygon2D]]
       */
     def apply(vertexes: Seq[Point2D]): Polygon[Point2D] = JavaAwtPolygon2D(
       vertexes

@@ -35,6 +35,7 @@ object CommonValidators:
           )
         )
       else List.empty
+
   case class NotContainItem[Item](item: Item) extends Validator[Seq[Item]]:
     override def validate(
       field: ValidationPart[Seq[Item]]
@@ -47,4 +48,15 @@ object CommonValidators:
           )
         )
       else List.empty
+  case class ContainNoDuplicates[Item]() extends Validator[Iterable[Item]]:
+    override def validate(
+      field: ValidationPart[Iterable[Item]]
+    ): List[ValidationError] =
+      if field.value.toSet.size != field.value.size then
+        List(
+          new ValidationError(
+            field.entity,
+            s"${field.varName} must not contain any duplicate entry"
+          )
         )
+      else List.empty
