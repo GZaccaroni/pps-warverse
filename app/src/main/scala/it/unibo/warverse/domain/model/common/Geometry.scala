@@ -138,13 +138,17 @@ object Geometry:
         *   the area of Polygon2D
         */
       override def area: Double =
-        val X = vertexes.map(_.x)
-        val Y = vertexes.map(_.y)
+        val (xCoordinates, yCoordinates) =
+          vertexes.foldRight((Seq[Double](), Seq[Double]()))((a, b) =>
+            (a.x +: b._1, a.y +: b._2)
+          )
         (for
           i <- vertexes.indices
-          j = (i - 1 + vertexes.length) % vertexes.length
-          area = (X(j) + X(i)) * (Y(j) - Y(i))
-        yield area).sum / 2
+          prev = (i - 1 + vertexes.length) % vertexes.length
+          area = (yCoordinates(prev) + yCoordinates(i)) * (xCoordinates(
+            prev
+          ) - xCoordinates(i))
+        yield area).sum.abs / 2
 
       private def awtPath2D: AwtGeom.Path2D =
         val path2D = AwtGeom.Path2D.Double()
@@ -219,8 +223,6 @@ object Geometry:
           subPolygon1 = subPolygon1.appended(polygon.vertexes(i))
           var ab = (polygon.vertexes(i), polygon.vertexes(i + 1))
           var intersectionPoint = intersection(ab, cutLine)
-          println((ab, cutLine))
-          println(intersectionPoint)
           while intersectionPoint.isEmpty do
             i = i + 1
             subPolygon1 = subPolygon1.appended(polygon.vertexes(i))
