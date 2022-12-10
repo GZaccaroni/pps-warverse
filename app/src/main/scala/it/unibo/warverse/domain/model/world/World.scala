@@ -65,7 +65,7 @@ object World:
     citizens: Int,
     armyUnits: Seq[ArmyUnit],
     resources: Life.Resources,
-    boundaries: Geometry.MultiPolygon[Point2D]
+    boundaries: Territory
   ) extends UpdatableAssets[Country]:
     /** It returns a new [[Country]] with the given resources added
       * @param newResources
