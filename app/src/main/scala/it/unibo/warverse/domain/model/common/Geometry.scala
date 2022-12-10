@@ -217,24 +217,28 @@ object Geometry:
           polygons: Seq[Polygon[Point2D]]
         ): Seq[Polygon[Point2D]] =
           val (polygon, polygonIndex) = polygons.zipWithIndex.maxBy(_._1.area)
-          val cutLine = (polygon.vertexes.head, polygon.center)
-          var subPolygon1, subPolygon2 = Seq(polygon.vertexes.head)
+          // Vertexes reordering to improve multiple split
+          val vertexesToSplit = polygon.vertexes.drop(
+            polygon.vertexes.length / 2
+          ) ++ polygon.vertexes.take(polygon.vertexes.length / 2)
+          val cutLine = (vertexesToSplit.head, polygon.center)
+          var subVertexes1, subVertexes2 = Seq(vertexesToSplit.head)
           var i = 1
-          subPolygon1 = subPolygon1.appended(polygon.vertexes(i))
-          var ab = (polygon.vertexes(i), polygon.vertexes(i + 1))
+          subVertexes1 = subVertexes1.appended(vertexesToSplit(i))
+          var ab = (vertexesToSplit(i), vertexesToSplit(i + 1))
           var intersectionPoint = intersection(ab, cutLine)
           while intersectionPoint.isEmpty do
             i = i + 1
-            subPolygon1 = subPolygon1.appended(polygon.vertexes(i))
-            ab = (polygon.vertexes(i), polygon.vertexes(i + 1))
+            subVertexes1 = subVertexes1.appended(vertexesToSplit(i))
+            ab = (vertexesToSplit(i), vertexesToSplit(i + 1))
             intersectionPoint = intersection(ab, cutLine)
-          subPolygon1 = subPolygon1.appended(intersectionPoint.get)
-          if intersectionPoint.get != polygon.vertexes(i + 1) then
-            subPolygon2 = subPolygon2.appended(intersectionPoint.get)
-          subPolygon2 = subPolygon2 ++ polygon.vertexes.drop(i + 1)
+          subVertexes1 = subVertexes1.appended(intersectionPoint.get)
+          if intersectionPoint.get != vertexesToSplit(i + 1) then
+            subVertexes2 = subVertexes2.appended(intersectionPoint.get)
+          subVertexes2 = subVertexes2 ++ vertexesToSplit.drop(i + 1)
           polygons.patch(
             polygonIndex,
-            Seq(Polygon(subPolygon1), Polygon(subPolygon2)),
+            Seq(Polygon(subVertexes1), Polygon(subVertexes2)),
             1
           )
 
