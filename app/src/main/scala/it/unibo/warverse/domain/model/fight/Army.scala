@@ -100,7 +100,7 @@ object Army:
       val targetPosition = nearestTarget.getOrElse(
         environment.countries
           .find(_.id == countryId)
-          .map(_.boundaries.center)
+          .map(_.boundaries.polygons.head.center)
           .getOrElse(position)
       )
 

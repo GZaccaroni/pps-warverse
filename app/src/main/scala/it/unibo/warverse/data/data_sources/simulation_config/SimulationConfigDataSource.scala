@@ -3,7 +3,11 @@ package it.unibo.warverse.data.data_sources.simulation_config
 import it.unibo.warverse.data.models.ArmyDtos.{ArmyUnitKind, UnitAttackType}
 import it.unibo.warverse.data.models.SimulationConfigDtos.SimulationConfigDto
 import it.unibo.warverse.domain.model.common.Geometry
-import it.unibo.warverse.domain.model.common.Geometry.{Point2D, Polygon}
+import it.unibo.warverse.domain.model.common.Geometry.{
+  MultiPolygon,
+  Point2D,
+  Polygon
+}
 import it.unibo.warverse.domain.model.fight.Army
 import it.unibo.warverse.data.data_sources.simulation_config.Serializers.*
 import it.unibo.warverse.data.models.{ArmyDtos, GeometryDtos}

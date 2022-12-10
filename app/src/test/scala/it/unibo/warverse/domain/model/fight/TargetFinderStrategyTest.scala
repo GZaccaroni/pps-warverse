@@ -28,12 +28,15 @@ object TargetFinderStrategyTest:
       "The targets of Area AttackType should be the centers of enemies countries"
     ) {
       val strategy = TargetFinderStrategy2D()
-      strategy.findTargets(countryA.id, AttackType.Area) mustBe Seq(
-        countryB.boundaries.center
-      )
-      strategy.findTargets(countryB.id, AttackType.Area) mustBe Seq(
-        countryA.boundaries.center
-      )
+      strategy.findTargets(
+        countryA.id,
+        AttackType.Area
+      ) mustBe countryB.boundaries.polygons.map(_.center)
+
+      strategy.findTargets(
+        countryB.id,
+        AttackType.Area
+      ) mustBe countryA.boundaries.polygons.map(_.center)
     }
 
     test(

@@ -3,6 +3,7 @@ package it.unibo.warverse.domain.model.common
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.must.Matchers
 import it.unibo.warverse.domain.model.common.Geometry
+import it.unibo.warverse.domain.model.common.Geometry.Polygon
 import org.scalatest.Suites
 
 object GeometryTest:
@@ -91,8 +92,63 @@ object GeometryTest:
       polygon.contains(Geometry.Point2D(10, 10)) mustBe false
     }
 
+  class MultiPolygon2DTest() extends AnyFunSuite with Matchers:
+    private val multiPolygon = Geometry.MultiPolygon(
+      Seq(
+        Polygon(
+          Seq(
+            Geometry.Point2D(x = 0, y = 0),
+            Geometry.Point2D(x = 0, y = 5),
+            Geometry.Point2D(x = 5, y = 5),
+            Geometry.Point2D(x = 5, y = 0)
+          )
+        ),
+        Polygon(
+          Seq(
+            Geometry.Point2D(x = 10, y = 0),
+            Geometry.Point2D(x = 10, y = 5),
+            Geometry.Point2D(x = 20, y = 5),
+            Geometry.Point2D(x = 20, y = 0)
+          )
+        )
+      )
+    )
+    test("MultiPolygon area is valid") {
+      multiPolygon.area mustBe (25 + 50)
+    }
+
+    test("MultiPolygon contains point") {
+      multiPolygon.contains(Geometry.Point2D(0, 0)) mustBe true
+      multiPolygon.contains(Geometry.Point2D(2, 2)) mustBe true
+      multiPolygon.contains(Geometry.Point2D(5, 5)) mustBe true
+      multiPolygon.contains(Geometry.Point2D(10, 0)) mustBe true
+      multiPolygon.contains(Geometry.Point2D(12, 2)) mustBe true
+      multiPolygon.contains(Geometry.Point2D(20, 5)) mustBe true
+    }
+
+    test("MultiPolygon doesn't contain point") {
+      multiPolygon.contains(Geometry.Point2D(50, 50)) mustBe false
+      multiPolygon.contains(Geometry.Point2D(0, 10)) mustBe false
+    }
+
+    test("MultiPolygon split generate correct number of splits") {
+      multiPolygon.split(1).length mustBe 1
+      multiPolygon.split(2).length mustBe 2
+      multiPolygon.split(3).length mustBe 3
+    }
+
+    test(
+      "MultiPolygon split generate polygons with consistent area"
+    ) {
+      for splitsNumber <- 1 until 10 do
+        multiPolygon
+          .split(splitsNumber)
+          .forall(_.polygons.forall(_.area > 0)) mustBe true
+    }
+
 class GeometryTest
     extends Suites(
       GeometryTest.Point2DTest(),
-      GeometryTest.Polygon2DTest()
+      GeometryTest.Polygon2DTest(),
+      GeometryTest.MultiPolygon2DTest()
     )
