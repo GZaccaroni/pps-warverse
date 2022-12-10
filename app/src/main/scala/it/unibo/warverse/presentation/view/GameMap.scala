@@ -45,11 +45,11 @@ class GameMap extends GameMouseMotion:
       environment.countries
         .foreach(country =>
           val g2d: Graphics2D = g.asInstanceOf[Graphics2D]
-          for countryRegionPolygon <- country.boundaries.polygons do
+          for countryTerritoryPolygon <- country.boundaries.polygons do
             val polygon = Polygon(
-              countryRegionPolygon.vertexes.map(_.x.toInt).toArray,
-              countryRegionPolygon.vertexes.map(_.y.toInt).toArray,
-              countryRegionPolygon.vertexes.length
+              countryTerritoryPolygon.vertexes.map(_.x.toInt).toArray,
+              countryTerritoryPolygon.vertexes.map(_.y.toInt).toArray,
+              countryTerritoryPolygon.vertexes.length
             )
             g2d.setColor(countryColor(country.id))
             g2d.fillPolygon(polygon)
