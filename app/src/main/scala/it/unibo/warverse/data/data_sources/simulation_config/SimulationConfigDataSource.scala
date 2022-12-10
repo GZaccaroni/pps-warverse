@@ -4,7 +4,7 @@ import it.unibo.warverse.data.models.ArmyDtos.{ArmyUnitKind, UnitAttackType}
 import it.unibo.warverse.data.models.SimulationConfigDtos.SimulationConfigDto
 import it.unibo.warverse.domain.model.common.Geometry
 import it.unibo.warverse.domain.model.common.Geometry.{
-  MultiPolygon2D,
+  MultiPolygon,
   Point2D,
   Polygon
 }

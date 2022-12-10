@@ -2,9 +2,9 @@ package it.unibo.warverse.domain.model.common
 
 import it.unibo.warverse.domain.model.Environment
 import it.unibo.warverse.domain.model.common.Geometry.{
-  MultiPolygon2D,
+  MultiPolygon,
   Point2D,
-  Polygon2D
+  Polygon
 }
 import it.unibo.warverse.domain.model.fight.Army.{
   AreaArmyUnit,
@@ -104,8 +104,8 @@ object DomainExample:
         Army.AreaArmyUnits.distantUnit
       ),
       0.0,
-      MultiPolygon2D(
-        Polygon2D(
+      MultiPolygon(
+        Polygon(
           Seq(Point2D(0, 0), Point2D(0, 3), Point2D(3, 3), Point2D(3, 0))
         )
       )
@@ -121,8 +121,8 @@ object DomainExample:
         Army.PrecisionArmyUnits.distantUnit
       ),
       0.0,
-      MultiPolygon2D(
-        Polygon2D(
+      MultiPolygon(
+        Polygon(
           Seq(Point2D(3, 0), Point2D(3, 3), Point2D(6, 3), Point2D(6, 0))
         )
       )
@@ -134,8 +134,8 @@ object DomainExample:
       20,
       Seq.empty,
       0.0,
-      MultiPolygon2D(
-        Polygon2D(
+      MultiPolygon(
+        Polygon(
           Seq(Point2D(6, 0), Point2D(6, 3), Point2D(9, 3), Point2D(9, 0))
         )
       )

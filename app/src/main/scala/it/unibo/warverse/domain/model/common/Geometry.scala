@@ -167,18 +167,16 @@ object Geometry:
     def contains(point: Point): Boolean
     def split(splitsNumber: Int): Seq[MultiPolygon[Point]]
 
-  type MultiPolygon2D = MultiPolygon[Point2D]
-
-  /** Factory for [[MultiPolygon2D]] instance in a two dimensional space.
+  /** Factory for [[MultiPolygon]] instance in a two dimensional space.
     */
-  object MultiPolygon2D:
+  object MultiPolygon:
     /** Create a MultiPolygon2D from the given sequence of Polygon
       * @param polygons
       *   the polygons that compose the MultiPolygon
       * @return
       *   a new MultiPolygon2D instance composed by the given polygons
       */
-    def apply(polygons: Seq[Polygon2D]): MultiPolygon2D =
+    def apply(polygons: Seq[Polygon[Point2D]]): MultiPolygon[Point2D] =
       MultiPolygon2DImpl(polygons)
 
     /** Create a MultiPolygon2D from the given Polygon
@@ -187,11 +185,11 @@ object Geometry:
       * @return
       *   a new MultiPolygon2D instance composed by a single polygon
       */
-    def apply(polygon: Polygon2D): MultiPolygon2D =
+    def apply(polygon: Polygon[Point2D]): MultiPolygon[Point2D] =
       MultiPolygon2DImpl(Seq(polygon))
     private case class MultiPolygon2DImpl(
-      override val polygons: Seq[Polygon2D]
-    ) extends MultiPolygon2D:
+      override val polygons: Seq[Polygon[Point2D]]
+    ) extends MultiPolygon[Point2D]:
 
       override def area: Double = polygons.map(_.area).sum
 
@@ -201,17 +199,19 @@ object Geometry:
       override def split(splitsNumber: Int): Seq[MultiPolygon[Point2D]] =
         @tailrec
         def splitPolygon(
-          polygons: Seq[Polygon2D],
+          polygons: Seq[Polygon[Point2D]],
           splits: Int
         ): Seq[MultiPolygon[Point2D]] =
           if polygons.length >= splits then
             polygons
               .grouped((polygons.length.toDouble / splits).ceil.toInt)
-              .map(MultiPolygon2D(_))
+              .map(MultiPolygon(_))
               .toSeq
           else splitPolygon(splitLargest(polygons), splits)
 
-        def splitLargest(polygons: Seq[Polygon2D]): Seq[Polygon2D] =
+        def splitLargest(
+          polygons: Seq[Polygon[Point2D]]
+        ): Seq[Polygon[Point2D]] =
           val (polygon, polygonIndex) = polygons.zipWithIndex.maxBy(_._1.area)
           val cutLine = (polygon.vertexes.head, polygon.center)
           var subPolygon1, subPolygon2 = Seq(polygon.vertexes.head)
@@ -232,7 +232,7 @@ object Geometry:
           subPolygon2 = subPolygon2 ++ polygon.vertexes.drop(i + 1)
           polygons.patch(
             polygonIndex,
-            Seq(Polygon2D(subPolygon1), Polygon2D(subPolygon2)),
+            Seq(Polygon(subPolygon1), Polygon(subPolygon2)),
             1
           )
 

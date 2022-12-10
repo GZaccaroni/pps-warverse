@@ -3,7 +3,7 @@ package it.unibo.warverse.presentation.common
 import java.net.URL
 import java.awt.BasicStroke
 import it.unibo.warverse.domain.model.common.Geometry.{
-  MultiPolygon2D,
+  MultiPolygon,
   Point2D,
   Polygon
 }

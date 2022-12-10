@@ -3,7 +3,7 @@ package it.unibo.warverse.domain.model.common
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.must.Matchers
 import it.unibo.warverse.domain.model.common.Geometry
-import it.unibo.warverse.domain.model.common.Geometry.Polygon2D
+import it.unibo.warverse.domain.model.common.Geometry.Polygon
 import org.scalatest.Suites
 
 object GeometryTest:
@@ -93,9 +93,9 @@ object GeometryTest:
     }
 
   class MultiPolygon2DTest() extends AnyFunSuite with Matchers:
-    private val multiPolygon = Geometry.MultiPolygon2D(
+    private val multiPolygon = Geometry.MultiPolygon(
       Seq(
-        Polygon2D(
+        Polygon(
           Seq(
             Geometry.Point2D(x = 0, y = 0),
             Geometry.Point2D(x = 0, y = 5),
@@ -103,7 +103,7 @@ object GeometryTest:
             Geometry.Point2D(x = 5, y = 0)
           )
         ),
-        Polygon2D(
+        Polygon(
           Seq(
             Geometry.Point2D(x = 10, y = 0),
             Geometry.Point2D(x = 10, y = 5),
