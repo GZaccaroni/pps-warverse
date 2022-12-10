@@ -72,14 +72,25 @@ object Army:
       */
     def availableHits: Int
 
-    /** A copy of the army unit with given position
+    /** Creates a copy of the army unit with given position
       * @param position
       *   the new position of the unit
       * @return
       *   A new ArmyUnit which is the copy of this with given position
       */
-    protected def copied(position: Position): ArmyUnit
+    def copiedWith(
+      countryId: World.CountryId = this.countryId,
+      position: Position = this.position
+    ): ArmyUnit
 
+    /** Moves the army unit according to a strategy in a given environment
+      * @param environment
+      *   the environment in which the entity is moving
+      * @param strategy
+      *   the strategy according to which the entity should move
+      * @return
+      *   the entity moved to the new location
+      */
     override def moved()(using
       environment: Environment,
       strategy: TargetFinderStrategy[Position]
@@ -93,10 +104,28 @@ object Army:
           .getOrElse(position)
       )
 
-      copied(
+      copiedWith(
         position = position.moved(toward = targetPosition, of = speed)
       )
 
+  /** An army unit that attacks a precise point
+    * @param countryId
+    *   the identifier of the country to which the unit belongs
+    * @param name
+    *   the name of the unit
+    * @param position
+    *   the current position of the unit
+    * @param chanceOfHit
+    *   the chance that an attack succeeds
+    * @param rangeOfHit
+    *   the maximum range of an attack
+    * @param availableHits
+    *   the maximum number of attacks that can be performed in a day
+    * @param dailyConsume
+    *   the daily consumption of resources
+    * @param speed
+    *   the speed of movement of the unit
+    */
   case class PrecisionArmyUnit(
     override val countryId: World.CountryId,
     override val name: String,
@@ -108,7 +137,11 @@ object Army:
     speed: Double
   ) extends ArmyUnit:
     override def attackType: Fight.AttackType = Fight.AttackType.Precision
-    override def copied(position: Point2D): ArmyUnit = copy(position = position)
+    override def copiedWith(
+      countryId: World.CountryId = this.countryId,
+      position: Point2D
+    ): ArmyUnit = copy(countryId = countryId, position = position)
+
     override def attack()(using
       strategy: TargetFinderStrategy[Position]
     ): Seq[AttackAction] =
@@ -122,6 +155,26 @@ object Army:
         if probabilityOfSuccess < chanceOfHit
       yield AttackAction.PrecisionAttackAction(target)
 
+  /** An army unit that attacks an area
+    * @param countryId
+    *   the identifier of the country to which the unit belongs
+    * @param name
+    *   the name of the unit
+    * @param position
+    *   the current position of the unit
+    * @param chanceOfHit
+    *   the chance that an attack succeeds
+    * @param rangeOfHit
+    *   the maximum range of an attack
+    * @param availableHits
+    *   the maximum number of attacks that can be performed in a day
+    * @param dailyConsume
+    *   the daily consumption of resources
+    * @param speed
+    *   the speed of movement of the unit
+    * @param areaOfImpact
+    *   the area affected by an attack of the unit
+    */
   case class AreaArmyUnit(
     override val countryId: World.CountryId,
     override val name: String,
@@ -134,7 +187,11 @@ object Army:
     areaOfImpact: Double
   ) extends ArmyUnit:
     override def attackType: Fight.AttackType = Fight.AttackType.Area
-    override def copied(position: Point2D): ArmyUnit = copy(position = position)
+
+    override def copiedWith(
+      countryId: World.CountryId = this.countryId,
+      position: Point2D
+    ): ArmyUnit = copy(countryId = countryId, position = position)
     override def attack()(using
       strategy: TargetFinderStrategy[Position]
     ): Seq[AttackAction] =

@@ -66,7 +66,7 @@ object GeometryTest:
         destinationOnXYAxis
     }
   class Polygon2DTest() extends AnyFunSuite with Matchers:
-    private val polygon = Geometry.Polygon2D(vertexes =
+    private val polygon = Geometry.Polygon(vertexes =
       List(
         Geometry.Point2D(x = 0, y = 0),
         Geometry.Point2D(x = 0, y = 5),

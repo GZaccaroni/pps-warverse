@@ -2,10 +2,11 @@ package it.unibo.warverse.data.models
 
 import it.unibo.warverse.data.models.GeometryDtos
 import it.unibo.warverse.data.models.ArmyDtos
+import it.unibo.warverse.domain.model.common.validation.CommonValidators.*
 import it.unibo.warverse.domain.model.world.World
-import it.unibo.warverse.domain.model.common.Validation.*
+import it.unibo.warverse.domain.model.common.validation.Validation.*
 
-object WorldDtos:
+private[data] object WorldDtos:
   case class CountryDto(
     id: World.CountryId,
     resources: Double,
@@ -14,12 +15,14 @@ object WorldDtos:
     relations: CountryRelationsDto = CountryRelationsDto(),
     army: ArmyDtos.CountryArmy
   ) extends Validatable:
-    override def validate(): Unit =
-      given ValidatedEntity = ValidatedEntity(this.getClass.getTypeName)
-      if resources < 0 then throw "resources" isNotGreaterOrEqualThan 0
-      if boundaries.length < 3 then throw "boundaries" isNotGreaterOrEqualThan 3
-      if citizens < 0 then throw "citizens" isNotGreaterOrEqualThan 0
-      army.validate()
+    override def validationErrors: List[ValidationError] =
+      val boundariesCount = boundaries.length
+      val relationships = relations.allies ++ relations.enemies
+      (resources must BeGreaterThanOrEqualTo(0.0)) :::
+        (citizens must BeGreaterThanOrEqualTo(0)) :::
+        (boundariesCount must BeGreaterThanOrEqualTo(3)) :::
+        (relationships must NotContainItem(id)) :::
+        army.validationErrors
 
   case class CountryRelationsDto(
     allies: Seq[World.CountryId] = Seq.empty,

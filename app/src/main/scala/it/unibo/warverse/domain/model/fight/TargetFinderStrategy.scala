@@ -54,7 +54,7 @@ object TargetFinderStrategy:
             .flatMap(_.armyUnits.map(_.position))
       private def enemiesOfCountry(countryId: CountryId): Seq[Country] =
         environment.countries.filter(country =>
-          environment.interstateRelations
+          environment.interCountryRelations
             .countryEnemies(countryId)
             .toSet
             .contains(country.id)

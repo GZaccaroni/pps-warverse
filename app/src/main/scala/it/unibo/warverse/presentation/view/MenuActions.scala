@@ -104,17 +104,18 @@ object MenuActions:
       val backgroundImage =
         backgroundImageUrl.map(Toolkit.getDefaultToolkit.getImage(_))
       val g2d: Graphics2D = g.create().asInstanceOf[Graphics2D]
-      var boxWidth: Int = 0
-      var boxHeight: Int = 0
       if menuBounds.isEmpty then
-        menuItems.foreach(menuItem =>
-          val dim: Dimension = painter.preferredSize(g2d, menuItem.label);
-          boxWidth = Math.max(boxWidth, dim.width);
-          boxHeight = Math.max(boxHeight, dim.height);
-        )
-        val x = (getWidth - (boxWidth + 100)) / 2
-        var totalHeight = (boxHeight + 10) * menuItems.length
-        totalHeight += 5 * (menuItems.length - 1)
+
+        val boxDimension = menuItems.foldLeft(Dimension()) {
+          (boxDim, menuItem) =>
+            val dim: Dimension = painter.preferredSize(g2d, menuItem.label)
+            Dimension(
+              Math.max(boxDim.width, dim.width),
+              Math.max(boxDim.height, dim.height)
+            )
+        }
+        val x = (getWidth - (boxDimension.width + 100)) / 2
+        val totalHeight = (boxDimension.height + 15) * menuItems.length - 5
 
         val y = (getHeight - totalHeight) / 2
         menuBounds = Some(
@@ -124,9 +125,9 @@ object MenuActions:
                 text,
                 RoundRectangle2D.Double(
                   x,
-                  y + (boxHeight + 35) * index,
-                  boxWidth + 100,
-                  boxHeight + 10,
+                  y + (boxDimension.height + 35) * index,
+                  boxDimension.width + 100,
+                  boxDimension.height + 10,
                   20,
                   20
                 )

@@ -7,21 +7,27 @@ import it.unibo.warverse.domain.model.fight.Fight.AttackAction
 import it.unibo.warverse.domain.model.fight.SimulationEvent
 import it.unibo.warverse.domain.model.fight.TargetFinderStrategy.TargetFinderStrategy2D
 import it.unibo.warverse.domain.model.world.World.Country
+import monix.eval.Task
 
 import scala.annotation.tailrec
 import scala.collection.immutable.{AbstractSeq, LinearSeq}
 
+/** Simulates army units attacks and updates simulation environment accordingly
+  */
 class AttackSimulationComponent
     extends SimpleListenable[SimulationEvent]
     with SimulationComponent:
-  override def run(using environment: Environment): Environment =
-    given TargetFinderStrategy2D = TargetFinderStrategy2D()
-    val events = for
-      country <- environment.countries
-      unit <- country.armyUnits
-      event <- unit.attack()
-    yield event
-    updateEnvironment(environment, events)
+  override def run(using environment: Environment): Task[Environment] =
+    Task {
+      given TargetFinderStrategy2D = TargetFinderStrategy2D()
+
+      val events = for
+        country <- environment.countries
+        unit <- country.armyUnits
+        action <- unit.attack()
+      yield action
+      updateEnvironment(environment, events)
+    }
 
   @tailrec
   private def updateEnvironment(
@@ -34,7 +40,7 @@ class AttackSimulationComponent
           environment.countries.find(_.boundaries.contains(event.target))
 
         val newCountry = countryOption.map { country =>
-          val density = country.citizens / country.boundaries.area
+          val density = country.citizens / Math.abs(country.boundaries.area)
           val citizens =
             country.citizens - (density * event.areaOfImpact).toInt
           country.copy(citizens = citizens)
@@ -50,7 +56,8 @@ class AttackSimulationComponent
           environment.copiedWith(
             environment.countries.map(country =>
               country.copy(
-                armyUnits = country.armyUnits.filter(_.position == event.target)
+                armyUnits =
+                  country.armyUnits.filterNot(_.position == event.target)
               )
             )
           ),

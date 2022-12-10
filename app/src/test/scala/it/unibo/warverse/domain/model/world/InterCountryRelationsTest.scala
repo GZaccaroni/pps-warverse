@@ -6,30 +6,27 @@ import it.unibo.warverse.domain.model.common.DomainExample.{
   countryC
 }
 import it.unibo.warverse.domain.model.common.Geometry
-import it.unibo.warverse.domain.model.common.Geometry.{Point2D, Polygon2D}
-import it.unibo.warverse.domain.model.world.Relations.{
-  InterstateRelations,
-  RelationStatus
-}
+import it.unibo.warverse.domain.model.common.Geometry.Point2D
+import it.unibo.warverse.domain.model.world.Relations.*
 import it.unibo.warverse.domain.model.world.World.Country
 import org.scalatest.BeforeAndAfter
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.must.Matchers
 
-class InterstateRelationsTest extends AnyFunSuite with Matchers:
+class InterCountryRelationsTest extends AnyFunSuite with Matchers:
 
   test("When a relation is added it must compare in the new object") {
-    val interstateRelations: InterstateRelations =
-      InterstateRelations(List.empty)
+    val interCountryRelations: InterCountryRelations =
+      InterCountryRelations(Set.empty)
     val AWarB = ((countryA.id, countryB.id), RelationStatus.WAR)
     val BAlliedC = ((countryB.id, countryC.id), RelationStatus.ALLIANCE)
 
-    interstateRelations.relations mustBe List.empty
-    interstateRelations.withRelation(AWarB).relations mustBe List(AWarB)
-    interstateRelations
+    interCountryRelations.relations mustBe Set.empty
+    interCountryRelations.withRelation(AWarB).relations mustBe Set(AWarB)
+    interCountryRelations
       .withRelation(AWarB)
       .withRelation(BAlliedC)
-      .relations mustBe List(AWarB, BAlliedC)
+      .relations mustBe Set(AWarB, BAlliedC)
   }
 
   test("Two country must have only one relation") {
@@ -37,15 +34,15 @@ class InterstateRelationsTest extends AnyFunSuite with Matchers:
     val ANeutralB = ((countryA.id, countryB.id), RelationStatus.NEUTRAL)
     val BAlliedA = ((countryB.id, countryA.id), RelationStatus.ALLIANCE)
 
-    val interstateRelations: InterstateRelations =
-      InterstateRelations(List(AWarB))
+    val interCountryRelations: InterCountryRelations =
+      InterCountryRelations(Set(AWarB))
 
-    an[IllegalStateException] should be thrownBy interstateRelations
+    an[IllegalStateException] should be thrownBy interCountryRelations
       .withRelation(ANeutralB)
-    an[IllegalStateException] should be thrownBy interstateRelations
+    an[IllegalStateException] should be thrownBy interCountryRelations
       .withRelation(BAlliedA)
-    an[IllegalStateException] should be thrownBy InterstateRelations(
-      List(AWarB, BAlliedA)
+    an[IllegalStateException] should be thrownBy InterCountryRelations(
+      Set(AWarB, BAlliedA)
     )
 
   }
@@ -54,31 +51,31 @@ class InterstateRelationsTest extends AnyFunSuite with Matchers:
     val AWarB = ((countryA.id, countryB.id), RelationStatus.WAR)
     val BAlliedC = ((countryB.id, countryC.id), RelationStatus.ALLIANCE)
     val ANeutralC = ((countryA.id, countryC.id), RelationStatus.NEUTRAL)
-    val interstateRelations: InterstateRelations =
-      InterstateRelations(List(AWarB, BAlliedC, ANeutralC))
+    val interCountryRelations: InterCountryRelations =
+      InterCountryRelations(Set(AWarB, BAlliedC, ANeutralC))
 
-    interstateRelations.relations mustBe List(AWarB, BAlliedC, ANeutralC)
-    interstateRelations.withoutRelation(AWarB).relations mustBe List(
+    interCountryRelations.relations mustBe Set(AWarB, BAlliedC, ANeutralC)
+    interCountryRelations.withoutRelation(AWarB).relations mustBe Set(
       BAlliedC,
       ANeutralC
     )
-    interstateRelations
+    interCountryRelations
       .withoutRelation(AWarB)
       .withoutRelation(BAlliedC)
       .withoutRelation(ANeutralC)
-      .relations mustBe List.empty
+      .relations mustBe Set.empty
   }
 
   test("Function getAllies must get ALLIANCE related country") {
     val AWarB = ((countryA.id, countryB.id), RelationStatus.WAR)
     val BAlliedC = ((countryB.id, countryC.id), RelationStatus.ALLIANCE)
     val CAlliedA = ((countryC.id, countryA.id), RelationStatus.ALLIANCE)
-    val interstateRelations: InterstateRelations =
-      InterstateRelations(List(AWarB, BAlliedC, CAlliedA))
+    val interCountryRelations: InterCountryRelations =
+      InterCountryRelations(Set(AWarB, BAlliedC, CAlliedA))
 
-    interstateRelations countryAllies countryC.id must contain only (countryA.id, countryB.id)
-    interstateRelations countryAllies countryB.id must contain only countryC.id
-    interstateRelations.withoutRelation(
+    interCountryRelations countryAllies countryC.id must contain only (countryA.id, countryB.id)
+    interCountryRelations countryAllies countryB.id must contain only countryC.id
+    interCountryRelations.withoutRelation(
       BAlliedC
     ) countryAllies countryB.id mustBe empty
   }
@@ -87,10 +84,10 @@ class InterstateRelationsTest extends AnyFunSuite with Matchers:
     val AWarB = ((countryA.id, countryB.id), RelationStatus.WAR)
     val BAlliedC = ((countryB.id, countryC.id), RelationStatus.ALLIANCE)
     val ANeutralC = ((countryC.id, countryA.id), RelationStatus.ALLIANCE)
-    val interstateRelations: InterstateRelations =
-      InterstateRelations(List(AWarB, BAlliedC, ANeutralC))
+    val interCountryRelations: InterCountryRelations =
+      InterCountryRelations(Set(AWarB, BAlliedC, ANeutralC))
 
-    interstateRelations countryEnemies countryC.id mustBe empty
-    interstateRelations countryEnemies countryA.id must contain only countryB.id
-    interstateRelations countryEnemies countryB.id must contain only countryA.id
+    interCountryRelations countryEnemies countryC.id mustBe empty
+    interCountryRelations countryEnemies countryA.id must contain only countryB.id
+    interCountryRelations countryEnemies countryB.id must contain only countryA.id
   }

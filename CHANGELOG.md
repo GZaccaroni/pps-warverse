@@ -1,5 +1,111 @@
 # Changelog
 
+## [1.1.1](https://github.com/GZaccaroni/pps-warverse/compare/v1.1.0...v1.1.1) (2022-12-07)
+
+
+### Bug Fixes
+
+* Changing speed during simulation wasn't working ([ad68fb7](https://github.com/GZaccaroni/pps-warverse/commit/ad68fb7917d709a8cf33dacd94eea9646edcf7a3))
+* Simulation termination ([fdebd63](https://github.com/GZaccaroni/pps-warverse/commit/fdebd63057f5819379ebbe98adcfefdbc2ffd7d7))
+
+
+### Performance Improvements
+
+* integrated changes ([fab6867](https://github.com/GZaccaroni/pps-warverse/commit/fab6867866ad099516a9425004e05f55b9fc4597))
+
+## [1.1.0](https://github.com/GZaccaroni/pps-warverse/compare/v1.0.0...v1.1.0) (2022-12-07)
+
+
+### Features
+
+* add area function in Polygon ([194ad1f](https://github.com/GZaccaroni/pps-warverse/commit/194ad1f9aaedaec7ae1f14ab158e6e81f0a21267))
+* add button pause ([ed70079](https://github.com/GZaccaroni/pps-warverse/commit/ed700793e1bbdb3010f3f4f6e16b8cc60c1675c9))
+* add interstateRelations in WorldState ([8c21cd4](https://github.com/GZaccaroni/pps-warverse/commit/8c21cd4a05b1eea978da9457b40cd8a02f3645b5))
+* add pause simulation functions ([3a925b7](https://github.com/GZaccaroni/pps-warverse/commit/3a925b7a1aca11b3450d4f08769e08056d9ba44c))
+* add resume function ([f439139](https://github.com/GZaccaroni/pps-warverse/commit/f439139f4b8c1470a006659bce452b9f4761e602))
+* add soldiers example ([d7b719a](https://github.com/GZaccaroni/pps-warverse/commit/d7b719a78e2fb1c9ada010312143e3b7eb7ca3b7))
+* Added Army DTOs ([5f287fd](https://github.com/GZaccaroni/pps-warverse/commit/5f287fde8fb02887442668921901a781860db46d))
+* Added complex deserializer for polymorphic list deserialization ([a3c8ce0](https://github.com/GZaccaroni/pps-warverse/commit/a3c8ce01ca058cc4b32a6ef2d5b349bf316c96e1))
+* Added disposable trait ([e9b8c5b](https://github.com/GZaccaroni/pps-warverse/commit/e9b8c5b20588954abd7cd038587cdf7f6916d4bb))
+* added environment getter and setter ([b6dee3f](https://github.com/GZaccaroni/pps-warverse/commit/b6dee3fd228b8dc2e0d54e8fb6d187537e6ca526))
+* Added Geometry Dtos ([45621cb](https://github.com/GZaccaroni/pps-warverse/commit/45621cb41a0ee213783a210c5c2e899f9cd5d019))
+* Added Monix dependency for task handling ([ddc2b1b](https://github.com/GZaccaroni/pps-warverse/commit/ddc2b1b2a6003f3e16b0f57ddf82a4db03f78b0f))
+* Added RelationsSimulationComponent ([2988202](https://github.com/GZaccaroni/pps-warverse/commit/29882026ebe827a0c97330e042547d9f23629b43))
+* Added replacingCountry in Environment ([2c7802e](https://github.com/GZaccaroni/pps-warverse/commit/2c7802ef27754731c14ddb3002ea236940608b99))
+* Added SimpleListenable class ([8a4716a](https://github.com/GZaccaroni/pps-warverse/commit/8a4716a6520760a07b25236cc579128acc0e8714))
+* Added Simulation Component (SRP) ([bc99dfe](https://github.com/GZaccaroni/pps-warverse/commit/bc99dfe13b3f89b766283dcf2b4d6a6dd18b51ba))
+* Added simulation config dtos ([72f94f9](https://github.com/GZaccaroni/pps-warverse/commit/72f94f9d9199ec14744c0a552dc980740d944b0a))
+* Added Simulation Events (Iteration Completed, Simulation Completed, War Win) ([b95e934](https://github.com/GZaccaroni/pps-warverse/commit/b95e934ff75e60d5dde6f41a8a32b2b347de9b0c))
+* Added SimulationLoaded event ([1d5eb3d](https://github.com/GZaccaroni/pps-warverse/commit/1d5eb3dce2c79392addc1217d8e570e735998d0d))
+* Added SimulationStartedEvent ([6548731](https://github.com/GZaccaroni/pps-warverse/commit/654873189dd1853e3c722116a022be01eb037fe3))
+* Added update resource method ([44e0506](https://github.com/GZaccaroni/pps-warverse/commit/44e050667efc5501fa327a015d1f56d2efdd831d))
+* Added validation utility ([1fd17cd](https://github.com/GZaccaroni/pps-warverse/commit/1fd17cdcd649e4c400a1b1e2520e838ce1efe089))
+* Added World dtos ([c6b740a](https://github.com/GZaccaroni/pps-warverse/commit/c6b740a9dd1a6811eee1cbb3a8aa97d287ce5985))
+* Create gameStats class ([4b2174c](https://github.com/GZaccaroni/pps-warverse/commit/4b2174cdd3898e5731160b76b3a7559bacfa3700))
+* defined different type of AttackEvent ([73afdcb](https://github.com/GZaccaroni/pps-warverse/commit/73afdcb48adbd6d09eb29979af1a9484118ebf62))
+* delete pause button ([7df1093](https://github.com/GZaccaroni/pps-warverse/commit/7df10933a477fa64e64a6349cc608c3030334a96))
+* enriched examples for test ([947af30](https://github.com/GZaccaroni/pps-warverse/commit/947af30697ced1f8fb5eee118c1ad2446c84cbd5))
+* gameStats controller ([7219829](https://github.com/GZaccaroni/pps-warverse/commit/7219829e1b8343a2b7c691c0b765c6ba456377a9))
+* Implement Disposable in Listen ([8115ff1](https://github.com/GZaccaroni/pps-warverse/commit/8115ff1ec5adae5266f408a47669c91d61dc7e29))
+* implemented AreaArmyUnit attack function ([ef7fc96](https://github.com/GZaccaroni/pps-warverse/commit/ef7fc966245db8ff1c043daa803229e414b44707))
+* Implemented army validation ([bd42532](https://github.com/GZaccaroni/pps-warverse/commit/bd42532ce76ded723c4d5b0b346d6fb97957ca5e))
+* implemented attackAndUpdate for AreaAttackEvent ([8f9a370](https://github.com/GZaccaroni/pps-warverse/commit/8f9a3703ebfffc03d88e0f6e85ce0d2f4edaa09f))
+* implemented AttackStrategy2D with factory ([7d58a4b](https://github.com/GZaccaroni/pps-warverse/commit/7d58a4bfad47242f58b08e5ecf04d3c5503c4850))
+* Implemented country validation ([e8606c1](https://github.com/GZaccaroni/pps-warverse/commit/e8606c1a1af9d0987127df0da8f41b0805a5a3b6))
+* Implemented DataSource with mappers ([1267ce9](https://github.com/GZaccaroni/pps-warverse/commit/1267ce9c514639d0fb83c9b33bbedbc5def11d22))
+* Implemented Listenable trait (pattern Listener) ([bbc263b](https://github.com/GZaccaroni/pps-warverse/commit/bbc263b4f7e27e421ad419102fc19c05b60480b4))
+* Implemented point2d validation ([fc78d4e](https://github.com/GZaccaroni/pps-warverse/commit/fc78d4e333a9c679a9f144ca8d7caa69890cfead))
+* implemented relationship checks ([3fbbe42](https://github.com/GZaccaroni/pps-warverse/commit/3fbbe42fdd82c6ddf7af672ca9f4723d9aada7f8))
+* Implemented Resources Simulation Component ([911a19a](https://github.com/GZaccaroni/pps-warverse/commit/911a19ad6f8442b23b1dab26a234b530e1036291))
+* Implemented simulation config validation ([01609bb](https://github.com/GZaccaroni/pps-warverse/commit/01609bb6c67295be523d05ee0a4dcceef9969686))
+* Implemented utility methods for listeners ([749949d](https://github.com/GZaccaroni/pps-warverse/commit/749949de931625eb30ddd63e1bb1b5f2c79bb16f))
+* implemented winners sharing resources of defeated state ([5f4525a](https://github.com/GZaccaroni/pps-warverse/commit/5f4525a079d36d5309475b4541edf70b958ec184))
+* Improved error handling in Hud ([39a0fc8](https://github.com/GZaccaroni/pps-warverse/commit/39a0fc84bead27d964f6db91f3395555fac21f87))
+* Listener emit events asynchronously ([039b428](https://github.com/GZaccaroni/pps-warverse/commit/039b428975005cafdac6a17409bc56bec281f9e0))
+* Removed GameStatsController (moved logic in GameStateController listener) ([140dd1d](https://github.com/GZaccaroni/pps-warverse/commit/140dd1d5c3bb94ca0b5ba22f7bc606a6742e583e))
+* Return AttackAction when attack performed ([90093c9](https://github.com/GZaccaroni/pps-warverse/commit/90093c9cc8cd4e75a24160a15d66ffcfa8681d22))
+* Show map on simulation loaded ([ef996d5](https://github.com/GZaccaroni/pps-warverse/commit/ef996d5678fb702426ff8b00679395c3de01fdb6))
+* Simulation Components executes asynchronously and returns a task ([c25adf3](https://github.com/GZaccaroni/pps-warverse/commit/c25adf315b9b362b1261e5aebba76ea4c07b2b72))
+* Simulation Engine executes asynchronously and returns a task ([080fb48](https://github.com/GZaccaroni/pps-warverse/commit/080fb48a91d0212fe0dd26456705b10ac7edbf70))
+* SimulationConfigDataSource executes asynchronously and returns a task ([9a039b9](https://github.com/GZaccaroni/pps-warverse/commit/9a039b94f49df8802969b94d839008986cdd02a7))
+* stop game logic and implementation ([6e9f272](https://github.com/GZaccaroni/pps-warverse/commit/6e9f272e9d442b5ccce63f630f70117541c5d0bc))
+* Update mouse on hover event ([187614a](https://github.com/GZaccaroni/pps-warverse/commit/187614a025872480bdbac2b75797016ffb1e387e))
+* update resources depending on war status ([6ba3fe3](https://github.com/GZaccaroni/pps-warverse/commit/6ba3fe39d103a7e275ed09ae6742a4dce9237099))
+* Update resources in real time ([141866b](https://github.com/GZaccaroni/pps-warverse/commit/141866bbb517512e0aafeaa38d7bf6384d861543))
+* updated Attacker.attack function params ([a2a4e24](https://github.com/GZaccaroni/pps-warverse/commit/a2a4e24f1ee3e70e297bceb57f38516b828ab05d))
+* Updated Game Controller ([88a6ee9](https://github.com/GZaccaroni/pps-warverse/commit/88a6ee9704340e2b1e44ae60432c948445847125))
+* Updated HUD to use new datasource ([c747672](https://github.com/GZaccaroni/pps-warverse/commit/c7476727bfe376821809365033885d80e447fb4e))
+* Updated view on controller actions ([9573289](https://github.com/GZaccaroni/pps-warverse/commit/9573289bf40ce59c3ddba6c531e59455828ef3b7))
+* Use target finder strategy to determine attack positions ([fd190e6](https://github.com/GZaccaroni/pps-warverse/commit/fd190e607494450cd3b8bc0be860a9988d7aaebc))
+
+
+### Bug Fixes
+
+* Added environment to AttackController ([32b051c](https://github.com/GZaccaroni/pps-warverse/commit/32b051cecb3829b1fc1281e0b39cbbb32c36885d))
+* Added Listener to all Simulation components ([59e4a99](https://github.com/GZaccaroni/pps-warverse/commit/59e4a994d7a702c2dd97ae9ddf59e99be158881b))
+* corrected attempts enumeration ([aec0b74](https://github.com/GZaccaroni/pps-warverse/commit/aec0b74ce1368fa016e25d05f3f59a57b8150b2e))
+* Corrected sample file ([ab3efc5](https://github.com/GZaccaroni/pps-warverse/commit/ab3efc5479e32bd8d98b2bb42cb00084fe007131))
+* Corrected UI representation of game ([76db01a](https://github.com/GZaccaroni/pps-warverse/commit/76db01a4ac407be8d5335d24f3ccce4bcfa6bfa2))
+* country update error ([8c8ca5c](https://github.com/GZaccaroni/pps-warverse/commit/8c8ca5ca79e8fac979e1403af3a5d98faa1c29ea))
+* fix lost country split resources, army and citizen ([e91845e](https://github.com/GZaccaroni/pps-warverse/commit/e91845ed51d9d9ce934b65f74aa7a8b7e83028e4))
+* fix relations of allied states in war and null pointer ([01ec8fe](https://github.com/GZaccaroni/pps-warverse/commit/01ec8fe50d78b03fd90cdf23178dd5be924343e1))
+* Fixed mouse position ([d03b067](https://github.com/GZaccaroni/pps-warverse/commit/d03b067ef902343f78cdbb9f88a418494807eae5))
+* relations not updating in loop ([88e2b15](https://github.com/GZaccaroni/pps-warverse/commit/88e2b1554ebe4aa91b0784c819d4ce4bbeab045b))
+* resolved merge errors ([4085ec2](https://github.com/GZaccaroni/pps-warverse/commit/4085ec2ac93de00a14116dee8d1b8321f0fecb8e))
+* Resolved test resources not found bug ([2e0aba1](https://github.com/GZaccaroni/pps-warverse/commit/2e0aba15baf156bf0349ff6d957dd5df9df84762))
+* update enviroment state elimination ([a4e1537](https://github.com/GZaccaroni/pps-warverse/commit/a4e15374b245e998674a9da3c232860e0100c95f))
+
+
+### Performance Improvements
+
+* Added tailrec annotation on SimulationEngine ([3776403](https://github.com/GZaccaroni/pps-warverse/commit/377640325162416044517939190d329465a4302f))
+* Changed Dtos visibility ([e1f50fa](https://github.com/GZaccaroni/pps-warverse/commit/e1f50faed71a7ec527464cd604d41dc16fbf3a78))
+* Corrected Hud text spelling ([58b8eb9](https://github.com/GZaccaroni/pps-warverse/commit/58b8eb95483ea9b6c0f4ca471c1d037538944d1d))
+* Removed unused noWars method ([2eb336f](https://github.com/GZaccaroni/pps-warverse/commit/2eb336f666de1c799073467eb656eefae1d34d24))
+* renamed interstateRelations in InterCountryRelations ([0f8fb60](https://github.com/GZaccaroni/pps-warverse/commit/0f8fb604351e336a1950391ecb9b43091ef0292b))
+* Updated DomainExample ([b9c3647](https://github.com/GZaccaroni/pps-warverse/commit/b9c36477b9cb2ca26f7123a54d2b262c06ff6dd8))
+* Updated visibility of UIConstants ([a62c05a](https://github.com/GZaccaroni/pps-warverse/commit/a62c05a6b3cda2df7edc48cc72a8449be3424335))
+
 ## 1.0.0 (2022-11-24)
 
 

@@ -11,12 +11,10 @@ import it.unibo.warverse.domain.model.fight.Army.{
   PrecisionArmyUnit
 }
 import it.unibo.warverse.domain.model.world.Relations.{
-  InterstateRelations,
+  InterCountryRelations,
   RelationStatus
 }
 import it.unibo.warverse.domain.model.world.World.Country
-
-import java.util.UUID
 
 object DomainExample:
 
@@ -143,8 +141,8 @@ object DomainExample:
       )
     )
 
-  val interstateRelations: InterstateRelations = InterstateRelations(
-    Seq(
+  val interCountryRelations: InterCountryRelations = InterCountryRelations(
+    Set(
       ((countryA.id, countryB.id), RelationStatus.WAR),
       ((countryB.id, countryC.id), RelationStatus.ALLIANCE)
     )
@@ -152,5 +150,5 @@ object DomainExample:
 
   val environment: Environment = Environment(
     Seq(countryA, countryB, countryC),
-    interstateRelations
+    interCountryRelations
   )

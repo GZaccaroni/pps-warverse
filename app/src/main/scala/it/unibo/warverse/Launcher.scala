@@ -1,18 +1,18 @@
 package it.unibo.warverse
 
 import it.unibo.warverse.presentation.view.MainFrame
-import javax.swing.SwingUtilities
-import javax.swing.JFrame
-import javax.swing.JPanel
-import java.awt.Dimension
-import java.awt.BorderLayout
+
+import javax.swing.{JFrame, JPanel, RepaintManager, SwingUtilities}
+import java.awt.{BorderLayout, Dimension, EventQueue}
 import it.unibo.warverse.presentation.view.MenuActions
 
 object Launcher extends App:
-  private val mainFrame = MainFrame()
-  private val menu = MenuActions(mainFrame)
-  mainFrame.setPanel(menu)
-  mainFrame.pack()
-  menu.requestFocus()
-  mainFrame.setVisible(true)
-  mainFrame.setLocationRelativeTo(null)
+  EventQueue.invokeAndWait(() =>
+    val mainFrame = MainFrame()
+    val menu = MenuActions(mainFrame)
+    mainFrame.setPanel(menu)
+    mainFrame.pack()
+    menu.requestFocus()
+    mainFrame.setVisible(true)
+    mainFrame.setLocationRelativeTo(null)
+  )

@@ -8,12 +8,11 @@ import scala.math.{min, *}
 import scala.annotation.tailrec
 
 object Geometry:
-
-  /** Represent a generic point in a space.
+  /** Represents an n-dimensional Point
     * @tparam PointType
-    *   the type of the point
+    *   the actual type of the Point
     */
-  trait Point[PointType <: Point[PointType]]:
+  trait Point[PointType <: Point[PointType]](val coordinates: Seq[Double]):
     /** It computes the distance between this and a point given by param.
       *
       * @param point
@@ -21,40 +20,48 @@ object Geometry:
       * @return
       *   the distance between the two points
       */
-    def distanceFrom(point: PointType): Double
+    def distanceFrom(point: PointType): Double =
+      math.sqrt(
+        coordinates
+          .zip(point.coordinates)
+          .map((thisCoord, pointCoord) => math.pow(thisCoord - pointCoord, 2))
+          .sum
+      )
 
-  /** Represent a generic point that can be moved in a space
+    override def equals(obj: Any): Boolean =
+      given Math.Precision(0.1)
+      obj match
+        case point: Point[?] =>
+          coordinates
+            .zip(point.coordinates)
+            .forall((thisCoord, pointCoord) => thisCoord ~= pointCoord)
+
+  /** Represents an n-dimensional Point that can be moved
+    *
     * @tparam PointType
-    *   the type of the point
+    *   the actual type of the Point
     */
   trait MovablePoint[PointType <: Point[PointType]]:
-    /** It computes a new point that is this moved toward the given one of the
-      * given distance
+    /** Creates another point moved in direction of `toward` point of `of`
+      * distance
       * @param toward
-      *   a point that indicates the direction of movement
+      *   the direction in which the point should be moved
       * @param of
-      *   measure of the distance crossed in the movement
+      *   the distance the point should be moved
       * @return
-      *   a new point in the resulted position
+      *   The moved point
       */
     def moved(toward: PointType, of: Double): PointType
 
-  /** Represent an implementation of [[Point]] and [[MovablePoint]] in a two
-    * dimensional space
+  /** A 2-Dimensional implementation of Point2D
     * @param x
-    *   the coordinate along the x axis
+    *   the x coordinate of point
     * @param y
-    *   the coordinate along the y axis
+    *   the y coordinate of point
     */
   case class Point2D(x: Double, y: Double)
-      extends Point[Point2D],
+      extends Point[Point2D](Seq(x, y)),
         MovablePoint[Point2D]:
-    override def distanceFrom(point: Point2D): Double =
-      math.sqrt(math.pow(point.x - x, 2) + math.pow(point.y - y, 2))
-    override def equals(point: Any): Boolean =
-      given Math.Precision(0.1)
-      point match
-        case point: Point2D => (point.x ~= x) && (point.y ~= y)
 
     override def moved(toward: Point2D, of: Double): Point2D =
       (toward.x - x, toward.y - y) match
@@ -71,53 +78,51 @@ object Geometry:
           val xMovement = yMovement / math.tan(alpha)
           Point2D(x + xMovement, y + yMovement)
 
-  /** Represent a polygon with generic definition of Point
+  /** A geometric polygon
     * @tparam Point
-    *   the type of point that describes the polygon
+    *   the type of the vertexes of the polygon
     */
   trait Polygon[Point]:
-    /** The sequence of vertexes that describes the boundaries of the polygon
+    /** Returns the vertexes of the polygon
       * @return
-      *   the sequence of vertexes that describes the boundaries of polygon
+      *   the vertexes of the polygon
       */
     def vertexes: Seq[Point]
 
-    /** The center of the polygon
+    /** Returns the center of the polygon
+      *
       * @return
       *   the center of the polygon
       */
     def center: Point
 
-    /** The area of the polygon
+    /** Returns the area of the polygon
+      *
       * @return
       *   the area of the polygon
       */
     def area: Double
 
-    /** Tests if the given point is inside the boundaries of the Polygon.
-      * @param point
-      *   the point to be tested
+    /** It checks if the polygon contains a given point
+      *
       * @return
-      *   true if the specified point is inside the Polygon boundary; false
-      *   otherwise.
+      *   true if the polygon contains the [[Point]] else false
       */
     def contains(point: Point): Boolean
 
-  type Polygon2D = Polygon[Point2D]
-
-  /** Factory for [[Polygon2D]] instance in a two dimensional space.
-    */
-  object Polygon2D:
-    /** Create a Polygon2D from the given vertexes
+  object Polygon:
+    /** Builds a 2-Dimensional polygon
       * @param vertexes
-      *   the vertexes of the Polygon
+      *   vertexes of the polygon
       * @return
-      *   a new Polygon2D instance described by the given vertexes
+      *   a [[Polygon2D]]
       */
-    def apply(vertexes: Seq[Point2D]): Polygon2D = JavaAwtPolygon2D(vertexes)
+    def apply(vertexes: Seq[Point2D]): Polygon[Point2D] = JavaAwtPolygon2D(
+      vertexes
+    )
 
     private case class JavaAwtPolygon2D(vertexes: Seq[Point2D])
-        extends Polygon2D:
+        extends Polygon[Point2D]:
       override def contains(point: Point2D): Boolean =
         awtPath2D.contains(point.x, point.y) || vertexes.contains(point);
 

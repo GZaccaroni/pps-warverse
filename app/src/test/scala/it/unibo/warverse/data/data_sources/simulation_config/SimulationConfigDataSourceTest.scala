@@ -1,12 +1,17 @@
 package it.unibo.warverse.data.data_sources.simulation_config
 
-import it.unibo.warverse.domain.model.common.Validation.ValidationException
-import org.scalatest.funsuite.AnyFunSuite
+import it.unibo.warverse.domain.model.common.validation.Validation.ValidationError
+import org.scalatest.funsuite.{AnyFunSuite, AsyncFunSuite}
 import org.scalatest.matchers.must.Matchers
+import monix.testing.scalatest.MonixTaskTest
+import org.scalatest.EitherValues.*
 
 import java.io.File
 
-class SimulationConfigDataSourceTest extends AnyFunSuite with Matchers:
+class SimulationConfigDataSourceTest
+    extends AsyncFunSuite
+    with MonixTaskTest
+    with Matchers:
   private val fileURI =
     ClassLoader.getSystemResource("simulation_config_test_sample.json").toURI
   private val file = File(fileURI)
@@ -14,20 +19,19 @@ class SimulationConfigDataSourceTest extends AnyFunSuite with Matchers:
     ClassLoader.getSystemResource("simulation_config_test_error.json").toURI
   private val invalidFile = File(invalidFileURI)
 
-  private def jsonDataSource(file: File) =
-    SimulationConfigDataSource(file, SimulationConfigDataSource.Format.Json)
+  private def jsonDataSource() =
+    SimulationConfigDataSource()
 
   test("Parsing should succeed without exceptions") {
-    noException must be thrownBy jsonDataSource(file).simulationConfig
+    jsonDataSource().readSimulationConfig(file).assertNoException
+    jsonDataSource().readSimulationConfig(invalidFile).assertNoException
   }
   test("Countries should be valid") {
-    val simulationConfig = jsonDataSource(file).simulationConfig
-    simulationConfig.countries.length mustBe 2
-    simulationConfig.countries.head.id mustBe "Test1"
-    simulationConfig.countries.last.id mustBe "Test2"
-  }
-  test("SimulationConfig should not be valid") {
-    an[ValidationException] mustBe thrownBy(
-      jsonDataSource(invalidFile).simulationConfig
-    )
+    jsonDataSource()
+      .readSimulationConfig(file)
+      .asserting(simulationConfig =>
+        simulationConfig.countries.length mustBe 2
+        simulationConfig.countries.head.id mustBe "Test1"
+        simulationConfig.countries.last.id mustBe "Test2"
+      )
   }
