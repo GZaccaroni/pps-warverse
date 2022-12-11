@@ -1,21 +1,18 @@
-package it.unibo.warverse.domain.engine
+package it.unibo.warverse.domain.engine.simulation
 
-import it.unibo.warverse.domain.engine.components.SimulationComponent
-import it.unibo.warverse.domain.model.{Environment, SimulationConfig}
+import it.unibo.warverse.domain.engine.simulation.components.*
 import it.unibo.warverse.domain.model.common.Geometry.Point2D
 import it.unibo.warverse.domain.model.common.Listen.*
 import it.unibo.warverse.domain.model.common.{Disposable, Geometry}
 import it.unibo.warverse.domain.model.fight.Army.*
-import it.unibo.warverse.domain.model.fight.{Army, SimulationEvent}
 import it.unibo.warverse.domain.model.fight.SimulationEvent.*
-import it.unibo.warverse.domain.model.world.SimulationStats
+import it.unibo.warverse.domain.model.fight.{Army, SimulationEvent}
 import it.unibo.warverse.domain.model.world.Relations.InterCountryRelations
+import it.unibo.warverse.domain.model.world.SimulationStats
 import it.unibo.warverse.domain.model.world.World.Country
-import it.unibo.warverse.domain.engine.components.*
+import it.unibo.warverse.domain.model.{Environment, SimulationConfig}
 import monix.eval.Task
 import monix.execution.Cancelable
-
-import concurrent.duration.{DurationInt, DurationDouble, FiniteDuration}
 import monix.execution.Scheduler.Implicits.global
 import monix.execution.Scheduler.global as scheduler
 import monix.reactive.Observable
@@ -23,6 +20,7 @@ import monix.reactive.ObservableLike.fromTask
 
 import scala.annotation.tailrec
 import scala.concurrent.Await
+import scala.concurrent.duration.{DurationDouble, DurationInt, FiniteDuration}
 
 /** Handles the simulation of the war, it can emit [[SimulationEvent]].
   */

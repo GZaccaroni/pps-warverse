@@ -1,4 +1,4 @@
-package it.unibo.warverse.domain.engine.components
+package it.unibo.warverse.domain.engine.simulation.components
 
 import it.unibo.warverse.domain.model.Environment
 import it.unibo.warverse.domain.model.common.Geometry.Point2D
