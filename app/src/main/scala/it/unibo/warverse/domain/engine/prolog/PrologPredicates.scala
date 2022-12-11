@@ -29,3 +29,44 @@ object PrologPredicates:
       .flatMap(head => head.find(_.getName == resultVar.getName))
       .map(_.getTerm.toString.toDouble)
       .getOrElse(0.0)
+
+  def reachableSortedTargets(
+    position: Point2D,
+    range: Double,
+    targets: Seq[Point2D],
+    limit: Int
+  ): List[Point2D] =
+    val reachableTargetsVar = Var("RT")
+    val res = engine
+      .getResultVars(
+        Struct(
+          "reachable_targets_limit",
+          position.coordinates.toPrologList,
+          range.toString,
+          targets.map(_.coordinates.toPrologList).toPrologList,
+          limit.toString,
+          reachableTargetsVar
+        )
+      )
+    res.headOption
+      .flatMap(head => head.find(_.getName == reachableTargetsVar.getName))
+      .map(el =>
+        mapPrologTermStrToJavaList(el.getTerm.toString)
+          .map(
+            mapPrologTermStrToJavaList
+              .andThen(_.map(_.toDouble))
+              .andThen(coords => Point2D(coords.head, coords(1)))
+          )
+      )
+      .getOrElse(List.empty)
+
+  private def mapPrologTermStrToJavaList(termStr: String): List[String] =
+    if !isPrologTermStrList(termStr) then
+      throw RuntimeException(s"Not a prolog list: $termStr")
+    else
+      val cleanedStr = termStr.substring(1, termStr.length - 1).trim
+      if cleanedStr.isEmpty then List.empty
+      else cleanedStr.split(",(?![^\\[]*[\\]])").toList
+
+  private def isPrologTermStrList(termStr: String): Boolean =
+    termStr.startsWith("[") && termStr.endsWith("]")
