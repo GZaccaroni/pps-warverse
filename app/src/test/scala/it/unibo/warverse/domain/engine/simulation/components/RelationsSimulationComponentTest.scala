@@ -1,4 +1,4 @@
-package it.unibo.warverse.domain.engine.components
+package it.unibo.warverse.domain.engine.simulation.components
 
 import org.scalatest.matchers.must.Matchers
 import it.unibo.warverse.domain.model.common.DomainExample

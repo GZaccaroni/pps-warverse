@@ -1,4 +1,4 @@
-package it.unibo.warverse.domain.engine.components
+package it.unibo.warverse.domain.engine.simulation.components
 
 import org.scalatest.matchers.must.Matchers
 import it.unibo.warverse.domain.model.common.DomainExample
@@ -9,7 +9,7 @@ import monix.testing.scalatest.MonixTaskTest
 import it.unibo.warverse.domain.model.fight.ArmyTest.given_Environment
 import it.unibo.warverse.domain.model.Environment
 
-class MovementSimulationComponentTest
+class ResourcesSimulationComponentTest
     extends AsyncFunSuite
     with MonixTaskTest
     with Matchers:
@@ -23,15 +23,11 @@ class MovementSimulationComponentTest
   RelationsSimulationComponent()
     .run(environment)
     .foreach(env => this.environment = env)
-
-  val initialEnv = environment
   given Environment = environment
-  MovementSimulationComponent().run.foreach(env => this.environment = env)
+  ResourcesSimulationComponent().run.foreach(env => this.environment = env)
 
-  test("Initial position must be different from moved position") {
-    val initialArmy = initialEnv.countries.find(_.id == "ID_A").get.armyUnits.map(unit => unit.position)
-    val newArmy = environment.countries.find(_.id == "ID_A").get.armyUnits.map(unit => unit.position)
-    assert(initialArmy.apply(0).x != newArmy.apply(0).x)
-    assert(initialArmy.apply(1).x != newArmy.apply(1).x)
-    assert(initialArmy.apply(2).x != newArmy.apply(2).x)
+  test("Updating resources of all states") {
+    environment.countries.find(_.id == "ID_A").get.resources mustBe 18
+    environment.countries.find(_.id == "ID_B").get.resources mustBe 0
+    environment.countries.find(_.id == "ID_C").get.resources mustBe 100
   }

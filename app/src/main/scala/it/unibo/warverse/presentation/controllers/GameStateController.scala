@@ -1,6 +1,6 @@
 package it.unibo.warverse.presentation.controllers
 
-import it.unibo.warverse.domain.engine.SimulationEngine
+import it.unibo.warverse.domain.engine.simulation.SimulationEngine
 import it.unibo.warverse.presentation.view.*
 import it.unibo.warverse.domain.model.world.{Relations, SimulationStats}
 import it.unibo.warverse.domain.model.world.Relations.*
