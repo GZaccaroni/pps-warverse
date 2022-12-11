@@ -1,6 +1,8 @@
 package it.unibo.warverse.domain.model.common
 
+import it.unibo.warverse.domain.engine.prolog.{PrologEngine, PrologPredicates}
 import it.unibo.warverse.domain.model.common.Math.DoubleWithAlmostEquals
+
 import java.awt.geom as AwtGeom
 
 object Geometry:
@@ -11,12 +13,7 @@ object Geometry:
   trait Point[PointType <: Point[PointType]](val coordinates: Seq[Double]):
 
     def distanceFrom(point: PointType): Double =
-      math.sqrt(
-        coordinates
-          .zip(point.coordinates)
-          .map((thisCoord, pointCoord) => math.pow(thisCoord - pointCoord, 2))
-          .sum
-      )
+      PrologPredicates.distanceBetween(this, point)
 
     override def equals(obj: Any): Boolean =
       given Math.Precision(0.1)
