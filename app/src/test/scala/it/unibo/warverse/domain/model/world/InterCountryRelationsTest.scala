@@ -55,14 +55,14 @@ class InterCountryRelationsTest extends AnyFunSuite with Matchers:
       InterCountryRelations(Set(AWarB, BAlliedC, ANeutralC))
 
     interCountryRelations.relations mustBe Set(AWarB, BAlliedC, ANeutralC)
-    interCountryRelations.withoutRelation(AWarB).relations mustBe Set(
+    interCountryRelations.withoutRelation(AWarB._1).relations mustBe Set(
       BAlliedC,
       ANeutralC
     )
     interCountryRelations
-      .withoutRelation(AWarB)
-      .withoutRelation(BAlliedC)
-      .withoutRelation(ANeutralC)
+      .withoutRelation(AWarB._1)
+      .withoutRelation(BAlliedC._1)
+      .withoutRelation(ANeutralC._1)
       .relations mustBe Set.empty
   }
 
@@ -76,7 +76,7 @@ class InterCountryRelationsTest extends AnyFunSuite with Matchers:
     interCountryRelations countryAllies countryC.id must contain only (countryA.id, countryB.id)
     interCountryRelations countryAllies countryB.id must contain only countryC.id
     interCountryRelations.withoutRelation(
-      BAlliedC
+      BAlliedC._1
     ) countryAllies countryB.id mustBe empty
   }
 

@@ -14,17 +14,18 @@ class RelationsSimulationComponent
     with SimulationComponent:
   override def run(environment: Environment): Task[Environment] =
     Task {
-      var newRel = environment.interCountryRelations
-      environment.countries.foreach(country =>
-        val enemies =
-          environment.interCountryRelations.countryEnemies(country.id)
-        val allied = environment.interCountryRelations.countryAllies(country.id)
-        enemies.map(enemy =>
-          allied.foreach(ally =>
-            if newRel.getStatus(enemy, ally).isEmpty then
-              newRel = newRel.withRelation((enemy, ally), RelationStatus.WAR)
-          )
-        )
-      )
-      environment.copiedWith(interCountryRelations = newRel)
+      val newRelations = environment.countries
+        .foldLeft(environment.interCountryRelations) { (relations, country) =>
+          val enemies = relations.countryEnemies(country.id)
+          val allies = relations.countryAllies(country.id)
+          val enemiesAlliesPairs =
+            enemies.flatMap(enemy => allies.map(ally => (enemy, ally)))
+
+          enemiesAlliesPairs.foldLeft(relations) { (relations, pair) =>
+            if relations.getStatus(pair._1, pair._2).isEmpty then
+              relations.withRelation((pair._1, pair._2), RelationStatus.WAR)
+            else relations
+          }
+        }
+      environment.copiedWith(interCountryRelations = newRelations)
     }

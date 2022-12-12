@@ -48,8 +48,8 @@ object PrologEngine:
   private class IterableVars(engine: Prolog, goal: Term)
       extends Iterable[Seq[Var]]:
     override def iterator: Iterator[Seq[Var]] = new Iterator[Seq[Var]]:
-      var advanceFailed = false
-      var solution: SolveInfo = engine.solve(goal)
+      private var advanceFailed = false
+      private var solution: SolveInfo = engine.solve(goal)
 
       override def hasNext: Boolean =
         (solution.isSuccess || solution.hasOpenAlternatives) && !advanceFailed
