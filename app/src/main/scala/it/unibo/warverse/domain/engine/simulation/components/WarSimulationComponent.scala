@@ -116,14 +116,11 @@ class WarSimulationComponent
     country: Country,
     relations: InterCountryRelations
   ): InterCountryRelations =
-    var result: InterCountryRelations = relations
-    val enemies = relations.countryEnemies(country.id)
-    val allied = relations.countryAllies(country.id)
-    allied.foreach(ally =>
-      result =
-        result.withoutRelation((country.id, ally), RelationStatus.ALLIANCE)
-    )
-    enemies.foreach(enemy =>
-      result = result.withoutRelation((country.id, enemy), RelationStatus.WAR)
-    )
-    result
+    val enemiesAndAllies =
+      relations.countryEnemies(country.id) ++ relations.countryAllies(
+        country.id
+      )
+
+    enemiesAndAllies.foldLeft(relations) { (relations, allyOrEnemy) =>
+      relations.withoutRelation((country.id, allyOrEnemy))
+    }
