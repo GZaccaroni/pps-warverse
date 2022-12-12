@@ -29,9 +29,15 @@ class MovementSimulationComponentTest
   MovementSimulationComponent().run.foreach(env => this.environment = env)
 
   test("Initial position must be different from moved position") {
-    val initialArmy = initialEnv.countries.find(_.id == "ID_A").get.armyUnits.map(unit => unit.position)
-    val newArmy = environment.countries.find(_.id == "ID_A").get.armyUnits.map(unit => unit.position)
-    assert(initialArmy.apply(0).x != newArmy.apply(0).x)
-    assert(initialArmy.apply(1).x != newArmy.apply(1).x)
-    assert(initialArmy.apply(2).x != newArmy.apply(2).x)
+    val result =
+      for
+        initialCountry <- initialEnv.countries
+        currentCountry <- environment.countries
+        if initialCountry.id == currentCountry.id
+        army <- initialCountry.armyUnits
+        army2 <- currentCountry.armyUnits
+        pos1 = army.position
+        pos2 = army2.position
+      yield (pos1.x != pos2.x || pos1.y != pos2.y)
+    result.forall(_ == true) must be(true)
   }
