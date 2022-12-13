@@ -41,9 +41,7 @@ object Relations:
       * @return
       *   the new object with the relation removed
       */
-    def withoutRelation(
-      relation: (World.CountryId, World.CountryId)
-    ): InterCountryRelations
+    def withoutRelation(relation: InterCountryRelation): InterCountryRelations
 
     /** It returns all the allies of a given country
       * @param country
@@ -99,10 +97,10 @@ object Relations:
         InterCountryRelationsImpl(relations + relation.normalized)
 
       override def withoutRelation(
-        relation: (World.CountryId, World.CountryId)
+        relation: InterCountryRelation
       ): InterCountryRelations =
         InterCountryRelationsImpl(
-          relations.filter(_._1 != relation.sorted)
+          relations - relation.normalized
         )
 
       override def countryAllies(
