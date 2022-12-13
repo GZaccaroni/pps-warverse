@@ -18,6 +18,10 @@ class RelationsSimulationComponentTest
     environment.interCountryRelations.getStatus("ID_A", "ID_C") mustBe empty
   }
 
-  test("Relation between A and C after the update must be war"){
-    newEnv.asserting(env => env.interCountryRelations.getStatus("ID_A", "ID_C").head mustBe RelationStatus.WAR)
+  test("Relation between A and C after the update must be war") {
+    newEnv.asserting(env =>
+      env.interCountryRelations
+        .getStatus("ID_A", "ID_C")
+        .head mustBe RelationStatus.WAR
+    )
   }
