@@ -4,6 +4,9 @@ import it.unibo.warverse.domain.engine.prolog.{PrologEngine, PrologPredicates}
 import it.unibo.warverse.domain.model.common.Math.DoubleWithAlmostEquals
 
 import java.awt.geom as AwtGeom
+import java.util
+import scala.math.{min, *}
+import scala.annotation.tailrec
 
 object Geometry:
   /** Represents an n-dimensional Point
@@ -11,7 +14,13 @@ object Geometry:
     *   the actual type of the Point
     */
   trait Point[PointType <: Point[PointType]](val coordinates: Seq[Double]):
-
+    /** It computes the distance between this and a point given by param.
+      *
+      * @param point
+      *   the point from which calculate the distance
+      * @return
+      *   the distance between the two points
+      */
     def distanceFrom(point: PointType): Double =
       PrologPredicates.distanceBetween(this, point)
 
@@ -125,13 +134,17 @@ object Geometry:
         *   the area of Polygon2D
         */
       override def area: Double =
-        val X = vertexes.map(_.x)
-        val Y = vertexes.map(_.y)
+        val (xCoordinates, yCoordinates) =
+          vertexes.foldRight((Seq[Double](), Seq[Double]()))((a, b) =>
+            (a.x +: b._1, a.y +: b._2)
+          )
         (for
           i <- vertexes.indices
-          j = (i - 1 + vertexes.length) % vertexes.length
-          area = (X(j) + X(i)) * (Y(j) - Y(i))
-        yield area).sum / 2
+          prev = (i - 1 + vertexes.length) % vertexes.length
+          area = (yCoordinates(prev) + yCoordinates(i)) * (xCoordinates(
+            prev
+          ) - xCoordinates(i))
+        yield area).sum.abs / 2
 
       private def awtPath2D: AwtGeom.Path2D =
         val path2D = AwtGeom.Path2D.Double()
@@ -142,3 +155,112 @@ object Geometry:
               .foreach(vertex => path2D.lineTo(vertex.x, vertex.y))
             path2D
           case None => path2D
+
+  /** Represent a collection of Polygon with generic definition of Point.
+    *
+    * @tparam Point
+    *   the type of point that describes the polygon
+    */
+  trait MultiPolygon[Point]:
+    def polygons: Seq[Polygon[Point]]
+    def area: Double
+    def contains(point: Point): Boolean
+    def split(splitsNumber: Int): Seq[MultiPolygon[Point]]
+
+  /** Factory for [[MultiPolygon]] instance in a two dimensional space.
+    */
+  object MultiPolygon:
+    /** Create a MultiPolygon2D from the given sequence of Polygon
+      * @param polygons
+      *   the polygons that compose the MultiPolygon
+      * @return
+      *   a new MultiPolygon2D instance composed by the given polygons
+      */
+    def apply(polygons: Seq[Polygon[Point2D]]): MultiPolygon[Point2D] =
+      MultiPolygon2DImpl(polygons)
+
+    /** Create a MultiPolygon2D from the given Polygon
+      * @param polygon
+      *   the polygon that compose the MultiPolygon
+      * @return
+      *   a new MultiPolygon2D instance composed by a single polygon
+      */
+    def apply(polygon: Polygon[Point2D]): MultiPolygon[Point2D] =
+      MultiPolygon2DImpl(Seq(polygon))
+    private case class MultiPolygon2DImpl(
+      override val polygons: Seq[Polygon[Point2D]]
+    ) extends MultiPolygon[Point2D]:
+
+      override def area: Double = polygons.map(_.area).sum
+
+      override def contains(point: Point2D): Boolean =
+        polygons.exists(_.contains(point))
+
+      override def split(splitsNumber: Int): Seq[MultiPolygon[Point2D]] =
+        @tailrec
+        def splitPolygon(
+          polygons: Seq[Polygon[Point2D]],
+          splits: Int
+        ): Seq[MultiPolygon[Point2D]] =
+          if polygons.length >= splits then
+            polygons
+              .grouped((polygons.length.toDouble / splits).ceil.toInt)
+              .map(MultiPolygon(_))
+              .toSeq
+          else splitPolygon(splitLargest(polygons), splits)
+
+        def splitLargest(
+          polygons: Seq[Polygon[Point2D]]
+        ): Seq[Polygon[Point2D]] =
+          val (polygon, polygonIndex) = polygons.zipWithIndex.maxBy(_._1.area)
+          // Vertexes reordering to improve multiple split
+          val vertexesToSplit = polygon.vertexes.drop(
+            polygon.vertexes.length / 2
+          ) ++ polygon.vertexes.take(polygon.vertexes.length / 2)
+          val cutLine = (vertexesToSplit.head, polygon.center)
+          var subVertexes1, subVertexes2 = Seq(vertexesToSplit.head)
+          var i = 1
+          subVertexes1 = subVertexes1.appended(vertexesToSplit(i))
+          var ab = (vertexesToSplit(i), vertexesToSplit(i + 1))
+          var intersectionPoint = intersection(ab, cutLine)
+          while intersectionPoint.isEmpty do
+            i = i + 1
+            subVertexes1 = subVertexes1.appended(vertexesToSplit(i))
+            ab = (vertexesToSplit(i), vertexesToSplit(i + 1))
+            intersectionPoint = intersection(ab, cutLine)
+          subVertexes1 = subVertexes1.appended(intersectionPoint.get)
+          if intersectionPoint.get != vertexesToSplit(i + 1) then
+            subVertexes2 = subVertexes2.appended(intersectionPoint.get)
+          subVertexes2 = subVertexes2 ++ vertexesToSplit.drop(i + 1)
+          polygons.patch(
+            polygonIndex,
+            Seq(Polygon(subVertexes1), Polygon(subVertexes2)),
+            1
+          )
+
+        def intersection(
+          AB: (Point2D, Point2D),
+          CD: (Point2D, Point2D)
+        ): Option[Point2D] =
+          val a1 = AB._2.y - AB._1.y
+          val b1 = AB._1.x - AB._2.x
+          val c1 = a1 * AB._1.x + b1 * AB._1.y
+          val a2 = CD._2.y - CD._1.y
+          val b2 = CD._1.x - CD._2.x
+          val c2 = a2 * CD._1.x + b2 * CD._1.y
+          val determinant = a1 * b2 - a2 * b1
+          if determinant != 0 then
+            val x = (b2 * c1 - b1 * c2) / determinant
+            val y = (a1 * c2 - a2 * c1) / determinant
+            val (minX, maxX) = (min(AB._1.x, AB._2.x), max(AB._1.x, AB._2.x))
+            val (minY, maxY) = (min(AB._1.y, AB._2.y), max(AB._1.y, AB._2.y))
+            given Math.Precision(0.001)
+            if (x > minX || (x ~= minX)) &&
+              (x < maxX || (x ~= maxX)) &&
+              (y > minY || (y ~= minY)) &&
+              (y <= maxY || (y ~= minY))
+            then Option(Point2D(x, y))
+            else Option.empty
+          else Option.empty
+
+        splitPolygon(polygons, splitsNumber)

@@ -40,7 +40,7 @@ class AttackSimulationComponent
           environment.countries.find(_.boundaries.contains(event.target))
 
         val newCountry = countryOption.map { country =>
-          val density = country.citizens / Math.abs(country.boundaries.area)
+          val density = country.citizens / country.boundaries.area
           val citizens =
             country.citizens - (density * event.areaOfImpact).toInt
           country.copy(citizens = citizens)

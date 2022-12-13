@@ -6,7 +6,11 @@ import it.unibo.warverse.domain.model.common.Geometry
 import it.unibo.warverse.domain.model.common.validation.Validation
 import it.unibo.warverse.domain.repositories.SimulationConfigRepository
 import monix.eval.Task
-import it.unibo.warverse.domain.model.common.Geometry.{Point2D, Polygon}
+import it.unibo.warverse.domain.model.common.Geometry.{
+  MultiPolygon,
+  Point2D,
+  Polygon
+}
 import it.unibo.warverse.data.models.SimulationConfigDtos.SimulationConfigDto
 import it.unibo.warverse.data.models.{ArmyDtos, GeometryDtos}
 import it.unibo.warverse.data.models.WorldDtos.CountryDto
@@ -41,7 +45,7 @@ class SimulationConfigRepositoryImpl(
       name = dto.id,
       resources = dto.resources,
       citizens = dto.citizens,
-      boundaries = Polygon(dto.boundaries.map(mapPoint2DDto)),
+      boundaries = MultiPolygon(Polygon(dto.boundaries.map(mapPoint2DDto))),
       armyUnits = mapArmyDto(dto.id, dto.army)
     )
 

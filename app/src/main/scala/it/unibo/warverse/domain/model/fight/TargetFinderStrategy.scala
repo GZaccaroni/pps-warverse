@@ -48,7 +48,7 @@ object TargetFinderStrategy:
       ): Seq[Geometry.Point2D] = attackType match
         case Fight.AttackType.Area =>
           enemiesOfCountry(ofCountry)
-            .map(_.boundaries.center)
+            .flatMap(_.boundaries.polygons.map(_.center))
         case Fight.AttackType.Precision =>
           enemiesOfCountry(ofCountry)
             .flatMap(_.armyUnits.map(_.position))
