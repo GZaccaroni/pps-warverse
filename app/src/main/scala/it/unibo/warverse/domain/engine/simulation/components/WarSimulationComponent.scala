@@ -47,15 +47,6 @@ class WarSimulationComponent
   )(using environment: Environment): Environment =
     val winnersId =
       environment.interCountryRelations.countryEnemies(countryDefeated.id).toSeq
-    val loserResources = countryDefeated.resources
-    val loserCitizens = countryDefeated.citizens
-    val loserArmy = countryDefeated.armyUnits
-    val armyUnitsPerWinner =
-      loserArmy.size / math.max(winnersId.size, 1)
-    val citizensPerWinner =
-      loserCitizens / math.max(winnersId.size, 1)
-    val resourcesPerWinner =
-      loserResources / math.max(winnersId.size, 1)
     val envWithoutDefeatedCountry =
       environment
         .copiedWith(
@@ -66,6 +57,17 @@ class WarSimulationComponent
           )
         )
     if winnersId.nonEmpty then
+      val loserResources = countryDefeated.resources
+      val loserCitizens = countryDefeated.citizens
+      val loserArmy = countryDefeated.armyUnits
+      val armyUnitsPerWinner =
+        loserArmy.size / winnersId.size
+      val citizensPerWinner =
+        loserCitizens / winnersId.size
+      val resourcesPerWinner =
+        loserResources / winnersId.size
+      val splittedLoserTerritory =
+        countryDefeated.boundaries.split(winnersId.size)
       winnersId.zipWithIndex
         .foldLeft(envWithoutDefeatedCountry) {
           case (envWithoutDefeatedCountry, (winnerId, winnerIndex)) =>
@@ -78,12 +80,12 @@ class WarSimulationComponent
               )
             )
             val idToCountryOption = currentCountries
-              .find(country => country.id == winnerId)
+              .find(_.id == winnerId)
 
             idToCountryOption match
-              case Some(idToCountry) =>
+              case Some(country) =>
                 val winnerCountry =
-                  idToCountry
+                  country
                     .addingResources(
                       if loserResources - resourcesPerWinner * (winnerIndex + 1) < resourcesPerWinner
                       then loserResources - resourcesPerWinner * winnerIndex
@@ -104,6 +106,7 @@ class WarSimulationComponent
                       then loserCitizens - citizensPerWinner * winnerIndex
                       else citizensPerWinner
                     )
+                    .addingTerritory(splittedLoserTerritory(winnerIndex))
                 envWithoutDefeatedCountry
                   .replacingCountry(winnerCountry)
               case None =>
@@ -116,11 +119,14 @@ class WarSimulationComponent
     country: Country,
     relations: InterCountryRelations
   ): InterCountryRelations =
-    val enemiesAndAllies =
-      relations.countryEnemies(country.id) ++ relations.countryAllies(
-        country.id
-      )
-
-    enemiesAndAllies.foldLeft(relations) { (relations, allyOrEnemy) =>
-      relations.withoutRelation((country.id, allyOrEnemy))
-    }
+    var result: InterCountryRelations = relations
+    val enemies = relations.countryEnemies(country.id)
+    val allied = relations.countryAllies(country.id)
+    allied.foreach(ally =>
+      result =
+        result.withoutRelation((country.id, ally), RelationStatus.ALLIANCE)
+    )
+    enemies.foreach(enemy =>
+      result = result.withoutRelation((country.id, enemy), RelationStatus.WAR)
+    )
+    result
