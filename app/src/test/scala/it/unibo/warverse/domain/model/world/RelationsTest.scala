@@ -67,7 +67,7 @@ object RelationsTest:
         .relations mustBe Set.empty
     }
 
-    test("Function getAllies must get ALLIANCE related country") {
+    test("Function countryAllies must get ALLIANCE related country") {
       val AWarB = ((countryA.id, countryB.id), RelationStatus.WAR)
       val BAlliedC = ((countryB.id, countryC.id), RelationStatus.ALLIANCE)
       val CAlliedA = ((countryC.id, countryA.id), RelationStatus.ALLIANCE)
@@ -81,7 +81,7 @@ object RelationsTest:
       ) countryAllies countryB.id mustBe empty
     }
 
-    test("Function getWars must get WAR related country") {
+    test("Function countryEnemies must get WAR related country") {
       val AWarB = ((countryA.id, countryB.id), RelationStatus.WAR)
       val BAlliedC = ((countryB.id, countryC.id), RelationStatus.ALLIANCE)
       val ANeutralC = ((countryC.id, countryA.id), RelationStatus.ALLIANCE)
