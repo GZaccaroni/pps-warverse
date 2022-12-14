@@ -23,9 +23,9 @@ class ResourcesSimulationComponent
           .map(country =>
             country.addingResources(
               if isInWar(country) then
-                country.citizens -
+                country.dailyProduction -
                   country.armyUnits.map(_.dailyConsume).sum
-              else country.citizens
+              else country.dailyProduction
             )
           )
       )
