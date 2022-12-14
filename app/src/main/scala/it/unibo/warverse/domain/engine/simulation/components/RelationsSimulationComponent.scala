@@ -22,7 +22,7 @@ class RelationsSimulationComponent
             enemies.flatMap(enemy => allies.map(ally => (enemy, ally)))
 
           enemiesAlliesPairs.foldLeft(relations) { (relations, pair) =>
-            if relations.getStatus(pair._1, pair._2).isEmpty then
+            if relations.relationStatus(pair._1, pair._2).isEmpty then
               relations.withRelation((pair._1, pair._2), RelationStatus.WAR)
             else relations
           }
