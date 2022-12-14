@@ -1,7 +1,11 @@
 package it.unibo.warverse.domain.model.world
 
 import it.unibo.warverse.domain.model.common.Geometry.{MultiPolygon, Point2D}
-import it.unibo.warverse.domain.model.common.{Geometry, Life, Movement}
+import it.unibo.warverse.domain.model.common.Resources.{
+  Resources,
+  ResourcesProducer
+}
+import it.unibo.warverse.domain.model.common.{Geometry, Movement}
 import it.unibo.warverse.domain.model.fight.Army.ArmyUnit
 import it.unibo.warverse.domain.model.fight.Fight
 
@@ -16,7 +20,7 @@ object World:
       * @return
       *   a new instance of [[UpdatableType]] with the resources added
       */
-    def addingResources(newResources: Life.Resources): UpdatableType
+    def addingResources(newResources: Resources): UpdatableType
 
     /** It returns a new entity with the given citizens added
       *
@@ -64,16 +68,17 @@ object World:
     name: String,
     citizens: Int,
     armyUnits: Seq[ArmyUnit],
-    resources: Life.Resources,
+    resources: Resources,
     boundaries: Territory
-  ) extends UpdatableAssets[Country]:
+  ) extends UpdatableAssets[Country],
+        ResourcesProducer:
     /** It returns a new [[Country]] with the given resources added
       * @param newResources
       *   the resources to be added
       * @return
       *   a new instance of [[Country]] with the resources added
       */
-    override def addingResources(newResources: Life.Resources): Country =
+    override def addingResources(newResources: Resources): Country =
       this.copy(resources = math.max(resources + newResources, 0))
 
     /** It returns a new [[Country]] with the given citizens added
@@ -105,3 +110,8 @@ object World:
       this.copy(boundaries =
         MultiPolygon(this.boundaries.polygons ++ territory.polygons)
       )
+
+    private val DAILY_PRODUCTION_PER_CITIZEN = 1
+
+    override def dailyProduction: Resources =
+      this.citizens * DAILY_PRODUCTION_PER_CITIZEN
