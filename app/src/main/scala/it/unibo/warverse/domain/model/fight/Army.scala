@@ -2,10 +2,10 @@ package it.unibo.warverse.domain.model.fight
 
 import it.unibo.warverse.domain.engine.prolog.PrologPredicates
 import it.unibo.warverse.domain.model.Environment
-import it.unibo.warverse.domain.model.common.Life
 import it.unibo.warverse.domain.model.common.Geometry.Point2D
 import it.unibo.warverse.domain.model.common.Math.Percentage
 import it.unibo.warverse.domain.model.common.Movement.Movable
+import it.unibo.warverse.domain.model.common.Resources.ResourcesConsumer
 import it.unibo.warverse.domain.model.fight.Fight
 import it.unibo.warverse.domain.model.fight.Fight.AttackAction
 import it.unibo.warverse.domain.model.fight.TargetFinderStrategy.TargetFinderStrategy
@@ -14,13 +14,6 @@ import it.unibo.warverse.domain.model.world.World
 import scala.util.Random
 
 object Army:
-  /** Represent an entity with periodic consume of resources. */
-  trait ResourcesConsumer:
-    /** The quantity of resources that consume every day
-      * @return
-      *   a representation of the daily resource consume
-      */
-    def dailyConsume: Life.Resources
 
   /** The ArmyUnit base trait. It can attack, be moved and consume resources.
     *
