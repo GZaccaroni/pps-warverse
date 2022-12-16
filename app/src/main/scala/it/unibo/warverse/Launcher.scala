@@ -1,10 +1,7 @@
 package it.unibo.warverse
 
-import it.unibo.warverse.presentation.view.MainFrame
-
-import javax.swing.{JFrame, JPanel, RepaintManager, SwingUtilities}
-import java.awt.{BorderLayout, Dimension, EventQueue}
-import it.unibo.warverse.presentation.view.MenuActions
+import java.awt.EventQueue
+import it.unibo.warverse.presentation.view.{MenuActions, MainFrame}
 
 object Launcher extends App:
   EventQueue.invokeAndWait(() =>

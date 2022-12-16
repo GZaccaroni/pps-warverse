@@ -1,7 +1,6 @@
 package it.unibo.warverse.domain.model.common.validation
 
 import it.unibo.warverse.domain.model.common.validation.Validation.*
-
 import scala.math.Ordered.orderingToOrdered
 
 object CommonValidators:

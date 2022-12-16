@@ -1,10 +1,7 @@
 package it.unibo.warverse.presentation.view
 
-import java.awt.Graphics2D
 import java.awt.geom.RoundRectangle2D
-import java.awt.Dimension
-import java.awt.Color
-import java.awt.FontMetrics
+import java.awt.{Color, Dimension, Graphics2D}
 
 class SimpleMenuItemPainter extends MenuItemPainter:
 

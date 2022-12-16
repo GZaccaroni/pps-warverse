@@ -1,12 +1,8 @@
 package it.unibo.warverse.presentation.view
 
-import javax.swing.JFrame
 import javax.swing.WindowConstants.EXIT_ON_CLOSE
-import javax.swing.JPanel
-import java.awt.Toolkit
+import javax.swing.{JPanel, JFrame}
 import java.awt.BorderLayout
-import javax.swing.ImageIcon
-import java.awt.Image
 
 trait MainFrame extends JFrame:
   def setPanel(panel: JPanel): Unit

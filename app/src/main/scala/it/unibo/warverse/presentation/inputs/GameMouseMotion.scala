@@ -1,14 +1,10 @@
 package it.unibo.warverse.presentation.inputs
 
 import it.unibo.warverse.domain.model.Environment
-
-import javax.swing.{JLabel, JMenuItem, JPanel, JPopupMenu, JTextArea}
-import java.awt.event.MouseMotionListener
-import java.awt.event.MouseEvent
-import it.unibo.warverse.domain.model.world.World.Country
-
-import java.awt.{Color, Polygon}
 import it.unibo.warverse.domain.model.common.Geometry.Point2D
+import javax.swing.{JMenuItem, JPanel, JPopupMenu}
+import java.awt.event.{MouseMotionListener, MouseEvent}
+import java.awt.Color
 
 trait GameMouseMotion extends JPanel with MouseMotionListener:
   def environment: Option[Environment]

@@ -7,7 +7,6 @@ import it.unibo.warverse.domain.model.common.Resources.{
 }
 import it.unibo.warverse.domain.model.common.{Geometry, Movement}
 import it.unibo.warverse.domain.model.fight.Army.ArmyUnit
-import it.unibo.warverse.domain.model.fight.Fight
 
 object World:
   type CountryId = String

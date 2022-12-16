@@ -2,9 +2,7 @@ package it.unibo.warverse.domain.model.common
 
 import it.unibo.warverse.domain.engine.prolog.{PrologEngine, PrologPredicates}
 import it.unibo.warverse.domain.model.common.Math.DoubleWithAlmostEquals
-
 import java.awt.geom as AwtGeom
-import java.util
 import scala.math.{min, *}
 import scala.annotation.tailrec
 

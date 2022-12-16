@@ -2,29 +2,9 @@ package it.unibo.warverse.presentation.view
 
 import it.unibo.warverse.domain.model.Environment
 import it.unibo.warverse.presentation.inputs.GameMouseMotion
-
-import java.awt.Color
-import java.awt.Graphics2D
-import java.awt.Graphics
-import it.unibo.warverse.domain.model.common.Geometry.Point2D
-import it.unibo.warverse.domain.model.world.World.Country
-import it.unibo.warverse.domain.model.common.Geometry
-
-import java.awt.Polygon
-import it.unibo.warverse.domain.model.fight.Army
-
-import java.awt.BasicStroke
 import it.unibo.warverse.presentation.common.UIConstants
-
-import java.awt.BorderLayout
-import java.awt.Dimension
-import java.awt.Toolkit
 import it.unibo.warverse.domain.model.fight.Army.*
-import it.unibo.warverse.presentation.controllers.GameStateController
-
-import java.awt.Shape
-import java.awt.event.MouseEvent
-import javax.swing.ToolTipManager
+import java.awt.{Dimension, Color, Graphics2D, Graphics, Polygon}
 
 class GameMap extends GameMouseMotion:
   this.requestFocus()

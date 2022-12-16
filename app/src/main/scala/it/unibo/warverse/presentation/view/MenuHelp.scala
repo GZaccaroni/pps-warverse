@@ -1,25 +1,18 @@
 package it.unibo.warverse.presentation.view
 
 import it.unibo.warverse.presentation.common.UIConstants
-
-import javax.swing.JPanel
-import javax.swing.JButton
 import it.unibo.warverse.presentation.controllers.GameStateController
-
-import javax.swing.JRadioButton
-import javax.swing.ButtonGroup
-import javax.swing.JComponent
-import javax.swing.JTextArea
-import java.awt.Insets
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
+import javax.swing.{
+  JLabel,
+  JPanel,
+  JButton,
+  JRadioButton,
+  ButtonGroup,
+  JComponent,
+  JTextArea
+}
+import java.awt.{Font, Insets, Graphics, Toolkit}
 import it.unibo.warverse.data.samples.EncodedSamples
-
-import java.net.URL
-import java.awt.Graphics
-import java.awt.Toolkit
-import javax.swing.JLabel
-import java.awt.Font
 
 trait MenuHelp extends JPanel:
   def addComponentsToPanel(components: Seq[JComponent]): Unit

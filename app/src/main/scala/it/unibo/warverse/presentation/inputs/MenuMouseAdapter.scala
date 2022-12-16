@@ -1,21 +1,11 @@
 package it.unibo.warverse.presentation.inputs
 
-import it.unibo.warverse.presentation.view.{
-  GameMap,
-  GamePanel,
-  MainFrame,
-  MenuHelp,
-  MenuOptions
-}
-
-import java.awt.Point
-import java.awt.event.MouseAdapter
-import java.awt.event.MouseEvent
-import java.awt.geom.RoundRectangle2D
-import javax.swing.JPanel
+import it.unibo.warverse.presentation.view.{MainFrame, MenuHelp, MenuActions}
 import it.unibo.warverse.presentation.controllers.GameStateController
 import it.unibo.warverse.presentation.model.MenuItems.*
-import it.unibo.warverse.presentation.view.MenuActions
+import java.awt.Point
+import java.awt.event.{MouseAdapter, MouseEvent}
+import java.awt.geom.RoundRectangle2D
 
 trait MenuMouseAdapter extends MouseAdapter:
   def menuItems: Seq[MenuItem]

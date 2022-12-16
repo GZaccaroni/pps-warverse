@@ -5,23 +5,13 @@ import it.unibo.warverse.presentation.inputs.{
   MenuKeyAction,
   MenuMouseAdapter
 }
-
-import javax.swing.JPanel
-import java.awt.geom.RoundRectangle2D
-import scala.collection.mutable
-import java.awt.Color
-import javax.swing.SwingUtilities
-import javax.swing.KeyStroke
-import java.awt.event.KeyEvent
-import java.awt.Dimension
-import java.awt.Toolkit
-import java.awt.Graphics
-import java.awt.Image
-import java.awt.Graphics2D
-import java.net.URL
 import it.unibo.warverse.presentation.common.UIConstants
 import it.unibo.warverse.presentation.model.MenuItems.*
-import javax.swing.JComponent
+import java.awt.geom.RoundRectangle2D
+import java.awt.event.KeyEvent
+import java.awt.{Graphics2D, Graphics, Toolkit, Dimension, Color}
+import java.net.URL
+import javax.swing.{JComponent, JPanel, KeyStroke}
 
 trait MenuActions extends JPanel:
   def mainFrame: MainFrame

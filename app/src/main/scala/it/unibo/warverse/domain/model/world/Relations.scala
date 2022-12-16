@@ -1,10 +1,6 @@
 package it.unibo.warverse.domain.model.world
 
-import it.unibo.warverse.domain.model.world.World.Country
-
 import scala.::
-import javax.swing.JOptionPane
-import it.unibo.warverse.domain.model.world.World.CountryId
 
 object Relations:
   /** The status of the relation between two countries

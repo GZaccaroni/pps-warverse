@@ -1,20 +1,7 @@
 package it.unibo.warverse.presentation.common
 
 import java.net.URL
-import java.awt.BasicStroke
-import it.unibo.warverse.domain.model.common.Geometry.{
-  MultiPolygon,
-  Point2D,
-  Polygon
-}
-import it.unibo.warverse.domain.model.world.World.Country
-import it.unibo.warverse.domain.model.world.World.CountryId
-import it.unibo.warverse.domain.model.common.Geometry
-import java.awt.Dimension
-import it.unibo.warverse.domain.model.fight.Army.*
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import org.json4s.jackson.Json
+import java.awt.{BasicStroke, Dimension}
 
 private[presentation] object UIConstants:
   enum Resources(val name: String):
