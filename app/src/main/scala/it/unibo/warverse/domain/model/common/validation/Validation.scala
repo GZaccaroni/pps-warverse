@@ -1,7 +1,6 @@
 package it.unibo.warverse.domain.model.common.validation
 
 import com.github.dwickern.macros.NameOf.*
-import com.github.dwickern.macros.NameOfImpl
 
 object Validation:
 

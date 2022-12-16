@@ -1,8 +1,6 @@
 package it.unibo.warverse.domain.model.common
 
 import it.unibo.warverse.domain.model.Environment
-import it.unibo.warverse.domain.model.common.Geometry.Point2D
-import it.unibo.warverse.domain.model.fight.TargetFinderStrategy
 import it.unibo.warverse.domain.model.fight.TargetFinderStrategy.TargetFinderStrategy
 
 object Movement:

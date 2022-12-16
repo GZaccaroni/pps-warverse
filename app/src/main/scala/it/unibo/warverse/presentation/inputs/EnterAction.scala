@@ -1,20 +1,10 @@
 package it.unibo.warverse.presentation.inputs
 
-import it.unibo.warverse.presentation.view.{
-  GameMap,
-  GamePanel,
-  Hud,
-  MainFrame,
-  MenuActions,
-  MenuHelp,
-  MenuOptions
-}
-
-import javax.swing.AbstractAction
-import java.awt.event.ActionEvent
-import javax.swing.JPanel
+import it.unibo.warverse.presentation.view.{MainFrame, MenuActions, MenuHelp}
 import it.unibo.warverse.presentation.controllers.GameStateController
 import it.unibo.warverse.presentation.model.MenuItems.MainMenuItem
+import javax.swing.AbstractAction
+import java.awt.event.ActionEvent
 
 trait EnterAction extends AbstractAction:
   def panel: MenuActions

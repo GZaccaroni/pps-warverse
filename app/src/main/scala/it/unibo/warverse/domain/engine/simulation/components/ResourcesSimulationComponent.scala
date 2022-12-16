@@ -1,11 +1,7 @@
 package it.unibo.warverse.domain.engine.simulation.components
 
 import it.unibo.warverse.domain.model.Environment
-import it.unibo.warverse.domain.model.fight.TargetFinderStrategy.TargetFinderStrategy2D
-import it.unibo.warverse.domain.model.fight.{
-  SimulationEvent,
-  TargetFinderStrategy
-}
+import it.unibo.warverse.domain.model.fight.SimulationEvent
 import it.unibo.warverse.domain.model.world.World.Country
 import it.unibo.warverse.domain.model.common.Listen.*
 import scala.annotation.tailrec

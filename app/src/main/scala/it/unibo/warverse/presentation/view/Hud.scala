@@ -1,17 +1,12 @@
 package it.unibo.warverse.presentation.view
 
 import it.unibo.warverse.presentation.controllers.GameStateController
-import it.unibo.warverse.data.data_sources.simulation_config.SimulationConfigDataSource
-import it.unibo.warverse.domain.model.{Environment, SimulationConfig}
-import it.unibo.warverse.domain.model.world.Relations
-import it.unibo.warverse.domain.model.world.Relations.InterCountryRelations
+import it.unibo.warverse.domain.model.SimulationConfig
 import it.unibo.warverse.domain.repositories.SimulationConfigRepository
-
 import java.io.File
-import java.awt.{Color, Dimension, Insets}
+import java.awt.{Color, Dimension, Insets, Graphics}
 import javax.swing.text.{DefaultCaret, DefaultHighlighter, Highlighter}
 import javax.swing.text.Highlighter.HighlightPainter
-import java.awt.Graphics
 import javax.swing.{
   Box,
   JButton,
@@ -20,11 +15,10 @@ import javax.swing.{
   JOptionPane,
   JPanel,
   JScrollPane,
-  JTextArea
+  JTextArea,
+  JRadioButton
 }
 import monix.execution.Scheduler.Implicits.global
-import javax.swing.JRadioButton
-
 import javax.swing.filechooser.FileNameExtensionFilter
 
 class Hud extends JPanel:

@@ -2,7 +2,6 @@ package it.unibo.warverse.data.models
 
 import it.unibo.warverse.data.models.WorldDtos
 import it.unibo.warverse.domain.model.common.validation.Validation.*
-import it.unibo.warverse.domain.model.world.World
 import it.unibo.warverse.domain.model.common.validation.CommonValidators.*
 
 private[data] object SimulationConfigDtos:
