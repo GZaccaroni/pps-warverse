@@ -1,9 +1,11 @@
 package it.unibo.warverse.presentation.view
 
 import it.unibo.warverse.presentation.common.UIConstants
+
 import javax.swing.JPanel
 import javax.swing.JButton
 import it.unibo.warverse.presentation.controllers.GameStateController
+
 import javax.swing.JRadioButton
 import javax.swing.ButtonGroup
 import javax.swing.JComponent
@@ -11,6 +13,8 @@ import javax.swing.JTextArea
 import java.awt.Insets
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
+import it.unibo.warverse.data.samples.EncodedSamples
+
 import java.net.URL
 import java.awt.Graphics
 import java.awt.Toolkit
@@ -20,8 +24,6 @@ import java.awt.Font
 trait MenuHelp extends JPanel:
   def addComponentsToPanel(components: Seq[JComponent]): Unit
   def addComponentsToButtonGroup(radioButtons: Seq[JRadioButton]): Unit
-  def printInTextField: Unit
-  def jsonPrettyFormatted(stringJson: String): String
   def mainFrame: MainFrame
 
 object MenuHelp:
@@ -32,19 +34,20 @@ object MenuHelp:
   ) extends MenuHelp:
     this.requestFocus()
     this.setLayout(null)
+    private val encodedSamples = EncodedSamples()
     private val startButton = JButton("Start")
     private val closeButton = JButton("Exit App")
     private val generateJsonButton = JButton("Get Json Sample")
-    private val rdbStructure = JRadioButton("A) Structure");
-    private val rdbCountry = JRadioButton("B) Country");
-    private val rdbUnitKind = JRadioButton("C) Unit Kind");
-    private val rdbUnits = JRadioButton("D) Units");
-    private val rdbBoundaries = JRadioButton("E) Boundaries");
-    private val rdbRelations = JRadioButton("F) Relations");
+    private val rdbStructure = JRadioButton("A) Structure")
+    private val rdbCountry = JRadioButton("B) Country")
+    private val rdbUnitKind = JRadioButton("C) Unit Kind")
+    private val rdbUnits = JRadioButton("D) Units")
+    private val rdbBoundaries = JRadioButton("E) Boundaries")
+    private val rdbRelations = JRadioButton("F) Relations")
     private val buttonGroup = ButtonGroup()
     private val console: JTextArea = JTextArea(25, 25)
-    private val text: JLabel = JLabel(UIConstants.description)
-    text.setFont(Font("Serif", Font.PLAIN, 20));
+    private val text: JLabel = JLabel(UIConstants.helpDescription)
+    text.setFont(Font("Serif", Font.PLAIN, 20))
     text.setBounds(20, 120, 900, 200)
     rdbStructure.setBounds(920, 60, 120, 20)
     rdbCountry.setBounds(1020, 60, 120, 20)
@@ -90,28 +93,18 @@ object MenuHelp:
       GameStateController(mainFrame).setPanel()
     )
     closeButton.addActionListener(_ => System.exit(0))
-    generateJsonButton.addActionListener((_ => printInTextField))
+    generateJsonButton.addActionListener(_ => updateTextField())
 
-    override def jsonPrettyFormatted(stringJson: String): String =
-      val mapper = new ObjectMapper
-      mapper.enable(SerializationFeature.INDENT_OUTPUT)
-      val jsonObject = mapper.readValue(stringJson, classOf[Object])
-      mapper.writeValueAsString(jsonObject)
-
-    override def printInTextField: Unit =
+    private def updateTextField(): Unit =
       console.setText("")
-      if rdbStructure.isSelected then
-        console.append(jsonPrettyFormatted(UIConstants.structure))
-      if rdbCountry.isSelected then
-        console.append(jsonPrettyFormatted(UIConstants.country))
-      if rdbUnitKind.isSelected then
-        console.append(jsonPrettyFormatted(UIConstants.unit_kinds))
-      if rdbUnits.isSelected then
-        console.append(jsonPrettyFormatted(UIConstants.unit))
+      if rdbStructure.isSelected then console.append(encodedSamples.complete)
+      if rdbCountry.isSelected then console.append(encodedSamples.country)
+      if rdbUnitKind.isSelected then console.append(encodedSamples.armyUnitKind)
+      if rdbUnits.isSelected then console.append(encodedSamples.armyUnit)
       if rdbBoundaries.isSelected then
-        console.append(jsonPrettyFormatted(UIConstants.boundaries))
+        console.append(encodedSamples.countryBoundaries)
       if rdbRelations.isSelected then
-        console.append(jsonPrettyFormatted(UIConstants.relations))
+        console.append(encodedSamples.countryRelations)
 
     override def addComponentsToButtonGroup(
       radioButtons: Seq[JRadioButton]
