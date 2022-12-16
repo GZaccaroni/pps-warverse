@@ -1,10 +1,11 @@
 package it.unibo.warverse.domain.model.fight
 
+import it.unibo.warverse.domain.engine.prolog.PrologPredicates
 import it.unibo.warverse.domain.model.Environment
-import it.unibo.warverse.domain.model.common.Life
 import it.unibo.warverse.domain.model.common.Geometry.Point2D
 import it.unibo.warverse.domain.model.common.Math.Percentage
 import it.unibo.warverse.domain.model.common.Movement.Movable
+import it.unibo.warverse.domain.model.common.Resources.ResourcesConsumer
 import it.unibo.warverse.domain.model.fight.Fight
 import it.unibo.warverse.domain.model.fight.Fight.AttackAction
 import it.unibo.warverse.domain.model.fight.TargetFinderStrategy.TargetFinderStrategy
@@ -13,13 +14,6 @@ import it.unibo.warverse.domain.model.world.World
 import scala.util.Random
 
 object Army:
-  /** Represent an entity with periodic consume of resources. */
-  trait ResourcesConsumer:
-    /** The quantity of resources that consume every day
-      * @return
-      *   a representation of the daily resource consume
-      */
-    def dailyConsume: Life.Resources
 
   /** The ArmyUnit base trait. It can attack, be moved and consume resources.
     *
@@ -145,12 +139,14 @@ object Army:
     override def attack()(using
       strategy: TargetFinderStrategy[Position]
     ): Seq[AttackAction] =
-      val availableTargets = strategy
-        .findTargets(countryId, attackType)
-        .filter(target => position.distanceFrom(target) < rangeOfHit)
-        .sortBy(_.distanceFrom(position))
+      val availableTargets = PrologPredicates.reachableSortedTargets(
+        position,
+        rangeOfHit,
+        strategy.findTargets(countryId, attackType),
+        availableHits
+      )
       for
-        target <- availableTargets.take(availableHits)
+        target <- availableTargets
         probabilityOfSuccess <- Seq.fill(availableHits)(Random.nextInt(100))
         if probabilityOfSuccess < chanceOfHit
       yield AttackAction.PrecisionAttackAction(target)
@@ -195,12 +191,14 @@ object Army:
     override def attack()(using
       strategy: TargetFinderStrategy[Position]
     ): Seq[AttackAction] =
-      val availableTargets = strategy
-        .findTargets(countryId, attackType)
-        .filter(target => position.distanceFrom(target) < rangeOfHit)
-        .sortBy(_.distanceFrom(position))
+      val availableTargets = PrologPredicates.reachableSortedTargets(
+        position,
+        rangeOfHit,
+        strategy.findTargets(countryId, attackType),
+        availableHits
+      )
       for
-        (target, _) <- availableTargets.zip(0 until availableHits)
+        target <- availableTargets
         probabilityOfSuccess <- Seq.fill(availableHits)(Random.nextInt(100))
         if probabilityOfSuccess < chanceOfHit
       yield AttackAction.AreaAttackAction(target, areaOfImpact)

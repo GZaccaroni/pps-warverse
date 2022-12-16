@@ -1,4 +1,4 @@
-package it.unibo.warverse.domain.engine.components
+package it.unibo.warverse.domain.engine.simulation.components
 
 import it.unibo.warverse.domain.model.Environment
 import it.unibo.warverse.domain.model.common.Listen.*
@@ -87,7 +87,7 @@ class WarSimulationComponent
                 val winnerCountry =
                   country
                     .addingResources(
-                      if loserResources - resourcesPerWinner * (winnerIndex + 1) < resourcesPerWinner
+                      if winnerIndex == winnersId.size - 1
                       then loserResources - resourcesPerWinner * winnerIndex
                       else resourcesPerWinner
                     )
@@ -102,7 +102,7 @@ class WarSimulationComponent
                         .map(_.copiedWith(countryId = winnerId))
                     )
                     .addingCitizens(
-                      if loserCitizens - citizensPerWinner * (winnerIndex + 1) < citizensPerWinner
+                      if winnerIndex == winnersId.size - 1
                       then loserCitizens - citizensPerWinner * winnerIndex
                       else citizensPerWinner
                     )

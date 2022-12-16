@@ -69,7 +69,7 @@ object Relations:
       * @return
       *   the relations between the countries
       */
-    def getStatus(
+    def relationStatus(
       country1: World.CountryId,
       country2: World.CountryId
     ): Set[RelationStatus]
@@ -113,7 +113,7 @@ object Relations:
       ): Iterable[World.CountryId] =
         getRelatedCountry(country, RelationStatus.WAR)
 
-      override def getStatus(
+      override def relationStatus(
         country1: World.CountryId,
         country2: World.CountryId
       ): Set[RelationStatus] =

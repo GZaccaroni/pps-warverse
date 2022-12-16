@@ -1,4 +1,4 @@
-package it.unibo.warverse.domain.engine.components
+package it.unibo.warverse.domain.engine.simulation.components
 
 import it.unibo.warverse.domain.model.Environment
 import it.unibo.warverse.domain.model.common.Geometry.Point2D
@@ -40,7 +40,7 @@ class AttackSimulationComponent
           environment.countries.find(_.boundaries.contains(event.target))
 
         val newCountry = countryOption.map { country =>
-          val density = country.citizens / country.boundaries.area
+          val density = country.citizens / math.abs(country.boundaries.area)
           val citizens =
             country.citizens - (density * event.areaOfImpact).toInt
           country.copy(citizens = citizens)

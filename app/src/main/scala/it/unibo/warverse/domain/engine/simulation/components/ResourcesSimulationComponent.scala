@@ -1,4 +1,4 @@
-package it.unibo.warverse.domain.engine.components
+package it.unibo.warverse.domain.engine.simulation.components
 
 import it.unibo.warverse.domain.model.Environment
 import it.unibo.warverse.domain.model.fight.TargetFinderStrategy.TargetFinderStrategy2D
@@ -23,9 +23,9 @@ class ResourcesSimulationComponent
           .map(country =>
             country.addingResources(
               if isInWar(country) then
-                country.citizens -
+                country.dailyProduction -
                   country.armyUnits.map(_.dailyConsume).sum
-              else country.citizens
+              else country.dailyProduction
             )
           )
       )

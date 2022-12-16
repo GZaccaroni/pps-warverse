@@ -14,7 +14,7 @@ import it.unibo.warverse.domain.model.world.Relations.{
   InterCountryRelations,
   RelationStatus
 }
-import it.unibo.warverse.domain.model.world.World.Country
+import it.unibo.warverse.domain.model.world.World.{Country, Territory}
 
 object DomainExample:
 
@@ -93,6 +93,25 @@ object DomainExample:
           dailyConsume = 1,
           speed = 0.05
         )
+
+  def countryATerritory: Territory = MultiPolygon(
+    Polygon(
+      Seq(Point2D(0, 0), Point2D(0, 3), Point2D(3, 3), Point2D(3, 0))
+    )
+  )
+
+  def countryBTerritory: Territory = MultiPolygon(
+    Polygon(
+      Seq(Point2D(3, 0), Point2D(3, 3), Point2D(6, 3), Point2D(6, 0))
+    )
+  )
+
+  def countryCTerritory: Territory = MultiPolygon(
+    Polygon(
+      Seq(Point2D(6, 0), Point2D(6, 3), Point2D(9, 3), Point2D(9, 0))
+    )
+  )
+
   def countryA: Country =
     Country(
       countryAId,
@@ -104,11 +123,7 @@ object DomainExample:
         Army.AreaArmyUnits.distantUnit
       ),
       0.0,
-      MultiPolygon(
-        Polygon(
-          Seq(Point2D(0, 0), Point2D(0, 3), Point2D(3, 3), Point2D(3, 0))
-        )
-      )
+      countryATerritory
     )
   def countryB: Country =
     Country(
@@ -121,11 +136,7 @@ object DomainExample:
         Army.PrecisionArmyUnits.distantUnit
       ),
       0.0,
-      MultiPolygon(
-        Polygon(
-          Seq(Point2D(3, 0), Point2D(3, 3), Point2D(6, 3), Point2D(6, 0))
-        )
-      )
+      countryBTerritory
     )
   def countryC: Country =
     Country(
@@ -134,11 +145,7 @@ object DomainExample:
       20,
       Seq.empty,
       0.0,
-      MultiPolygon(
-        Polygon(
-          Seq(Point2D(6, 0), Point2D(6, 3), Point2D(9, 3), Point2D(9, 0))
-        )
-      )
+      countryCTerritory
     )
 
   val interCountryRelations: InterCountryRelations = InterCountryRelations(

@@ -21,10 +21,6 @@ object EndPanel:
     private val warsExists: Boolean = warsExists(environment)
     this.setLayout(BoxLayout(this, BoxLayout.Y_AXIS))
 
-    if warsExists then
-      title.setText(
-        "Simulation interrupted while wars were active, there are no winners"
-      )
     if countries.nonEmpty && !warsExists then
       title.setText(s"Winners are: ${countries.map(_.id).mkString(", ")}")
       stats.setText(
@@ -34,6 +30,10 @@ object EndPanel:
         }
       )
     else title.setText("Nobody Win War")
+    if warsExists then
+      title.setText(
+        "Simulation interrupted while wars were active, there are no winners"
+      )
 
     title.setText(s"${title.getText()}\nDay passed: ${environment.day}")
 

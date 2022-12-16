@@ -46,15 +46,16 @@ trait Environment:
   ): Environment =
     Environment(countries, interCountryRelations, day)
 
-  /** A new environment with `newCountry` replaced
-    * @param newCountry
-    *   the country to be replaced
+  /** Creates a new environment replacing the country with the same CountryId of
+    * `updatedCountry`
+    * @param updatedCountry
+    *   the new country that be part of
     * @return
     *   the updated environment
     */
-  def replacingCountry(newCountry: Country): Environment =
+  def replacingCountry(updatedCountry: Country): Environment =
     copiedWith(
-      newCountry :: countries.filter(_.id != newCountry.id).toList
+      updatedCountry +: countries.filterNot(_.id == updatedCountry.id)
     )
 
 object Environment:
