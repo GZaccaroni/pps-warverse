@@ -1,5 +1,69 @@
 # Changelog
 
+## [1.2.0](https://github.com/GZaccaroni/pps-warverse/compare/v1.1.1...v1.2.0) (2022-12-16)
+
+
+### Features
+
+* add addingTerritory ([0004e40](https://github.com/GZaccaroni/pps-warverse/commit/0004e40441ebbc133304bb4a3041acb8e9e83d46))
+* add territory split between winners ([ab25bd1](https://github.com/GZaccaroni/pps-warverse/commit/ab25bd1ef18c5c85092ee3c4dfc19bff59ea23b3))
+* Added encoded samples from DTO classes ([2da154f](https://github.com/GZaccaroni/pps-warverse/commit/2da154f4fac9fa36e27210baa42bb735fdce40fc))
+* Added error messages on parsing failure ([1d65b84](https://github.com/GZaccaroni/pps-warverse/commit/1d65b847535500d9fa6b6a1cf47c74c6463afcd1))
+* Added idiomatic validators ([07f1a65](https://github.com/GZaccaroni/pps-warverse/commit/07f1a65dfd2dbd3513b6d2552bf4c37a4d31f223))
+* Added nameOf method ([b795fc8](https://github.com/GZaccaroni/pps-warverse/commit/b795fc88f6130592122786273d686b077fc666bb))
+* Added prolog dependency ([8a0a587](https://github.com/GZaccaroni/pps-warverse/commit/8a0a5872d36e9c73ddb382448958051a1e803c33))
+* Added prolog theory ([f6dd492](https://github.com/GZaccaroni/pps-warverse/commit/f6dd49224c3eb56b51fa41a8f0a9605778b0956c))
+* Added SImulationConfigRepository ([d96706e](https://github.com/GZaccaroni/pps-warverse/commit/d96706ebce5fac8402927c039c2c854a26b70aac))
+* added the end game panel ([fd1e1f0](https://github.com/GZaccaroni/pps-warverse/commit/fd1e1f008d5de8846a1e2fbaa1d258459d7abc68))
+* Cosmetics changes ([7a644cc](https://github.com/GZaccaroni/pps-warverse/commit/7a644ccd5339161ecc280094ea7cd3f5f1308f36))
+* Create Ui Help constant message ([a0de949](https://github.com/GZaccaroni/pps-warverse/commit/a0de949dcfdd023f2012c1c29b953d1bbdfcc286))
+* defined country boundaries as MultiPolygon2D ([c75cff7](https://github.com/GZaccaroni/pps-warverse/commit/c75cff757dd72dfcd7b3af5ad3bb92a6ad0ca819))
+* defined MultiPolygon ([806fdba](https://github.com/GZaccaroni/pps-warverse/commit/806fdba3b2e86b109270ed33c87f5d35e791a17f))
+* defined Resources model with ResourcesConsumer and Producer ([e35bb92](https://github.com/GZaccaroni/pps-warverse/commit/e35bb92efb32f3124ea58e05b1c848f646cda563))
+* implemented area and contains for multipolygon ([8e18c8e](https://github.com/GZaccaroni/pps-warverse/commit/8e18c8e47d0dfc2c5315438fa2442866271a6584))
+* Implemented common validators ([701a364](https://github.com/GZaccaroni/pps-warverse/commit/701a3640c0e9c13d80fb490c4a93070b1961641a))
+* Implemented ContainNoDuplicates validator ([ada8acf](https://github.com/GZaccaroni/pps-warverse/commit/ada8acfdb94b0e3c6b3f4212b608f898ea5aa484))
+* implemented dailyProduction ([1aaf397](https://github.com/GZaccaroni/pps-warverse/commit/1aaf397e5eeac1e8dd630339b386503cea5bc700))
+* Implemented default methods in point trait ([7d43511](https://github.com/GZaccaroni/pps-warverse/commit/7d435116debfa886a0201dd9ca5e144c96ec9092))
+* Implemented distance between points in prolog ([2932e94](https://github.com/GZaccaroni/pps-warverse/commit/2932e948f93457b1731ed86b89e903bcc6ee60b6))
+* implemented GreaterThanOrEqualTo Validator ([541028f](https://github.com/GZaccaroni/pps-warverse/commit/541028fc8314953bc4e89f8b0eff86d00b7cfa69))
+* Implemented IncludedInRange validator ([7c9342c](https://github.com/GZaccaroni/pps-warverse/commit/7c9342cc64f8a3bee73bc3308d2f1dc006eb8daf))
+* implemented MultiPolygon2D split function ([630afb1](https://github.com/GZaccaroni/pps-warverse/commit/630afb15b318ae82ff486b07b4aae0ecfbface29))
+* Implemented NotContainItem validator ([a430c3a](https://github.com/GZaccaroni/pps-warverse/commit/a430c3a6cc31c75fcf1bbb837b5d7f5ccd1dfa76))
+* Implemented orElse utility method to simplify testing ([3ee0e9c](https://github.com/GZaccaroni/pps-warverse/commit/3ee0e9cf3287c29af976a33840645916361e1fc2))
+* Implemented Prolog engine ([ecc2edb](https://github.com/GZaccaroni/pps-warverse/commit/ecc2edbd30dc1f3612fdb40b76810b49aea514e9))
+* Implemented targets finding algorithm in prolog ([6a73d0b](https://github.com/GZaccaroni/pps-warverse/commit/6a73d0ba0d3d977d0869dc500b8b4855c0518946))
+* Improved validation methods ([0644622](https://github.com/GZaccaroni/pps-warverse/commit/0644622c172e36b5b6448133b891910ee20d6c7e))
+* return a list of validation error if Army validation fails ([4073502](https://github.com/GZaccaroni/pps-warverse/commit/4073502d1e018066e944d138ea214955dc7efb5f))
+* return a list of validation error if Geometry validation fails ([f3044c2](https://github.com/GZaccaroni/pps-warverse/commit/f3044c2afb767727ab0145b342058437e27b1fe0))
+* return a list of validation error if SimulationConfig validation fails ([d57b18e](https://github.com/GZaccaroni/pps-warverse/commit/d57b18e7f6a59dcde05a5626e97382a92ea733bc))
+* return a list of validation error if World validation fails ([837ca6a](https://github.com/GZaccaroni/pps-warverse/commit/837ca6af5695447080f03f1a1a468c817593fc98))
+
+
+### Bug Fixes
+
+* Change army unit country when another state wins ([f3c9c01](https://github.com/GZaccaroni/pps-warverse/commit/f3c9c0122941f5b76f0f4968122339b0d3e7373f))
+* citizen were not killed by area units ([220adc6](https://github.com/GZaccaroni/pps-warverse/commit/220adc663f10d2b9ed32fee7c7804b4fd267297a))
+* Do not unwrap Optional value with get ([91b32fe](https://github.com/GZaccaroni/pps-warverse/commit/91b32fe098ee6edfacb43b8c3e9080de89aed869))
+* end panel not showing up at the end ([6ec6c42](https://github.com/GZaccaroni/pps-warverse/commit/6ec6c4236c942ad0aa995c2ab802d805b29dd9a1))
+* EndPanel resources unit ([4e1272e](https://github.com/GZaccaroni/pps-warverse/commit/4e1272eef61a3855d056baab3d80b36869adfe6a))
+* environment not updating in the right spot ([d46daac](https://github.com/GZaccaroni/pps-warverse/commit/d46daacc7eeb4d48f8f1dbdd15077aa8dc9aa54f))
+* file validation, button checker at start ([08d9658](https://github.com/GZaccaroni/pps-warverse/commit/08d9658a0ffc4d4b6c145964a729302de1771ebc))
+* Fixed a bug in relations Simulation Component relations update ([04c74d3](https://github.com/GZaccaroni/pps-warverse/commit/04c74d38f557b1f0d4634a234b0548fa235b951f))
+* fixed armies death ([4507d40](https://github.com/GZaccaroni/pps-warverse/commit/4507d40668c4cee1ce6b982a0d8d40f9b0821f9f))
+* fixed import and implementation due to merge ([e59a657](https://github.com/GZaccaroni/pps-warverse/commit/e59a657f89ba4e06f5c44b382ea2a85aabaca779))
+* fixed polygon area to avoid incorrect negative result ([0bcc648](https://github.com/GZaccaroni/pps-warverse/commit/0bcc64847e684291ff3edc4538a6d88e106e1b09))
+* message in end panel ([6dcb9fb](https://github.com/GZaccaroni/pps-warverse/commit/6dcb9fb3398351bcb15c6108b3b8c3b5ea5533c8))
+* multiple country dies at the same time ([33d84bb](https://github.com/GZaccaroni/pps-warverse/commit/33d84bbb6a8cae1e0aacf38bc73924f5ef213a6e))
+* null file check if none is selected ([3d1a28a](https://github.com/GZaccaroni/pps-warverse/commit/3d1a28aca0c05c3da9571f7afd80134b52f021c9))
+* Only json should be selectable ([ac4b769](https://github.com/GZaccaroni/pps-warverse/commit/ac4b76922a2aebf2fae0ad9ad8a68bcb96cc4eee))
+* popup resources unit ([6bcfa1b](https://github.com/GZaccaroni/pps-warverse/commit/6bcfa1b6211d1e1a0436116e1b1b1c68389fc0f4))
+* position in MovementSimulationComponentTest ([09e17cd](https://github.com/GZaccaroni/pps-warverse/commit/09e17cd070297b837c8ab78fdd0ac793cabcdde5))
+* scalaFormat ([2de75aa](https://github.com/GZaccaroni/pps-warverse/commit/2de75aa942a42eaf75937509cd98ea55b4ba050e))
+* test in environment ([4cabbbb](https://github.com/GZaccaroni/pps-warverse/commit/4cabbbb6205e757bfba0541b577ff773fbe16d31))
+* UI was being accessed outside from event queue ([3e3a38f](https://github.com/GZaccaroni/pps-warverse/commit/3e3a38fe45fb8fa3fb5a9af4b63e4366f3a2b72e))
+* War resources division ([7391a59](https://github.com/GZaccaroni/pps-warverse/commit/7391a5997f385d60411718ec7629a4532b87837d))
+
 ## [1.1.1](https://github.com/GZaccaroni/pps-warverse/compare/v1.1.0...v1.1.1) (2022-12-07)
 
 
