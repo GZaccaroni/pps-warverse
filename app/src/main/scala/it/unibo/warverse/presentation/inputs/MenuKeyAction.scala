@@ -20,7 +20,7 @@ object MenuKeyAction:
     override val moveValue: Int
   ) extends MenuKeyAction:
 
-    var index: Int = 0
+    private var index: Int = 0
 
     def setIndex(delta: Int): Unit =
       index = panel.menuItems.indexOf(panel.selectedItem) + delta

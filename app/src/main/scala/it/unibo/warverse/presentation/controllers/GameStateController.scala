@@ -39,14 +39,14 @@ object GameStateController:
       simulationEngine.map(_.simulationConfig)
 
     def simulationConfig_=(newValue: Option[SimulationConfig]): Unit =
-      if (simulationEngine.isDefined) then onStopClicked()
+      if simulationEngine.isDefined then onStopClicked()
       simulationEngine = newValue.map(SimulationEngine(_))
       gameMap.environment = simulationEngine.map(_.currentEnvironment)
 
     override def setPanel(): Unit =
       hud.setController(this)
-      gamePanel.addToPanel(gameMap, GuiEnum.WEST)
-      gamePanel.addToPanel(hud, GuiEnum.EAST)
+      gamePanel.addToPanel(gameMap, ComponentPosition.WEST)
+      gamePanel.addToPanel(hud, ComponentPosition.EAST)
       mainFrame.setPanel(gamePanel)
 
     override def onStartClicked(): Unit =
