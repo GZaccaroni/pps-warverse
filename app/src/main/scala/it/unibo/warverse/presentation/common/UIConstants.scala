@@ -7,7 +7,6 @@ private[presentation] object UIConstants:
   enum Resources(val name: String):
     case MainMenuBackground extends Resources("menuBackground.png")
     case HelpMenuBackground extends Resources("menuHelp.png")
-    case Test extends Resources("test.png")
 
     def url: URL = ClassLoader.getSystemResource(name)
 
@@ -22,7 +21,7 @@ private[presentation] object UIConstants:
     0.1f
   )
 
-  val helpDescription =
+  val helpDescription: String =
     "<html>" +
       "<p style=\"line-height: 2; color:white;\">Welcome to WarVerse ⚔️ your custom war Simulator💻! " +
       "<br/>Create a world🌍 with your custom countries with their citizen👤, resources💰 and armies🚀 and set all relationship between them and check how the war evolve! " +
