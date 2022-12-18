@@ -11,7 +11,7 @@ import it.unibo.warverse.domain.model.world.Relations.{
 import it.unibo.warverse.domain.model.world.World.{Country, CountryId}
 import monix.eval.Task
 
-/** Simulates war completion and division of assets between winning states
+/** Simulates war completion and division of assets between winning countries
   */
 class WarSimulationComponent
     extends SimpleListenable[SimulationEvent]
@@ -51,7 +51,7 @@ class WarSimulationComponent
       environment
         .copiedWith(
           environment.countries.filterNot(_ == countryDefeated),
-          removeLostStateRelation(
+          removeLoserCountryRelation(
             countryDefeated,
             environment.interCountryRelations
           )
@@ -115,7 +115,7 @@ class WarSimulationComponent
         }
     else envWithoutDefeatedCountry
 
-  private def removeLostStateRelation(
+  private def removeLoserCountryRelation(
     country: Country,
     relations: InterCountryRelations
   ): InterCountryRelations =
