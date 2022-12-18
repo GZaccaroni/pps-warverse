@@ -18,7 +18,8 @@ object EndPanel:
     private val stats: JTextPane = JTextPane()
     private val countries = environment.countries
     private val gameStats: JScrollPane = JScrollPane(stats)
-    private val warsExists: Boolean = warsExists(environment)
+    private val warsExists: Boolean =
+      environment.interCountryRelations.hasOngoingWars
     this.setLayout(BoxLayout(this, BoxLayout.Y_AXIS))
 
     if countries.nonEmpty && !warsExists then
@@ -59,15 +60,3 @@ object EndPanel:
         centerAttribute,
         false
       )
-
-    private def warsExists(
-      environment: Environment
-    ): Boolean =
-      environment.countries.size match
-        case 0 => false
-        case _ =>
-          environment.countries.forall(country =>
-            environment.interCountryRelations
-              .countryEnemies(country.id)
-              .nonEmpty
-          )
