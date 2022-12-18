@@ -23,7 +23,7 @@ object Geometry:
       PrologPredicates.distanceBetween(this, point)
 
     override def equals(obj: Any): Boolean =
-      given Math.Precision(0.1)
+      given Math.Precision(0.001)
       obj match
         case point: Point[?] =>
           coordinates
@@ -184,7 +184,8 @@ object Geometry:
       *   a new MultiPolygon2D instance composed by a single polygon
       */
     def apply(polygon: Polygon[Point2D]): MultiPolygon[Point2D] =
-      MultiPolygon2DImpl(Seq(polygon))
+      MultiPolygon(Seq(polygon))
+
     private case class MultiPolygon2DImpl(
       override val polygons: Seq[Polygon[Point2D]]
     ) extends MultiPolygon[Point2D]:
@@ -215,43 +216,77 @@ object Geometry:
           val vertexesToSplit = polygon.vertexes.drop(
             polygon.vertexes.length / 2
           ) ++ polygon.vertexes.take(polygon.vertexes.length / 2)
-          val cutLine = (vertexesToSplit.head, polygon.center)
-          var subVertexes1, subVertexes2 = Seq(vertexesToSplit.head)
-          var i = 1
-          subVertexes1 = subVertexes1.appended(vertexesToSplit(i))
-          var ab = (vertexesToSplit(i), vertexesToSplit(i + 1))
-          var intersectionPoint = intersection(ab, cutLine)
-          while intersectionPoint.isEmpty do
-            i = i + 1
-            subVertexes1 = subVertexes1.appended(vertexesToSplit(i))
-            ab = (vertexesToSplit(i), vertexesToSplit(i + 1))
-            intersectionPoint = intersection(ab, cutLine)
-          subVertexes1 = subVertexes1.appended(intersectionPoint.get)
-          if intersectionPoint.get != vertexesToSplit(i + 1) then
-            subVertexes2 = subVertexes2.appended(intersectionPoint.get)
-          subVertexes2 = subVertexes2 ++ vertexesToSplit.drop(i + 1)
+          val cuttingLinePoints = (vertexesToSplit.head, polygon.center)
+          val polygonSides =
+            vertexesToSplit
+              .sliding(2)
+              .map(seq => (seq.head, seq(1)))
+              .toSeq :+ (vertexesToSplit.last, vertexesToSplit.head)
+          val intersectionSide = polygonSides
+            .drop(1)
+            .find(
+              intersection(
+                _,
+                cuttingLinePoints._1,
+                cuttingLinePoints._2
+              ).isDefined
+            )
+            .get
+          val intersectionPoint = intersection(
+            intersectionSide,
+            cuttingLinePoints._1,
+            cuttingLinePoints._2
+          ).get
+          val (subSides1, subSides2) =
+            polygonSides.splitAt(
+              polygonSides.indexOf(intersectionSide) + 1
+            )
+          val subPolygon1 = Polygon(subSides1.map(_._1) :+ intersectionPoint)
+          val subPolygon2 = Polygon(
+            if intersectionPoint != subSides2.head._1 then
+              intersectionPoint +: subSides2.head._1 +: subSides2.map(
+                _._2
+              )
+            else intersectionPoint +: subSides2.map(_._2)
+          )
           polygons.patch(
             polygonIndex,
-            Seq(Polygon(subVertexes1), Polygon(subVertexes2)),
+            Seq(subPolygon1, subPolygon2),
             1
           )
 
+        /** Compute the point of intersection that belongs to `segment` with the
+          * straight passing for points `A` and `B`
+          *
+          * @param segment
+          *   the points that define a segment
+          * @param A
+          *   the first point that define the straight
+          * @param B
+          *   the second point that define the straight
+          * @return
+          *   an option value containing the point of intersection in the
+          *   segment if it exists, or None if none exists.
+          */
         def intersection(
-          AB: (Point2D, Point2D),
-          CD: (Point2D, Point2D)
+          segment: (Point2D, Point2D),
+          A: Point2D,
+          B: Point2D
         ): Option[Point2D] =
-          val a1 = AB._2.y - AB._1.y
-          val b1 = AB._1.x - AB._2.x
-          val c1 = a1 * AB._1.x + b1 * AB._1.y
-          val a2 = CD._2.y - CD._1.y
-          val b2 = CD._1.x - CD._2.x
-          val c2 = a2 * CD._1.x + b2 * CD._1.y
+          val a1 = segment._2.y - segment._1.y
+          val b1 = segment._1.x - segment._2.x
+          val c1 = a1 * segment._1.x + b1 * segment._1.y
+          val a2 = B.y - A.y
+          val b2 = A.x - B.x
+          val c2 = a2 * A.x + b2 * A.y
           val determinant = a1 * b2 - a2 * b1
           if determinant != 0 then
             val x = (b2 * c1 - b1 * c2) / determinant
             val y = (a1 * c2 - a2 * c1) / determinant
-            val (minX, maxX) = (min(AB._1.x, AB._2.x), max(AB._1.x, AB._2.x))
-            val (minY, maxY) = (min(AB._1.y, AB._2.y), max(AB._1.y, AB._2.y))
+            val (minX, maxX) =
+              (min(segment._1.x, segment._2.x), max(segment._1.x, segment._2.x))
+            val (minY, maxY) =
+              (min(segment._1.y, segment._2.y), max(segment._1.y, segment._2.y))
             given Math.Precision(0.001)
             if (x > minX || (x ~= minX)) &&
               (x < maxX || (x ~= maxX)) &&
