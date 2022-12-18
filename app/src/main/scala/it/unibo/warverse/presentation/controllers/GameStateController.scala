@@ -29,7 +29,7 @@ object GameStateController:
 
     private val gameMap = GameMap()
 
-    private val hud = Hud()
+    private val hud = Hud(this)
 
     private val gamePanel = GamePanel()
 
@@ -44,7 +44,6 @@ object GameStateController:
       gameMap.environment = simulationEngine.map(_.currentEnvironment)
 
     override def setPanel(): Unit =
-      hud.setController(this)
       gamePanel.addToPanel(gameMap, ComponentPosition.WEST)
       gamePanel.addToPanel(hud, ComponentPosition.EAST)
       mainFrame.setPanel(gamePanel)

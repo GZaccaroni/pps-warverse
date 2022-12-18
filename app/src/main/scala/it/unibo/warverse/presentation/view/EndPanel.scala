@@ -23,7 +23,7 @@ object EndPanel:
     this.setLayout(BoxLayout(this, BoxLayout.Y_AXIS))
 
     if countries.nonEmpty && !warsExists then
-      title.setText(s"Winners are: ${countries.map(_.id).mkString(", ")}")
+      title.setText(s"Winners: ${countries.map(_.id).mkString(", ")}")
       stats.setText(
         countries.foldLeft("") { (text, c) =>
           s"${text}Country: ${c.id}\nRemaining Army Units: ${c.armyUnits.size}\nRemaining citizens: ${c.citizens}\nResources Remaining: ${String

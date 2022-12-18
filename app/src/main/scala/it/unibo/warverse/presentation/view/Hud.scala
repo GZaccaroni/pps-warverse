@@ -22,7 +22,7 @@ import javax.swing.{
 import monix.execution.Scheduler.Implicits.global
 import javax.swing.filechooser.FileNameExtensionFilter
 
-class Hud extends JPanel:
+class Hud(val controller: GameStateController) extends JPanel:
   this.setPreferredSize(Dimension(350, 20))
   private val uploadConfig = JButton("Upload Configuration")
   private val fileChooser = JFileChooser()
@@ -38,7 +38,6 @@ class Hud extends JPanel:
   private val caret: DefaultCaret =
     console.getCaret.asInstanceOf[DefaultCaret]
   private val highlighter: Highlighter = console.getHighlighter
-  private var controller: GameStateController = _
   private val gameStatus: JScrollPane = JScrollPane(console)
 
   gameStatus.setVerticalScrollBarPolicy(22)
@@ -116,9 +115,6 @@ class Hud extends JPanel:
     List(firstButtonsRow, secondButtonsRow)
   )
   this.add(verticalContainer)
-
-  def setController(controller: GameStateController): Unit =
-    this.controller = controller
 
   private def addJComponents(box: Box, list: Seq[JComponent]): Unit =
     list.foreach(component => box.add(component))
