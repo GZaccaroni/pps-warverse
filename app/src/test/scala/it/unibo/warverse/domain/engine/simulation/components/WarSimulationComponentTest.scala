@@ -13,36 +13,28 @@ class WarSimulationComponentTest
     extends AsyncFunSuite
     with MonixTaskTest
     with Matchers:
-  var environment = DomainExample.environment
+  private val component = WarSimulationComponent()
+  private val initialEnv = DomainExample.environment
     .copiedWith(
-      DomainExample.environment.countries.map(country =>
+      countries = DomainExample.environment.countries.map(country =>
         country.addingResources(50)
-      )
+      ),
+      interCountryRelations = DomainExample.environment.interCountryRelations
+        .withRelation(
+          (DomainExample.countryAId, DomainExample.countryCId),
+          RelationStatus.WAR
+        )
     )
-
-  RelationsSimulationComponent()
-    .run(environment)
-    .foreach(env => this.environment = env)
-
-  test("A and C must be in war after relations update") {
-    environment.interCountryRelations
-      .relationStatus("ID_A", "ID_C")
-      .head mustBe RelationStatus.WAR
-  }
-
-  val envLostCitizen: Environment = environment.replacingCountry(
-    environment.countries.find(_.id == "ID_A").get.addingCitizens(-50)
-  )
-
-  test("Citizen of A must be zero") {
-    envLostCitizen.countries.find(_.id == "ID_A").get.citizens mustBe 0
-  }
-
-  val envLostForCitizen: Task[Environment] =
-    WarSimulationComponent().run(envLostCitizen)
   test(
     "In new Environment A is defeated by citizen, B and C must obtain his army and citizen"
   ) {
+    val envLostCitizen: Environment = initialEnv.replacingCountry(
+      initialEnv.countries
+        .find(_.id == DomainExample.countryAId)
+        .get
+        .addingCitizens(-50)
+    )
+    val envLostForCitizen = component.run(envLostCitizen)
     envLostForCitizen.asserting(newEnv =>
       newEnv.countries.find(_.id == "ID_B").get.resources mustBe 75
       newEnv.countries.find(_.id == "ID_C").get.resources mustBe 75
@@ -50,15 +42,15 @@ class WarSimulationComponentTest
       newEnv.countries.find(_.id == "ID_C").get.armyUnits.size mustBe 2
     )
   }
-  val envLostResources: Environment = environment.replacingCountry(
-    environment.countries.find(_.id == "ID_A").get.addingResources(-50)
-  )
-  val envLostForResources: Task[Environment] =
-    WarSimulationComponent().run(envLostResources)
 
   test(
     "In new Environment A is defeated by resources, B and C must obtain his army and resources"
   ) {
+    val envLostResources: Environment = initialEnv.replacingCountry(
+      initialEnv.countries.find(_.id == "ID_A").get.addingResources(-50)
+    )
+    val envLostForResources: Task[Environment] =
+      component.run(envLostResources)
     envLostForResources.asserting(newEnv =>
       newEnv.countries.find(_.id == "ID_B").get.citizens mustBe 30
       newEnv.countries.find(_.id == "ID_C").get.citizens mustBe 40
