@@ -30,7 +30,7 @@ class SimpleMenuItemPainter extends MenuItemPainter:
     g2d.setColor(Color.WHITE)
     g2d.drawString(text, x, y)
 
-  def paintBackground(
+  private def paintBackground(
     g2d: Graphics2D,
     bounds: RoundRectangle2D,
     background: Color,

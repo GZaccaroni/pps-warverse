@@ -1,6 +1,7 @@
 package it.unibo.warverse.presentation.view
 
 import it.unibo.warverse.presentation.controllers.GameStateController
+import it.unibo.warverse.presentation.common.toColor
 import it.unibo.warverse.domain.model.SimulationConfig
 import it.unibo.warverse.domain.repositories.SimulationConfigRepository
 import java.io.File
@@ -35,7 +36,7 @@ class Hud extends JPanel:
   private val secondButtonsRow = Box.createHorizontalBox()
   private val console: JTextArea = JTextArea(25, 25)
   private val caret: DefaultCaret =
-    console.getCaret().asInstanceOf[DefaultCaret]
+    console.getCaret.asInstanceOf[DefaultCaret]
   private val highlighter: Highlighter = console.getHighlighter
   private var controller: GameStateController = _
   private val gameStatus: JScrollPane = JScrollPane(console)
@@ -165,7 +166,7 @@ class Hud extends JPanel:
       simulationConfig.interCountryRelations
         .countryAllies(country.id)
         .foreach(allyId =>
-          val ally = simulationConfig.countries.find(_.id == allyId).get;
+          val ally = simulationConfig.countries.find(_.id == allyId).get
           writeToConsole(s"${country.name} is allied with ${ally.name}")
         )
       simulationConfig.interCountryRelations
@@ -180,7 +181,7 @@ class Hud extends JPanel:
     simulationConfig.countries.foreach(country =>
       highlightText(
         name = country.name,
-        countryColor(country.id)
+        color = country.id.toColor
       )
     )
     highlightText(name = "allied", Color(0, 153, 0))
@@ -203,15 +204,6 @@ class Hud extends JPanel:
   override def paintComponent(g: Graphics): Unit =
     super.paintComponent(g)
 
-  private def countryColor(name: String): Color =
-    val hash: Int = name.hashCode
-
-    val r: Int = (hash & 0xff0000) >> 16
-    val g: Int = (hash & 0x00ff00) >> 8
-    val b: Int = hash & 0x0000ff
-
-    Color(r, g, b)
-
   def writeToConsole(text: String): Unit =
     this.console.append(s"$text\n\n")
 
@@ -221,4 +213,4 @@ class Hud extends JPanel:
     this.speed3Button.setSelected(x3)
 
   def highlightCountryId(id: String): Unit =
-    highlightText(name = id, countryColor(id))
+    highlightText(name = id, id.toColor)

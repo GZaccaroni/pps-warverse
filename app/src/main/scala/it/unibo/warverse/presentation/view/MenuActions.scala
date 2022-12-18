@@ -31,11 +31,11 @@ object MenuActions:
     override val mainFrame: MainFrame
   ) extends MenuActions:
 
-    val backgroundImageUrl: Option[URL] = Option(
+    private val backgroundImageUrl: Option[URL] = Option(
       UIConstants.Resources.MainMenuBackground.url
     )
 
-    val menuItems = MainMenuItem.values.toSeq
+    val menuItems: Seq[MainMenuItem] = MainMenuItem.values.toSeq
 
     var selectedItem: MenuItem = MainMenuItem.StartGame
 

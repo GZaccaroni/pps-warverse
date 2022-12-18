@@ -3,6 +3,7 @@ package it.unibo.warverse.presentation.view
 import it.unibo.warverse.domain.model.Environment
 import it.unibo.warverse.presentation.inputs.GameMouseMotion
 import it.unibo.warverse.presentation.common.UIConstants
+import it.unibo.warverse.presentation.common.toColor
 import it.unibo.warverse.domain.model.fight.Army.*
 import java.awt.{Dimension, Color, Graphics2D, Graphics, Polygon}
 
@@ -31,7 +32,7 @@ class GameMap extends GameMouseMotion:
               countryTerritoryPolygon.vertexes.map(_.y.toInt).toArray,
               countryTerritoryPolygon.vertexes.length
             )
-            g2d.setColor(countryColor(country.id))
+            g2d.setColor(country.id.toColor)
             g2d.fillPolygon(polygon)
             g2d.setColor(Color.RED)
             g2d.setStroke(UIConstants.borderRegion)
