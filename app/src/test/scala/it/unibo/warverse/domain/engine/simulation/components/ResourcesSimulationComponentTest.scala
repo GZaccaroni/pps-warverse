@@ -20,7 +20,7 @@ class ResourcesSimulationComponentTest
       )
     )
 
-  test("Updating resources of all states") {
+  test("Updating resources of all countries") {
     component
       .run(initialEnv)
       .asserting(resultEnv =>
