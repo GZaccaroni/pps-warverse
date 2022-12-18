@@ -27,7 +27,7 @@ class EnvironmentTest extends AnyFunSuite with Matchers:
       .countries mustBe empty
   }
 
-  test("A state should be replaced by the given one") {
+  test("A country should be replaced by the given one") {
     val updatedCountry = countryA.addingCitizens(100)
     environment
       .replacingCountry(updatedCountry)
