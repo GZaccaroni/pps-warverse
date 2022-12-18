@@ -12,8 +12,9 @@ import monix.eval.Task
 class ResourcesSimulationComponent
     extends SimpleListenable[SimulationEvent]
     with SimulationComponent:
-  override def run(using environment: Environment): Task[Environment] =
+  override def run(environment: Environment): Task[Environment] =
     Task {
+      given Environment = environment
       environment.copiedWith(
         countries = environment.countries
           .map(country =>

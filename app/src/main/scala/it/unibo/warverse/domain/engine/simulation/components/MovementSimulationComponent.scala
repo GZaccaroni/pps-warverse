@@ -11,8 +11,9 @@ import monix.eval.Task
 class MovementSimulationComponent
     extends SimpleListenable[SimulationEvent]
     with SimulationComponent:
-  override def run(using environment: Environment): Task[Environment] =
+  override def run(environment: Environment): Task[Environment] =
     Task {
+      given Environment = environment
       given TargetFinderStrategy2D = TargetFinderStrategy2D()
       environment
         .copiedWith(

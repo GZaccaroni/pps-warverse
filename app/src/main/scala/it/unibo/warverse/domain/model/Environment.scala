@@ -32,7 +32,7 @@ trait Environment:
     * @param countries
     *   new countries
     * @param interCountryRelations
-    *   new interstate releations
+    *   new interstate relations
     * @param day
     *   new day
     * @return

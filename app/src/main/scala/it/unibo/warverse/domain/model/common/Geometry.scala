@@ -126,7 +126,7 @@ object Geometry:
           vertexes.map(_.y).sum / vertexes.length
         )
 
-      /** Compute te area with the Sohelace formula
+      /** Compute the area with the Sohelace formula
         *
         * @return
         *   the area of Polygon2D

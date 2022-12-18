@@ -8,8 +8,8 @@ object Relations:
   enum RelationStatus:
     case ALLIANCE, NEUTRAL, WAR
 
-  type InterCountryRelation =
-    ((World.CountryId, World.CountryId), RelationStatus)
+  type PairOfCountries = (World.CountryId, World.CountryId)
+  type InterCountryRelation = (PairOfCountries, RelationStatus)
 
   /** It keeps track of relations between countries
     */
@@ -29,6 +29,12 @@ object Relations:
       */
     def withRelation(relation: InterCountryRelation): InterCountryRelations
 
+    /** It returns true if there are ongoing wars, false otherwise
+      * @return
+      *   true if there are ongoing wars, false otherwise
+      */
+    def hasOngoingWars: Boolean
+
     /** It returns a new [[InterCountryRelations]] object with `relation`
       * removed from its relations if it exists
       *
@@ -37,7 +43,9 @@ object Relations:
       * @return
       *   the new object with the relation removed
       */
-    def withoutRelation(relation: InterCountryRelation): InterCountryRelations
+    def withoutRelation(
+      relation: PairOfCountries
+    ): InterCountryRelations
 
     /** It returns all the allies of a given country
       * @param country
@@ -93,11 +101,14 @@ object Relations:
         InterCountryRelationsImpl(relations + relation.normalized)
 
       override def withoutRelation(
-        relation: InterCountryRelation
+        relation: PairOfCountries
       ): InterCountryRelations =
         InterCountryRelationsImpl(
-          relations - relation.normalized
+          relations.filter(_._1 != relation.sorted)
         )
+
+      override def hasOngoingWars: Boolean =
+        relations.exists(_._2 == RelationStatus.WAR)
 
       override def countryAllies(
         country: World.CountryId
@@ -116,7 +127,7 @@ object Relations:
         getRelatedStatus((country1, country2))
 
       private def getRelatedStatus(
-        countries: (World.CountryId, World.CountryId)
+        countries: PairOfCountries
       ) =
         val sortedCountries = countries.sorted
         relations.collect({ case (`sortedCountries`, status) =>
@@ -148,7 +159,7 @@ object Relations:
       private def normalized: InterCountryRelation =
         (field._1.sorted, field._2)
 
-    extension (field: (World.CountryId, World.CountryId))
-      private def sorted: (World.CountryId, World.CountryId) =
+    extension (field: PairOfCountries)
+      private def sorted: PairOfCountries =
         if field._2 < field._1 then field.swap
         else field

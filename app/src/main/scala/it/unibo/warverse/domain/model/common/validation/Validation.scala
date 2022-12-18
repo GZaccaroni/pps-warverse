@@ -23,7 +23,7 @@ object Validation:
     * @param entity
     *   the entity which is being validated
     * @param message
-    *   a user-friendly message containing more informations about the exception
+    *   a user-friendly message containing more information about the exception
     */
   class ValidationError(entity: ValidatableEntity, message: String):
     override def toString: String =
@@ -34,7 +34,7 @@ object Validation:
       * @param message
       *   the entity which is being validated
       * @param entity
-      *   a user-friendly message containing more informations about the
+      *   a user-friendly message containing more information about the
       *   exception
       * @return
       *   An instance of [[ValidationError]]
