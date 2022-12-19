@@ -91,17 +91,17 @@ class Hud(val controller: GameStateController) extends JPanel:
   enableSpeed(true, false, false)
   speed1Button.addActionListener(_ =>
     writeToConsole("Speed set to X1")
-    controller.changeSpeed(1)
+    controller.changeSpeed(5)
     enableSpeed(true, false, false)
   )
   speed2Button.addActionListener(_ =>
     writeToConsole("Speed set to X2")
-    controller.changeSpeed(2)
+    controller.changeSpeed(15)
     enableSpeed(false, true, false)
   )
   speed3Button.addActionListener(_ =>
     writeToConsole("Speed set to X3")
-    controller.changeSpeed(3)
+    controller.changeSpeed(30)
     enableSpeed(false, false, true)
   )
 
