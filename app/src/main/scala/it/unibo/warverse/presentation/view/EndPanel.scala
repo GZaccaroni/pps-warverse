@@ -8,6 +8,7 @@ import javax.swing.JScrollPane
 
 trait EndPanel extends JPanel:
   def environment: Environment
+  def setPaneAttributes(textPane: JTextPane): Unit
 
 object EndPanel:
   def apply(environment: Environment): EndPanel = EndPanelImpl(environment)
@@ -47,7 +48,7 @@ object EndPanel:
     gameStats.setAlignmentY(StyleConstants.ALIGN_CENTER)
     this.add(gameStats)
 
-    private def setPaneAttributes(textPane: JTextPane): Unit =
+    override def setPaneAttributes(textPane: JTextPane): Unit =
       textPane.setEditable(false)
       textPane.setBackground(Color.BLACK)
       textPane.setForeground(Color.WHITE)
