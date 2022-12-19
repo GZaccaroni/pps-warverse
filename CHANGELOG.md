@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.0](https://github.com/GZaccaroni/pps-warverse/compare/v1.2.0...v1.3.0) (2022-12-19)
+
+
+### Features
+
+* Added toColor extension to string ([2c0ee26](https://github.com/GZaccaroni/pps-warverse/commit/2c0ee260b1a29c9239c92d857dbcd75ee222d8d4))
+* Handle all possible cases of Border Layout position ([a95808e](https://github.com/GZaccaroni/pps-warverse/commit/a95808eef0e7d0259cf52dc77ac957cfc9ccc27a))
+
+
+### Bug Fixes
+
+* added missing trait and override ([2b74dee](https://github.com/GZaccaroni/pps-warverse/commit/2b74deea597e10cf005421181d9a18cfe86c003a))
+* missing override ([ad2ccfa](https://github.com/GZaccaroni/pps-warverse/commit/ad2ccfac683098be68e80f7b64ea5f8e01123f03))
+
 ## [1.2.0](https://github.com/GZaccaroni/pps-warverse/compare/v1.1.1...v1.2.0) (2022-12-16)
 
 
