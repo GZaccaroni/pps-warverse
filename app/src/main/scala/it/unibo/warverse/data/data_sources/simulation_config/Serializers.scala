@@ -8,7 +8,7 @@ private[data] object Serializers:
   class ArmyUnitKindSerializer extends Serializer[ArmyUnitKind]:
     private val MyClassClass = classOf[ArmyUnitKind]
 
-    def deserialize(implicit
+    override def deserialize(implicit
       format: Formats
     ): PartialFunction[(TypeInfo, JValue), ArmyUnitKind] = {
       case (TypeInfo(MyClassClass, _), json: JObject) =>
@@ -21,7 +21,9 @@ private[data] object Serializers:
             json.extract[ArmyUnitKind.AreaArmyUnitKind]
     }
 
-    def serialize(implicit formats: Formats): PartialFunction[Any, JValue] = {
+    override def serialize(implicit
+      formats: Formats
+    ): PartialFunction[Any, JValue] = {
       case precisionKind: ArmyUnitKind.PrecisionArmyUnitKind =>
         Extraction.decompose(precisionKind)
       case areaKind: ArmyUnitKind.AreaArmyUnitKind =>
@@ -31,7 +33,7 @@ private[data] object Serializers:
   class UnitAttackTypeSerializer extends Serializer[UnitAttackType]:
     private val MyClassClass = classOf[UnitAttackType]
 
-    def deserialize(implicit
+    override def deserialize(implicit
       format: Formats
     ): PartialFunction[(TypeInfo, JValue), UnitAttackType] = {
       case (TypeInfo(MyClassClass, _), json) =>
@@ -44,6 +46,8 @@ private[data] object Serializers:
             )
     }
 
-    def serialize(implicit formats: Formats): PartialFunction[Any, JValue] = {
-      case value: UnitAttackType => JString(value.rawValue)
+    override def serialize(implicit
+      formats: Formats
+    ): PartialFunction[Any, JValue] = { case value: UnitAttackType =>
+      JString(value.rawValue)
     }
