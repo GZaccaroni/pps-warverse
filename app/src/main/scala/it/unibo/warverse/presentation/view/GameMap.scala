@@ -44,8 +44,8 @@ class GameMap extends GameMouseMotion:
                 g2d.fillRect(
                   soldier.position.x.toInt,
                   soldier.position.y.toInt,
-                  3,
-                  3
+                  6,
+                  6
                 )
               case _: PrecisionArmyUnit =>
                 g2d.fillPolygon(
