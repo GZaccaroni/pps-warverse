@@ -5,7 +5,7 @@ import java.awt.{Color, Dimension, Graphics2D}
 
 class SimpleMenuItemPainter extends MenuItemPainter:
 
-  def preferredSize(g2d: Graphics2D, text: String): Dimension =
+  override def preferredSize(g2d: Graphics2D, text: String): Dimension =
     g2d
       .getFontMetrics()
       .getStringBounds(text, g2d)

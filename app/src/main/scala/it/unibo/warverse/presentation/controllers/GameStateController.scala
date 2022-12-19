@@ -74,7 +74,9 @@ object GameStateController:
           case SimulationEvent.SimulationCompleted(environment) =>
             mainFrame.setPanel(EndPanel(environment))
           case SimulationEvent.CountryWonWar(winnerId, loserId, day) =>
-            this.hud.writeToConsole(s"$loserId has been defeated by $winnerId at day $day")
+            this.hud.writeToConsole(
+              s"$loserId has been defeated by $winnerId at day $day"
+            )
             this.hud.highlightCountryId(winnerId)
             this.hud.highlightCountryId(loserId)
             this.gameStats.updateEventList(
