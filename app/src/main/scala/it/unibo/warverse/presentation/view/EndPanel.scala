@@ -8,6 +8,7 @@ import javax.swing.JScrollPane
 
 trait EndPanel extends JPanel:
   def environment: Environment
+  def setPaneAttributes(textPane: JTextPane): Unit
 
 object EndPanel:
   def apply(environment: Environment): EndPanel = EndPanelImpl(environment)
@@ -18,14 +19,15 @@ object EndPanel:
     private val stats: JTextPane = JTextPane()
     private val countries = environment.countries
     private val gameStats: JScrollPane = JScrollPane(stats)
-    private val warsExists: Boolean = warsExists(environment)
+    private val warsExists: Boolean =
+      environment.interCountryRelations.hasOngoingWars
     this.setLayout(BoxLayout(this, BoxLayout.Y_AXIS))
 
     if countries.nonEmpty && !warsExists then
-      title.setText(s"Winners are: ${countries.map(_.id).mkString(", ")}")
+      title.setText(s"Winners: ${countries.map(_.id).mkString(", ")}")
       stats.setText(
         countries.foldLeft("") { (text, c) =>
-          s"${text}Country: ${c.id}\nRemaining Army Units: ${c.armyUnits.size}\nRemaining citizens: ${c.citizens}\nResources Remaining: ${String
+          s"${text}Country: ${c.id}\nRemaining Army Units: ${c.armyUnits.size}\nRemaining Citizens: ${c.citizens}\nResources Remaining: ${String
               .format("%.02f", c.resources)}\n\n"
         }
       )
@@ -46,7 +48,7 @@ object EndPanel:
     gameStats.setAlignmentY(StyleConstants.ALIGN_CENTER)
     this.add(gameStats)
 
-    private def setPaneAttributes(textPane: JTextPane): Unit =
+    override def setPaneAttributes(textPane: JTextPane): Unit =
       textPane.setEditable(false)
       textPane.setBackground(Color.BLACK)
       textPane.setForeground(Color.WHITE)
@@ -59,15 +61,3 @@ object EndPanel:
         centerAttribute,
         false
       )
-
-    private def warsExists(
-      environment: Environment
-    ): Boolean =
-      environment.countries.size match
-        case 0 => false
-        case _ =>
-          environment.countries.forall(country =>
-            environment.interCountryRelations
-              .countryEnemies(country.id)
-              .nonEmpty
-          )

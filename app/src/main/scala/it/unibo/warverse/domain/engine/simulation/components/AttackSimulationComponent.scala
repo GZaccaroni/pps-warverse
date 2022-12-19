@@ -15,8 +15,9 @@ import scala.collection.immutable.{AbstractSeq, LinearSeq}
 class AttackSimulationComponent
     extends SimpleListenable[SimulationEvent]
     with SimulationComponent:
-  override def run(using environment: Environment): Task[Environment] =
+  override def run(environment: Environment): Task[Environment] =
     Task {
+      given Environment = environment
       given TargetFinderStrategy2D = TargetFinderStrategy2D()
 
       val events = for

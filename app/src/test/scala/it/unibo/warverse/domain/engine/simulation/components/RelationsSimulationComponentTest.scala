@@ -13,21 +13,22 @@ class RelationsSimulationComponentTest
     extends AsyncFunSuite
     with MonixTaskTest
     with Matchers:
-  val environment: Environment = DomainExample.environment
-  val newEnv: Task[Environment] =
-    RelationsSimulationComponent().run(environment)
+  private val component = RelationsSimulationComponent()
+  private val initialEnv: Environment = DomainExample.environment
 
   test("Initial relations between A and C must be neutral") {
-    environment.interCountryRelations.relationStatus(
+    initialEnv.interCountryRelations.relationStatus(
       "ID_A",
       "ID_C"
     ) mustBe empty
   }
 
   test("Relation between A and C after the update must be war") {
-    newEnv.asserting(env =>
-      env.interCountryRelations
-        .relationStatus("ID_A", "ID_C")
-        .head mustBe RelationStatus.WAR
-    )
+    component
+      .run(initialEnv)
+      .asserting(resultEnv =>
+        resultEnv.interCountryRelations
+          .relationStatus("ID_A", "ID_C")
+          .head mustBe RelationStatus.WAR
+      )
   }

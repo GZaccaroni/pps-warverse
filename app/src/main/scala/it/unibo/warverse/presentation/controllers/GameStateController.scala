@@ -29,7 +29,7 @@ object GameStateController:
 
     private val gameMap = GameMap()
 
-    private val hud = Hud()
+    private val hud = Hud(this)
 
     private val gamePanel = GamePanel()
 
@@ -39,14 +39,13 @@ object GameStateController:
       simulationEngine.map(_.simulationConfig)
 
     def simulationConfig_=(newValue: Option[SimulationConfig]): Unit =
-      if (simulationEngine.isDefined) then onStopClicked()
+      if simulationEngine.isDefined then onStopClicked()
       simulationEngine = newValue.map(SimulationEngine(_))
       gameMap.environment = simulationEngine.map(_.currentEnvironment)
 
     override def setPanel(): Unit =
-      hud.setController(this)
-      gamePanel.addToPanel(gameMap, GuiEnum.WEST)
-      gamePanel.addToPanel(hud, GuiEnum.EAST)
+      gamePanel.addToPanel(gameMap, ComponentPosition.WEST)
+      gamePanel.addToPanel(hud, ComponentPosition.EAST)
       mainFrame.setPanel(gamePanel)
 
     override def onStartClicked(): Unit =
@@ -75,7 +74,9 @@ object GameStateController:
           case SimulationEvent.SimulationCompleted(environment) =>
             mainFrame.setPanel(EndPanel(environment))
           case SimulationEvent.CountryWonWar(winnerId, loserId, day) =>
-            this.hud.writeToConsole(s"$loserId has been defeated by $winnerId")
+            this.hud.writeToConsole(
+              s"$loserId has been defeated by $winnerId at day $day"
+            )
             this.hud.highlightCountryId(winnerId)
             this.hud.highlightCountryId(loserId)
             this.gameStats.updateEventList(

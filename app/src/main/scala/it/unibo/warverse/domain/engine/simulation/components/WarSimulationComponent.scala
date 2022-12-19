@@ -11,7 +11,7 @@ import it.unibo.warverse.domain.model.world.Relations.{
 import it.unibo.warverse.domain.model.world.World.{Country, CountryId}
 import monix.eval.Task
 
-/** Simulates war completion and division of assets between winning states
+/** Simulates war completion and division of assets between winning countries
   */
 class WarSimulationComponent
     extends SimpleListenable[SimulationEvent]
@@ -51,7 +51,7 @@ class WarSimulationComponent
       environment
         .copiedWith(
           environment.countries.filterNot(_ == countryDefeated),
-          removeLostStateRelation(
+          removeLoserCountryRelation(
             countryDefeated,
             environment.interCountryRelations
           )
@@ -66,7 +66,7 @@ class WarSimulationComponent
         loserCitizens / winnersId.size
       val resourcesPerWinner =
         loserResources / winnersId.size
-      val splittedLoserTerritory =
+      val splitLoserTerritory =
         countryDefeated.boundaries.split(winnersId.size)
       winnersId.zipWithIndex
         .foldLeft(envWithoutDefeatedCountry) {
@@ -106,7 +106,7 @@ class WarSimulationComponent
                       then loserCitizens - citizensPerWinner * winnerIndex
                       else citizensPerWinner
                     )
-                    .addingTerritory(splittedLoserTerritory(winnerIndex))
+                    .addingTerritory(splitLoserTerritory(winnerIndex))
                 envWithoutDefeatedCountry
                   .replacingCountry(winnerCountry)
               case None =>
@@ -115,18 +115,15 @@ class WarSimulationComponent
         }
     else envWithoutDefeatedCountry
 
-  private def removeLostStateRelation(
+  private def removeLoserCountryRelation(
     country: Country,
     relations: InterCountryRelations
   ): InterCountryRelations =
-    var result: InterCountryRelations = relations
-    val enemies = relations.countryEnemies(country.id)
-    val allied = relations.countryAllies(country.id)
-    allied.foreach(ally =>
-      result =
-        result.withoutRelation((country.id, ally), RelationStatus.ALLIANCE)
-    )
-    enemies.foreach(enemy =>
-      result = result.withoutRelation((country.id, enemy), RelationStatus.WAR)
-    )
-    result
+    val enemiesAllies =
+      relations.countryEnemies(country.id) ++ relations.countryAllies(
+        country.id
+      )
+
+    enemiesAllies.foldLeft(relations) { (relations, enemyOrAlly) =>
+      relations.withoutRelation((country.id, enemyOrAlly))
+    }

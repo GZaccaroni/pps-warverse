@@ -21,17 +21,35 @@ import monix.eval.Task
 
 import java.io.File
 
+trait DtoMapping:
+  def mapSimulationConfigDto(dto: SimulationConfigDto): SimulationConfig
+  def mapCountryDto(dto: CountryDto): World.Country
+  def mapDtoToInterCountryRelations(
+    configDto: SimulationConfigDto
+  ): InterCountryRelations
+  def mapArmyDto(
+    countryId: World.CountryId,
+    dto: ArmyDtos.CountryArmy
+  ): Seq[Army.ArmyUnit]
+  def mapArmyUnitDto(
+    countryId: World.CountryId,
+    kind: ArmyDtos.ArmyUnitKind,
+    unit: ArmyDtos.ArmyUnit
+  ): Army.ArmyUnit
+  def mapPoint2DDto(dto: GeometryDtos.Point2DDto): Geometry.Point2D
+
 class SimulationConfigRepositoryImpl(
-  datasource: SimulationConfigDataSource
-) extends SimulationConfigRepository:
+  dataSource: SimulationConfigDataSource
+) extends SimulationConfigRepository
+    with DtoMapping:
   override def readSimulationConfig(
     file: File
   ): Task[Either[List[Validation.ValidationError], SimulationConfig]] =
-    datasource
+    dataSource
       .readSimulationConfig(file)
       .map(result => result.validate().map(_ => mapSimulationConfigDto(result)))
 
-  private def mapSimulationConfigDto(
+  override def mapSimulationConfigDto(
     dto: SimulationConfigDto
   ): SimulationConfig =
     SimulationConfig(
@@ -39,7 +57,7 @@ class SimulationConfigRepositoryImpl(
       interCountryRelations = mapDtoToInterCountryRelations(dto)
     )
 
-  private def mapCountryDto(dto: CountryDto): World.Country =
+  override def mapCountryDto(dto: CountryDto): World.Country =
     World.Country(
       id = dto.id,
       name = dto.id,
@@ -49,7 +67,7 @@ class SimulationConfigRepositoryImpl(
       armyUnits = mapArmyDto(dto.id, dto.army)
     )
 
-  private def mapDtoToInterCountryRelations(
+  override def mapDtoToInterCountryRelations(
     configDto: SimulationConfigDto
   ): InterCountryRelations =
     val relations = configDto.countries
@@ -63,7 +81,7 @@ class SimulationConfigRepositoryImpl(
       )
     InterCountryRelations(relations.toSet)
 
-  private def mapArmyDto(
+  override def mapArmyDto(
     countryId: World.CountryId,
     dto: ArmyDtos.CountryArmy
   ): Seq[Army.ArmyUnit] =
@@ -74,7 +92,7 @@ class SimulationConfigRepositoryImpl(
         .get
     )
 
-  private def mapArmyUnitDto(
+  override def mapArmyUnitDto(
     countryId: World.CountryId,
     kind: ArmyDtos.ArmyUnitKind,
     unit: ArmyDtos.ArmyUnit
@@ -104,7 +122,7 @@ class SimulationConfigRepositoryImpl(
           areaOfImpact = kind.damageArea
         )
 
-  private def mapPoint2DDto(dto: GeometryDtos.Point2DDto): Geometry.Point2D =
+  override def mapPoint2DDto(dto: GeometryDtos.Point2DDto): Geometry.Point2D =
     Geometry.Point2D(
       x = dto.x,
       y = dto.y

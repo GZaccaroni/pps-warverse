@@ -8,7 +8,16 @@ import monix.eval.Task
 
 import java.io.File
 
+/** Reads simulation config from a specific source
+  */
 trait SimulationConfigRepository:
+  /** Reads simulation config from a specific source
+    * @param file
+    *   the source to read from
+    * @return
+    *   the simulation config or a list of validation errors if the reading
+    *   fails
+    */
   def readSimulationConfig(
     file: File
   ): Task[Either[List[ValidationError], SimulationConfig]]

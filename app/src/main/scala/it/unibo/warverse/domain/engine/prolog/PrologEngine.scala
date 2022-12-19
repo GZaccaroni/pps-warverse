@@ -33,8 +33,8 @@ object PrologEngine:
   private class IterableTerms(engine: Prolog, goal: Term)
       extends Iterable[Term]:
     override def iterator: Iterator[Term] = new Iterator[Term]:
-      var advanceFailed = false
-      var solution: SolveInfo = engine.solve(goal)
+      private var advanceFailed = false
+      private var solution: SolveInfo = engine.solve(goal)
 
       override def hasNext: Boolean =
         (solution.isSuccess || solution.hasOpenAlternatives) && !advanceFailed

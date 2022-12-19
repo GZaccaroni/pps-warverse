@@ -124,20 +124,9 @@ object SimulationEngine:
           .foreachL(newEnvironment =>
             this.environment = newEnvironment
             emitEvent(IterationCompleted(newEnvironment))
-            if !warsExists(newEnvironment) then terminate()
+            if !newEnvironment.interCountryRelations.hasOngoingWars then
+              terminate()
           )
         taskCancelable = Some(task.runAsync(_ => ()))
     private def handleEvent(event: SimulationEvent): Unit =
       emitEvent(event)
-
-    private def warsExists(
-      environment: Environment
-    ): Boolean =
-      environment.countries.size match
-        case 0 => false
-        case _ =>
-          environment.countries.forall(country =>
-            environment.interCountryRelations
-              .countryEnemies(country.id)
-              .nonEmpty
-          )

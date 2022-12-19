@@ -5,7 +5,7 @@ import java.awt.{Color, Dimension, Graphics2D}
 
 class SimpleMenuItemPainter extends MenuItemPainter:
 
-  def preferredSize(g2d: Graphics2D, text: String): Dimension =
+  override def preferredSize(g2d: Graphics2D, text: String): Dimension =
     g2d
       .getFontMetrics()
       .getStringBounds(text, g2d)
@@ -30,7 +30,7 @@ class SimpleMenuItemPainter extends MenuItemPainter:
     g2d.setColor(Color.WHITE)
     g2d.drawString(text, x, y)
 
-  def paintBackground(
+  private def paintBackground(
     g2d: Graphics2D,
     bounds: RoundRectangle2D,
     background: Color,
