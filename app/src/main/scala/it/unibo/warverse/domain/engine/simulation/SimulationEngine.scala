@@ -102,7 +102,7 @@ object SimulationEngine:
         loopCancelable = None
 
     override def changeSpeed(newSpeed: Int): Unit =
-      if !(speed > 0) then
+      if speed <= 0 then
         throw IllegalArgumentException("Speed must be greater than 0")
       if speed != newSpeed then
         if isRunning.get() then
