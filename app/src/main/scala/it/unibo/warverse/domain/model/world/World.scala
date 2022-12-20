@@ -11,6 +11,7 @@ import it.unibo.warverse.domain.model.fight.Army.ArmyUnit
 object World:
   type CountryId = String
   type Territory = MultiPolygon[Point2D]
+  type Citizens = Int
 
   trait UpdatableAssets[UpdatableType <: UpdatableAssets[UpdatableType]]:
     /** It returns a new entity with the given resources added
@@ -28,7 +29,7 @@ object World:
       * @return
       *   a new instance of [[UpdatableType]] with the citizens added
       */
-    def addingCitizens(newCitizens: Int): UpdatableType
+    def addingCitizens(newCitizens: Citizens): UpdatableType
 
     /** It returns a new entity with the given army units added
       *
@@ -86,7 +87,7 @@ object World:
       * @return
       *   a new instance of [[Country]] with the citizens added
       */
-    override def addingCitizens(newCitizens: Int): Country =
+    override def addingCitizens(newCitizens: Citizens): Country =
       this.copy(citizens = math.max(citizens + newCitizens, 0))
 
     /** * It returns a new [[Country]] with the given army units added
