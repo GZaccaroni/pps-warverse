@@ -113,20 +113,20 @@ object Relations:
       override def countryAllies(
         country: World.CountryId
       ): Iterable[World.CountryId] =
-        getRelatedCountry(country, RelationStatus.ALLIANCE)
+        relatedCountry(country, RelationStatus.ALLIANCE)
 
       override def countryEnemies(
         country: World.CountryId
       ): Iterable[World.CountryId] =
-        getRelatedCountry(country, RelationStatus.WAR)
+        relatedCountry(country, RelationStatus.WAR)
 
       override def relationStatus(
         country1: World.CountryId,
         country2: World.CountryId
       ): Set[RelationStatus] =
-        getRelatedStatus((country1, country2))
+        relatedStatus((country1, country2))
 
-      private def getRelatedStatus(
+      private def relatedStatus(
         countries: PairOfCountries
       ) =
         val sortedCountries = countries.sorted
@@ -134,7 +134,7 @@ object Relations:
           status
         })
 
-      private def getRelatedCountry(
+      private def relatedCountry(
         country: World.CountryId,
         status: RelationStatus
       ) =
