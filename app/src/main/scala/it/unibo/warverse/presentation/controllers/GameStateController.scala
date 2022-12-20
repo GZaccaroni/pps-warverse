@@ -50,7 +50,7 @@ object GameStateController:
 
     override def onStartClicked(): Unit =
       for simulationEngine <- simulationEngine do
-        simulationEngine.start()
+        simulationEngine.resume()
         onReceiveEvent[SimulationEvent] from simulationEngine run onEvent
 
     override def onPauseClicked(): Unit =
