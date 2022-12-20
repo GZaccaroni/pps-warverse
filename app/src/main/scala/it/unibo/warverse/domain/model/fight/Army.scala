@@ -77,6 +77,38 @@ object Army:
       position: Position = this.position
     ): ArmyUnit
 
+    /** Generate an AttackAction that represent what happen when the given
+      * target is hitted
+      * @param target
+      *   the hitted target
+      * @return
+      *   the result of the attack on the given target
+      */
+    protected def hitTarget(target: Position): AttackAction
+
+    /** Performs the attack of the army unit on available targets given by
+      * strategy
+      *
+      * @param strategy
+      *   the strategy used to find available targets
+      * @return
+      *   the sequence of events result of the attack
+      */
+    override def attack()(using
+      strategy: TargetFinderStrategy[Position]
+    ): Seq[AttackAction] =
+      val availableTargets = PrologPredicates.reachableSortedTargets(
+        position,
+        rangeOfHit,
+        strategy.findTargets(countryId, attackType),
+        availableHits
+      )
+      for
+        target <- availableTargets
+        probabilityOfSuccess <- Seq.fill(availableHits)(Random.nextInt(100))
+        if probabilityOfSuccess < chanceOfHit
+      yield hitTarget(target)
+
     /** Moves the army unit according to a strategy in a given environment
       * @param environment
       *   the environment in which the entity is moving
@@ -136,20 +168,8 @@ object Army:
       position: Point2D
     ): ArmyUnit = copy(countryId = countryId, position = position)
 
-    override def attack()(using
-      strategy: TargetFinderStrategy[Position]
-    ): Seq[AttackAction] =
-      val availableTargets = PrologPredicates.reachableSortedTargets(
-        position,
-        rangeOfHit,
-        strategy.findTargets(countryId, attackType),
-        availableHits
-      )
-      for
-        target <- availableTargets
-        probabilityOfSuccess <- Seq.fill(availableHits)(Random.nextInt(100))
-        if probabilityOfSuccess < chanceOfHit
-      yield AttackAction.PrecisionAttackAction(target)
+    override def hitTarget(target: Point2D): AttackAction =
+      AttackAction.PrecisionAttackAction(target)
 
   /** An army unit that attacks an area
     * @param countryId
@@ -188,17 +208,6 @@ object Army:
       countryId: World.CountryId = this.countryId,
       position: Point2D
     ): ArmyUnit = copy(countryId = countryId, position = position)
-    override def attack()(using
-      strategy: TargetFinderStrategy[Position]
-    ): Seq[AttackAction] =
-      val availableTargets = PrologPredicates.reachableSortedTargets(
-        position,
-        rangeOfHit,
-        strategy.findTargets(countryId, attackType),
-        availableHits
-      )
-      for
-        target <- availableTargets
-        probabilityOfSuccess <- Seq.fill(availableHits)(Random.nextInt(100))
-        if probabilityOfSuccess < chanceOfHit
-      yield AttackAction.AreaAttackAction(target, areaOfImpact)
+
+    override def hitTarget(target: Point2D): AttackAction =
+      AttackAction.AreaAttackAction(target, areaOfImpact)
