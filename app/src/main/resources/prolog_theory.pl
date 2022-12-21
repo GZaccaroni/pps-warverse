@@ -28,4 +28,4 @@ list_limit([LH|LT], 1, [LH]).
 list_limit([], N, []).
 list_limit([X|T1],N,[X|T2]) :- N >= 0, N1 is (N-1), list_limit(T1,N1,T2), !.
 
-reachable_targets_limit(P, Range, AT, Limit, LT) :- reachable_targets(P, Range, AT, RT), sort_targets_per_distance(P, RT, ST), list_limit(RT, Limit, LT).
+reachable_targets_limit(P, Range, AT, Limit, LT) :- reachable_targets(P, Range, AT, RT), sort_targets_per_distance(P, RT, ST), list_limit(ST, Limit, LT).
