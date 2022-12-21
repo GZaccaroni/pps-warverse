@@ -10,11 +10,10 @@ import org.scalatest.funsuite.AsyncFunSuite
 import monix.testing.scalatest.MonixTaskTest
 
 class RelationsSimulationComponentTest
-    extends AsyncFunSuite
-    with MonixTaskTest
-    with Matchers:
-  private val component = RelationsSimulationComponent()
-  private val initialEnv: Environment = DomainExample.environment
+    extends SimulationComponentTest[RelationsSimulationComponent]:
+  override protected val component: RelationsSimulationComponent =
+    RelationsSimulationComponent()
+  override protected val initialEnv: Environment = DomainExample.environment
 
   test("Initial relations between A and C must be neutral") {
     initialEnv.interCountryRelations.relationStatus(

@@ -10,11 +10,10 @@ import org.scalatest.funsuite.AsyncFunSuite
 import monix.testing.scalatest.MonixTaskTest
 
 class WarSimulationComponentTest
-    extends AsyncFunSuite
-    with MonixTaskTest
-    with Matchers:
-  private val component = WarSimulationComponent()
-  private val initialEnv = DomainExample.environment
+    extends SimulationComponentTest[WarSimulationComponent]:
+  override protected val component: WarSimulationComponent =
+    WarSimulationComponent()
+  override protected val initialEnv: Environment = DomainExample.environment
     .copiedWith(
       countries = DomainExample.environment.countries.map(country =>
         country.addingResources(50)

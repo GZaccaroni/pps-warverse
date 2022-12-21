@@ -27,7 +27,7 @@ object EndPanel:
       title.setText(s"Winners: ${countries.map(_.id).mkString(", ")}")
       stats.setText(
         countries.foldLeft("") { (text, c) =>
-          s"${text}Country: ${c.id}\nRemaining Army Units: ${c.armyUnits.size}\nRemaining Citizens: ${c.citizens}\nResources Remaining: ${String
+          s"${text}Country: ${c.id}\nRemaining Army Units: ${c.armyUnits.size}\nRemaining Citizens: ${c.citizens}\nRemaining Resources: ${String
               .format("%.02f", c.resources)}\n\n"
         }
       )

@@ -5,3 +5,7 @@ package it.unibo.warverse.domain.model.common
   *   it is called when resource should be disposed
   */
 case class Disposable(dispose: () => Unit)
+
+extension (field: Iterable[Disposable])
+  def dispose(): Unit =
+    field.foreach(_.dispose)

@@ -8,7 +8,7 @@ import org.scalatest.EitherValues.*
 
 import java.io.File
 
-class SimulationConfigDataSourceTest
+class SimulationEnvironmentDataSourceTest
     extends AsyncFunSuite
     with MonixTaskTest
     with Matchers:
@@ -20,18 +20,18 @@ class SimulationConfigDataSourceTest
   private val invalidFile = File(invalidFileURI)
 
   private def jsonDataSource() =
-    SimulationConfigDataSource()
+    SimulationEnvironmentDataSource()
 
   test("Parsing should succeed without exceptions") {
-    jsonDataSource().readSimulationConfig(file).assertNoException
-    jsonDataSource().readSimulationConfig(invalidFile).assertNoException
+    jsonDataSource().readSimulationEnvironment(file).assertNoException
+    jsonDataSource().readSimulationEnvironment(invalidFile).assertNoException
   }
   test("Countries should be valid") {
     jsonDataSource()
-      .readSimulationConfig(file)
-      .asserting(simulationConfig =>
-        simulationConfig.countries.length mustBe 2
-        simulationConfig.countries.head.id mustBe "Test1"
-        simulationConfig.countries.last.id mustBe "Test2"
+      .readSimulationEnvironment(file)
+      .asserting(simulationEnvironment =>
+        simulationEnvironment.countries.length mustBe 2
+        simulationEnvironment.countries.head.id mustBe "Test1"
+        simulationEnvironment.countries.last.id mustBe "Test2"
       )
   }

@@ -4,8 +4,8 @@ import it.unibo.warverse.data.models.WorldDtos
 import it.unibo.warverse.domain.model.common.validation.Validation.*
 import it.unibo.warverse.domain.model.common.validation.CommonValidators.*
 
-private[data] object SimulationConfigDtos:
-  case class SimulationConfigDto(
+private[data] object SimulationEnvironmentDtos:
+  case class SimulationEnvironmentDto(
     countries: Seq[WorldDtos.CountryDto]
   ) extends Validatable:
     override def validationErrors: List[ValidationError] =

@@ -4,17 +4,19 @@ import it.unibo.warverse.domain.engine.simulation.components.*
 import it.unibo.warverse.domain.model.common.Geometry.Point2D
 import it.unibo.warverse.domain.model.common.Listen.*
 import it.unibo.warverse.domain.model.common.{Disposable, Geometry}
+import it.unibo.warverse.domain.model.common.dispose
 import it.unibo.warverse.domain.model.fight.Army.*
 import it.unibo.warverse.domain.model.fight.SimulationEvent.*
 import it.unibo.warverse.domain.model.fight.{Army, SimulationEvent}
 import it.unibo.warverse.domain.model.world.Relations.InterCountryRelations
 import it.unibo.warverse.domain.model.world.SimulationStats
 import it.unibo.warverse.domain.model.world.World.Country
-import it.unibo.warverse.domain.model.{Environment, SimulationConfig}
+import it.unibo.warverse.domain.model.Environment
 import monix.eval.Task
 import monix.execution.Cancelable
 import monix.execution.Scheduler.Implicits.global
 import monix.execution.Scheduler.global as scheduler
+import monix.execution.atomic.{Atomic, AtomicAny, AtomicBoolean}
 import monix.reactive.Observable
 import monix.reactive.ObservableLike.fromTask
 
@@ -25,12 +27,6 @@ import scala.concurrent.duration.{DurationDouble, DurationInt, FiniteDuration}
 /** Handles the simulation of the war, it can emit [[SimulationEvent]].
   */
 trait SimulationEngine extends Listenable[SimulationEvent]:
-  /** The initial simulation config
-    * @return
-    *   The initial simulation config
-    */
-  def simulationConfig: SimulationConfig
-
   /** The current environment of the simulation
     *
     * @return
@@ -38,11 +34,8 @@ trait SimulationEngine extends Listenable[SimulationEvent]:
     */
   def currentEnvironment: Environment
 
-  /** Starts the simulation
-    */
-  def start(): Unit
-
-  /** Resumes the simulation
+  /** Resumes the simulation, if simulation is terminated or already running the
+    * command is ignored
     */
   def resume(): Unit
 
@@ -51,23 +44,30 @@ trait SimulationEngine extends Listenable[SimulationEvent]:
 
   /** Terminates the simulation */
   def terminate(): Unit
+
+  /** Changes the speed of the simulation
+    * @param newSpeed
+    *   the new speed of the simulation
+    * @throws IllegalArgumentException
+    *   if speed is not greater than zero
+    */
   def changeSpeed(newSpeed: Int): Unit
 
 object SimulationEngine:
   /** Creates an instance of [[SimulationEngine]]
-    * @param simulationConfig
+    * @param environment
     *   The initial config of the simulation
     * @return
     *   A SimulationEngine
     */
-  def apply(simulationConfig: SimulationConfig): SimulationEngine =
-    SimulationEngineImpl(simulationConfig)
+  def apply(environment: Environment): SimulationEngine =
+    SimulationEngineImpl(environment)
 
-  private class SimulationEngineImpl(val simulationConfig: SimulationConfig)
+  private class SimulationEngineImpl(initialEnvironment: Environment)
       extends SimpleListenable[SimulationEvent]
       with SimulationEngine:
 
-    override def currentEnvironment: Environment = environment
+    override def currentEnvironment: Environment = environment.get()
     private val simulationComponents: Seq[SimulationComponent] = List(
       AttackSimulationComponent(),
       MovementSimulationComponent(),
@@ -77,56 +77,70 @@ object SimulationEngine:
     )
     private val simulationDayDuration: FiniteDuration = 1.5.seconds
     private var speed = 1
-    private var taskCancelable: Option[Cancelable] = None
-    private var environment = Environment(
-      simulationConfig.countries,
-      simulationConfig.interCountryRelations
+    private var loopCancelable: Option[Cancelable] = None
+    private val isRunning: Atomic[Boolean] = AtomicBoolean(false)
+    private val isTerminated: Atomic[Boolean] = AtomicBoolean(false)
+    private val environment: Atomic[Environment] = AtomicAny(
+      initialEnvironment
     )
-    private val disposables: Seq[Disposable] =
-      simulationComponents.map { component =>
-        onReceiveEvent[SimulationEvent] from component run handleEvent
-      }
-    override def start(): Unit =
-      runLoop()
 
     override def resume(): Unit =
       runLoop()
 
     override def pause(): Unit =
-      taskCancelable foreach (_.cancel())
-      taskCancelable = None
-    private def isRunning: Boolean = taskCancelable.nonEmpty
+      if isRunning.get() then
+        loopCancelable foreach (_.cancel())
+        loopCancelable = None
 
     override def changeSpeed(newSpeed: Int): Unit =
+      if speed <= 0 then
+        throw IllegalArgumentException("Speed must be greater than 0")
       if speed != newSpeed then
-        if isRunning then
+        if isRunning.get() then
           pause()
           speed = newSpeed
           resume()
         else speed = newSpeed
 
     override def terminate(): Unit =
-      taskCancelable foreach (_.cancel())
-      taskCancelable = None
-      emitEvent(SimulationCompleted(this.environment))
-      disposables foreach (_.dispose)
+      if !isTerminated.getAndSet(true) then
+        loopCancelable foreach (_.cancel())
+        loopCancelable = None
+        emitEvent(SimulationCompleted(this.environment.get()))
+        isTerminated := true
 
     private def runLoop(): Unit =
-      if taskCancelable.isEmpty then
+      if !isTerminated.get() && !isRunning.getAndSet(true) then
+        val disposables: Seq[Disposable] = registerComponentListeners()
         val task = Observable
           .intervalAtFixedRate(simulationDayDuration / speed)
-          .scanEval(Task(environment)) { (previous, _) =>
+          .scanEval(Task(currentEnvironment)) { (previous, _) =>
             simulationComponents
               .foldLeft(Task(previous)) { (task, simulationComponent) =>
                 task.flatMap(simulationComponent.run)
               }
           }
+          .takeWhileInclusive(_.interCountryRelations.hasOngoingWars)
           .foreachL(newEnvironment =>
-            this.environment = newEnvironment
+            this.environment := newEnvironment
             emitEvent(IterationCompleted(newEnvironment))
-            if !newEnvironment.interCountryRelations.hasOngoingWars then
-              terminate()
           )
-        taskCancelable = Some(task.runAsync(_ => ()))
+          .guarantee(Task {
+            loopCancelable = None
+            isRunning := false
+            disposables.dispose()
+          })
+          .doOnFinish(_ =>
+            Task {
+              isTerminated := true
+              emitEvent(SimulationCompleted(currentEnvironment))
+            }
+          )
+        loopCancelable = Some(task.runAsync(_ => ()))
     private def handleEvent(event: SimulationEvent): Unit =
       emitEvent(event)
+
+    private def registerComponentListeners(): Seq[Disposable] =
+      simulationComponents.map { component =>
+        onReceiveEvent[SimulationEvent] from component run handleEvent
+      }
