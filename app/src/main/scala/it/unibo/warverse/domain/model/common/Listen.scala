@@ -52,7 +52,7 @@ object Listen:
       *   the closure that was getting executed on each event
       */
     def removeListener(closure: ListenClosure[Event]): Unit =
-      listeners = listeners.filter(_ == closure)
+      listeners = listeners.filter(_ != closure)
 
     protected def emitEvent(event: Event): Unit =
       listeners.foreach(listener =>
