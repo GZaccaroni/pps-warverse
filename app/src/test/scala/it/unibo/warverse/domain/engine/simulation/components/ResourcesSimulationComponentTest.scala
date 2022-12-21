@@ -10,7 +10,8 @@ import it.unibo.warverse.domain.model.Environment
 
 class ResourcesSimulationComponentTest
     extends SimulationComponentTest[ResourcesSimulationComponent]:
-  override protected val component: ResourcesSimulationComponent = ResourcesSimulationComponent()
+  override protected val component: ResourcesSimulationComponent =
+    ResourcesSimulationComponent()
   override protected val initialEnv: Environment = DomainExample.environment
     .copiedWith(
       DomainExample.environment.countries.map(country =>
