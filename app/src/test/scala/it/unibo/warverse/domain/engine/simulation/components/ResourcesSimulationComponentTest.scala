@@ -9,11 +9,9 @@ import monix.testing.scalatest.MonixTaskTest
 import it.unibo.warverse.domain.model.Environment
 
 class ResourcesSimulationComponentTest
-    extends AsyncFunSuite
-    with MonixTaskTest
-    with Matchers:
-  private val component = ResourcesSimulationComponent()
-  private val initialEnv = DomainExample.environment
+    extends SimulationComponentTest[ResourcesSimulationComponent]:
+  override protected val component: ResourcesSimulationComponent = ResourcesSimulationComponent()
+  override protected val initialEnv: Environment = DomainExample.environment
     .copiedWith(
       DomainExample.environment.countries.map(country =>
         country.addingResources(80)
