@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.1](https://github.com/GZaccaroni/pps-warverse/compare/v1.3.0...v1.3.1) (2022-12-21)
+
+
+### Bug Fixes
+
+* Fixed concurrency error in simulation engine ([a7b9e20](https://github.com/GZaccaroni/pps-warverse/commit/a7b9e20485ccf79629b76e676782fadb82ff5308))
+* Fixed SimulationEngine error ([aa125bd](https://github.com/GZaccaroni/pps-warverse/commit/aa125bdff625edc348d2c7ba69d06c918aac2515))
+
 ## [1.3.0](https://github.com/GZaccaroni/pps-warverse/compare/v1.2.0...v1.3.0) (2022-12-19)
 
 
