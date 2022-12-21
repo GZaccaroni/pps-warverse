@@ -156,11 +156,11 @@ object Army:
     override val countryId: World.CountryId,
     override val name: String,
     override val position: Point2D,
-    chanceOfHit: Percentage,
-    rangeOfHit: Double,
-    availableHits: Int,
-    dailyConsume: Double,
-    speed: Double
+    override val chanceOfHit: Percentage,
+    override val rangeOfHit: Double,
+    override val availableHits: Int,
+    override val dailyConsume: Double,
+    override val speed: Double
   ) extends ArmyUnit:
     override def attackType: Fight.AttackType = Fight.AttackType.Precision
     override def copiedWith(
@@ -195,11 +195,11 @@ object Army:
     override val countryId: World.CountryId,
     override val name: String,
     override val position: Point2D,
-    chanceOfHit: Percentage,
-    rangeOfHit: Double,
-    availableHits: Int,
+    override val chanceOfHit: Percentage,
+    override val rangeOfHit: Double,
+    override val availableHits: Int,
     override val dailyConsume: Double,
-    speed: Double,
+    override val speed: Double,
     areaOfImpact: Double
   ) extends ArmyUnit:
     override def attackType: Fight.AttackType = Fight.AttackType.Area
