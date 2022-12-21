@@ -103,10 +103,11 @@ object SimulationEngine:
         else speed = newSpeed
 
     override def terminate(): Unit =
-      loopCancelable foreach (_.cancel())
-      loopCancelable = None
-      emitEvent(SimulationCompleted(this.environment.get()))
-      isTerminated := true
+      if !isTerminated.getAndSet(true) then
+        loopCancelable foreach (_.cancel())
+        loopCancelable = None
+        emitEvent(SimulationCompleted(this.environment.get()))
+        isTerminated := true
 
     private def runLoop(): Unit =
       if !isTerminated.get() && !isRunning.getAndSet(true) then
