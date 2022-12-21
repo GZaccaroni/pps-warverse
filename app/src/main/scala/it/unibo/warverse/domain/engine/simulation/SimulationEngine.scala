@@ -11,7 +11,7 @@ import it.unibo.warverse.domain.model.fight.{Army, SimulationEvent}
 import it.unibo.warverse.domain.model.world.Relations.InterCountryRelations
 import it.unibo.warverse.domain.model.world.SimulationStats
 import it.unibo.warverse.domain.model.world.World.Country
-import it.unibo.warverse.domain.model.{Environment, SimulationConfig}
+import it.unibo.warverse.domain.model.Environment
 import monix.eval.Task
 import monix.execution.Cancelable
 import monix.execution.Scheduler.Implicits.global
@@ -27,12 +27,6 @@ import scala.concurrent.duration.{DurationDouble, DurationInt, FiniteDuration}
 /** Handles the simulation of the war, it can emit [[SimulationEvent]].
   */
 trait SimulationEngine extends Listenable[SimulationEvent]:
-  /** The initial simulation config
-    * @return
-    *   The initial simulation config
-    */
-  def simulationConfig: SimulationConfig
-
   /** The current environment of the simulation
     *
     * @return
@@ -61,15 +55,15 @@ trait SimulationEngine extends Listenable[SimulationEvent]:
 
 object SimulationEngine:
   /** Creates an instance of [[SimulationEngine]]
-    * @param simulationConfig
+    * @param environment
     *   The initial config of the simulation
     * @return
     *   A SimulationEngine
     */
-  def apply(simulationConfig: SimulationConfig): SimulationEngine =
-    SimulationEngineImpl(simulationConfig)
+  def apply(environment: Environment): SimulationEngine =
+    SimulationEngineImpl(environment)
 
-  private class SimulationEngineImpl(val simulationConfig: SimulationConfig)
+  private class SimulationEngineImpl(initialEnvironment: Environment)
       extends SimpleListenable[SimulationEvent]
       with SimulationEngine:
 
@@ -87,10 +81,7 @@ object SimulationEngine:
     private val isRunning: Atomic[Boolean] = AtomicBoolean(false)
     private val isTerminated: Atomic[Boolean] = AtomicBoolean(false)
     private val environment: Atomic[Environment] = AtomicAny(
-      Environment(
-        simulationConfig.countries,
-        simulationConfig.interCountryRelations
-      )
+      initialEnvironment
     )
 
     override def resume(): Unit =

@@ -1,19 +1,19 @@
 package it.unibo.warverse.data.repositories
 
-import it.unibo.warverse.data.data_sources.simulation_config.SimulationConfigDataSource
-import it.unibo.warverse.domain.model.SimulationConfig
+import it.unibo.warverse.data.data_sources.simulation_config.SimulationEnvironmentDataSource
 import it.unibo.warverse.domain.model.common.Geometry
 import it.unibo.warverse.domain.model.common.validation.Validation
-import it.unibo.warverse.domain.repositories.SimulationConfigRepository
+import it.unibo.warverse.domain.repositories.SimulationEnvironmentRepository
 import it.unibo.warverse.domain.model.common.Geometry.{
   MultiPolygon,
   Point2D,
   Polygon
 }
-import it.unibo.warverse.data.models.SimulationConfigDtos.SimulationConfigDto
+import it.unibo.warverse.data.models.SimulationEnvironmentDtos.SimulationEnvironmentDto
 import it.unibo.warverse.data.models.{ArmyDtos, GeometryDtos}
 import it.unibo.warverse.data.models.WorldDtos.CountryDto
 import it.unibo.warverse.data.models.ArmyDtos.ArmyUnitKind
+import it.unibo.warverse.domain.model.Environment
 import it.unibo.warverse.domain.model.fight.Army
 import it.unibo.warverse.domain.model.world.World
 import it.unibo.warverse.domain.model.world.Relations.*
@@ -22,10 +22,10 @@ import monix.eval.Task
 import java.io.File
 
 trait DtoMapping:
-  def mapSimulationConfigDto(dto: SimulationConfigDto): SimulationConfig
+  def mapEnvironmentDto(dto: SimulationEnvironmentDto): Environment
   def mapCountryDto(dto: CountryDto): World.Country
   def mapDtoToInterCountryRelations(
-    configDto: SimulationConfigDto
+    configDto: SimulationEnvironmentDto
   ): InterCountryRelations
   def mapArmyDto(
     countryId: World.CountryId,
@@ -38,21 +38,21 @@ trait DtoMapping:
   ): Army.ArmyUnit
   def mapPoint2DDto(dto: GeometryDtos.Point2DDto): Geometry.Point2D
 
-class SimulationConfigRepositoryImpl(
-  dataSource: SimulationConfigDataSource
-) extends SimulationConfigRepository
+class SimulationEnvironmentRepositoryImpl(
+  dataSource: SimulationEnvironmentDataSource
+) extends SimulationEnvironmentRepository
     with DtoMapping:
-  override def readSimulationConfig(
+  override def readSimulationEnvironment(
     file: File
-  ): Task[Either[List[Validation.ValidationError], SimulationConfig]] =
+  ): Task[Either[List[Validation.ValidationError], Environment]] =
     dataSource
-      .readSimulationConfig(file)
-      .map(result => result.validate().map(_ => mapSimulationConfigDto(result)))
+      .readSimulationEnvironment(file)
+      .map(result => result.validate().map(_ => mapEnvironmentDto(result)))
 
-  override def mapSimulationConfigDto(
-    dto: SimulationConfigDto
-  ): SimulationConfig =
-    SimulationConfig(
+  override def mapEnvironmentDto(
+    dto: SimulationEnvironmentDto
+  ): Environment =
+    Environment(
       countries = dto.countries.map(mapCountryDto),
       interCountryRelations = mapDtoToInterCountryRelations(dto)
     )
@@ -68,7 +68,7 @@ class SimulationConfigRepositoryImpl(
     )
 
   override def mapDtoToInterCountryRelations(
-    configDto: SimulationConfigDto
+    configDto: SimulationEnvironmentDto
   ): InterCountryRelations =
     val relations = configDto.countries
       .flatMap(country =>

@@ -5,7 +5,7 @@ import it.unibo.warverse.domain.model.world.Relations.InterCountryRelations
 
 import scala.::
 
-/** Environment of the simulation
+/** The environment of the simulation
   */
 trait Environment:
   /** Returns the countries
@@ -63,6 +63,8 @@ object Environment:
     interCountryRelations: InterCountryRelations,
     day: Int = 0
   ): Environment =
+    if day < 0 then
+      throw IllegalArgumentException("Simulation day must be greater than zero")
     EnvironmentImpl(countries, interCountryRelations, day)
 
   private case class EnvironmentImpl(

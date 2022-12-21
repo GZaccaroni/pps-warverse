@@ -7,7 +7,7 @@ import it.unibo.warverse.data.models.GeometryDtos.Point2DDto
 import it.unibo.warverse.data.models.{
   ArmyDtos,
   GeometryDtos,
-  SimulationConfigDtos,
+  SimulationEnvironmentDtos,
   WorldDtos
 }
 import org.json4s.jackson.Serialization
@@ -30,7 +30,7 @@ object EncodedSamples:
 
     override def complete: String =
       Serialization.writePretty(
-        SimulationConfigDtos.SimulationConfigDto(
+        SimulationEnvironmentDtos.SimulationEnvironmentDto(
           countries = sampleCountry :: Nil
         )
       )

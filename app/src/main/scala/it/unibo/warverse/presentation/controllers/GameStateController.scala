@@ -1,16 +1,16 @@
 package it.unibo.warverse.presentation.controllers
 
 import it.unibo.warverse.domain.engine.simulation.SimulationEngine
+import it.unibo.warverse.domain.model.Environment
 import it.unibo.warverse.presentation.view.*
 import it.unibo.warverse.domain.model.world.SimulationStats
-import it.unibo.warverse.domain.model.SimulationConfig
 import it.unibo.warverse.domain.model.common.Listen.*
 import it.unibo.warverse.domain.model.fight.SimulationEvent
 
 import java.awt.EventQueue
 trait GameStateController:
   def mainFrame: MainFrame
-  var simulationConfig: Option[SimulationConfig]
+  var simulationEnvironment: Option[Environment]
   def setPanel(): Unit
   def onStartClicked(): Unit
   def onPauseClicked(): Unit
@@ -35,10 +35,10 @@ object GameStateController:
 
     private val gameStats = SimulationStats()
 
-    def simulationConfig: Option[SimulationConfig] =
-      simulationEngine.map(_.simulationConfig)
+    def simulationEnvironment: Option[Environment] =
+      simulationEngine.map(_.currentEnvironment)
 
-    def simulationConfig_=(newValue: Option[SimulationConfig]): Unit =
+    def simulationEnvironment_=(newValue: Option[Environment]): Unit =
       if simulationEngine.isDefined then onStopClicked()
       simulationEngine = newValue.map(SimulationEngine(_))
       gameMap.environment = simulationEngine.map(_.currentEnvironment)

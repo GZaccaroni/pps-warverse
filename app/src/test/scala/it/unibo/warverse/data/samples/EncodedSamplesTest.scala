@@ -6,7 +6,7 @@ import org.scalatest.matchers.must.Matchers
 class EncodedSamplesTest() extends AnyFunSuite with Matchers:
   private val encodedSamples = EncodedSamples()
 
-  test("complete simulation config sample generation must succeed") {
+  test("complete simulation environment sample generation must succeed") {
     checkResult(() => encodedSamples.complete)
   }
   test("country sample generation must succeed") {
