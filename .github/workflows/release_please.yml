@@ -31,7 +31,7 @@ jobs:
         run: sbt doc
         if: ${{ steps.release.outputs.release_created }}
       - name: Setup Pages
-        uses: actions/configure-pages@v2
+        uses: actions/configure-pages@v3
         if: ${{ steps.release.outputs.release_created }}
       - name: Upload docs
         uses: actions/upload-pages-artifact@v1
