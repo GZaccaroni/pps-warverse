@@ -11,7 +11,7 @@ lazy val root = project
       "io.monix" %% "monix" % "3.4.1",
       "it.unibo.alice.tuprolog" % "tuprolog" % "3.3.0",
       "com.github.dwickern" %% "scala-nameof" % "4.0.0" % "provided",
-      "org.scalatest" %% "scalatest" % "3.2.14" % Test,
+      "org.scalatest" %% "scalatest" % "3.2.16" % Test,
       "io.monix" %% "monix-testing-scalatest" % "0.4.0" % Test
     ),
     // Output paths
